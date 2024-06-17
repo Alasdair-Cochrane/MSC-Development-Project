@@ -1,11 +1,37 @@
+using Microsoft.EntityFrameworkCore;
+using WebAPI_Vue_Equipment_Manager_App.Server.Data;
+using WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities;
+using WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories;
+using WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories.Interfaces;
+using WebAPI_Vue_Equipment_Manager_App.Server.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+
+//Connect Database
+
+builder.Services.AddDbContext<PostgresDbContext>(
+    options => {
+        options.UseNpgsql(builder.Configuration.GetConnectionString("PostgresRun")); 
+        });
+
+builder.Services.AddTransient<MainDbContext, PostgresDbContext>();
+
+//Register Dependencies
+
+builder.Services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
+builder.Services.AddScoped(typeof(ICategoryRepository<>), typeof(GenericCategoryRepository<>));
+builder.Services.AddScoped<IModelService, ModelsService>();
+
+builder.Services.AddSingleton<IEntityCache<EquipmentModelCategory>, InMemoryEntityCache<EquipmentModelCategory>>();
+builder.Services.AddSingleton<IEntityCache<MaintenanceCategory>, InMemoryEntityCache<MaintenanceCategory>>();
+
 
 var app = builder.Build();
 
