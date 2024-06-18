@@ -2,6 +2,7 @@
 using WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities;
 using WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.Abstract_Classes;
 using WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories.Interfaces;
+using WebAPI_Vue_Equipment_Manager_App.Server.Deprecated;
 using WebAPI_Vue_Equipment_Manager_App.Server.DTOs;
 using WebAPI_Vue_Equipment_Manager_App.Server.DTOs.Mappings;
 
@@ -9,10 +10,10 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Services
 {
     public class ModelsService : IModelService
     {
-        IBaseRepository<EquipmentModel> _repository;
+        IEquipmentModelRepository _repository;
         ICategoryRepository<EquipmentModelCategory> _typeRepository;
 
-        public ModelsService(IBaseRepository<EquipmentModel> repo, ICategoryRepository<EquipmentModelCategory> types) {
+        public ModelsService(IEquipmentModelRepository repo, ICategoryRepository<EquipmentModelCategory> types) {
             _repository = repo;
             _typeRepository = types;      
         }
@@ -32,26 +33,25 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Services
             _repository.Delete(id);
         }
 
-        public IEnumerable<EquipmentModelDTO> GetAll()
+        public async Task<IEnumerable<EquipmentModelDTO>> GetAllAsync()
         {
-            var models = _repository.GetAllQueryable().Include(x => x.Category).
-                Select(x => x.ToDTO());
-            return models;
+            IEnumerable<EquipmentModel> models = await _repository.GetAllAsync();
+            return models.Select(x => x.ToDTO());
         }
 
-        public EquipmentModelDTO? GetByiD(int id)
+        public async Task<EquipmentModelDTO?> GetByiDAsync(int id)
         {
-            var element = _repository.GetById(id);
+            var element = await _repository.GetAsync(id);
             if (element == null) return null;
             return element.ToDTO();
         }
 
-        public EquipmentModelDTO? Update(EquipmentModelDTO model)
+        public async Task<EquipmentModelDTO?> UpdateAsync(EquipmentModelDTO model)
         {
             var category = _typeRepository.FindOrCreateByName(model.Category);
-            var newModel = _repository.Update(model.ToEntity(category.Id));
+            var newModel = await _repository.UpdateAsync(model.ToEntity(category.Id));
             if(newModel == null) return null;
-            _repository.Save();
+            await _repository.SaveAsync();
             newModel.Category = category;
             return newModel.ToDTO();
         }
@@ -59,10 +59,10 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Services
 
     public interface IModelService {
 
-        public EquipmentModelDTO? GetByiD(int id);
-        public IEnumerable<EquipmentModelDTO> GetAll();
+        public Task<EquipmentModelDTO?> GetByiDAsync(int id);
+        public Task<IEnumerable<EquipmentModelDTO>> GetAllAsync();
         public EquipmentModelDTO Add(EquipmentModelDTO entity);
-        public EquipmentModelDTO? Update(EquipmentModelDTO entity);
+        public Task<EquipmentModelDTO?> UpdateAsync(EquipmentModelDTO entity);
         public void Delete(int id);   
     
     }

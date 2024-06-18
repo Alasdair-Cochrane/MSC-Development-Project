@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using WebAPI_Vue_Equipment_Manager_App.Server.Data;
 using WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.Abstract_Classes;
-using WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories.Interfaces;
 
 
 //Notes - Generic Repositories appear to be controversial
@@ -8,9 +8,10 @@ using WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories.Interfaces;
 //A generic repository allows me to avoid repeading the same database access code for each entity type
 //most of the operations will be CRUD anyway
 
-namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
+namespace WebAPI_Vue_Equipment_Manager_App.Server.Deprecated
 {
-    public class BaseRepository<T> : IBaseRepository<T> where T : class, IEntity 
+    [Obsolete("generic no longer used")]
+    public class BaseRepository<T> : IBaseRepository<T> where T : class, IEntity
     {
         private readonly MainDbContext _context;
         private readonly DbSet<T> _entities;
@@ -45,13 +46,13 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
             {
                 _entities.Remove(toBeDeleted);
                 Save();
-            }            
+            }
         }
         public virtual T? GetById(int id)
         {
             T? foundEntity = _entities.Find(id);
             return foundEntity;
-        }      
+        }
 
         public virtual async Task<T?> GetByIdAsync(int id)
         {

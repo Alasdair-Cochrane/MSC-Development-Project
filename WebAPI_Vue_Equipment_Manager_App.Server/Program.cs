@@ -3,6 +3,7 @@ using WebAPI_Vue_Equipment_Manager_App.Server.Data;
 using WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities;
 using WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories;
 using WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories.Interfaces;
+using WebAPI_Vue_Equipment_Manager_App.Server.Deprecated;
 using WebAPI_Vue_Equipment_Manager_App.Server.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,7 +26,7 @@ builder.Services.AddTransient<MainDbContext, PostgresDbContext>();
 
 //Register Dependencies
 
-builder.Services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
+builder.Services.AddScoped<IEquipmentModelRepository, EquipmentModelRepository>();
 builder.Services.AddScoped(typeof(ICategoryRepository<>), typeof(GenericCategoryRepository<>));
 builder.Services.AddScoped<IModelService, ModelsService>();
 

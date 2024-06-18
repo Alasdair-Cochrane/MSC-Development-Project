@@ -7,85 +7,72 @@ using WebAPI_Vue_Equipment_Manager_App.Server.Services;
 
 namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
 {
-    public class GenericCategoryRepository<T> : ICategoryRepository<T> where T : Category, new()
+    public class GenericCategoryRepository<T> : Repository<T> , ICategoryRepository<T> where T : Category, new()
     {
-        private readonly DbSet<T> _context;
+        private readonly DbSet<T> _contextSet;
         private readonly DbContext _dbContext;
-        private readonly IEntityCache<T> _categories;
-        public GenericCategoryRepository(MainDbContext context, IEntityCache<T> cache)
+        private readonly IEntityCache<T> _categoriesCache;
+        public GenericCategoryRepository(MainDbContext context, IEntityCache<T> cache) : base(context)
         {
-            _context = context.Set<T>();
-            _categories = cache;
+            _contextSet = context.Set<T>();
+            _categoriesCache = cache;
             _dbContext = context;
 
-            if (_categories.CachedItems == null)
+            if (_categoriesCache.CachedItems == null)
             {
-                _categories.CachedItems = _context.ToList();
+                _categoriesCache.CachedItems = _contextSet.ToList();
             }
         }
 
-        private void Refresh()
+        public override async Task<IEnumerable<T>> GetAllAsync()
         {
-            _categories.CachedItems = _context.ToList();
+            return  await Task.Run(() => _categoriesCache.CachedItems);
+        }
+        public IEnumerable<T> GetAll() { 
+            return _categoriesCache.CachedItems; 
         }
 
-        public IQueryable<T> GetAllQueryable()
+        public override T Add(T type)
         {
-            return _categories.CachedItems.AsQueryable();
-        }
-
-        public IEnumerable<T> GetAll()
-        {
-            return _categories.CachedItems;
-        }
-
-
-        public T Add(T type)
-        {
-            T newEntry = _context.Add(type).Entity;
-            Save();
+            T newEntry = _contextSet.Add(type).Entity;
             return newEntry;
         }
-        public void Delete(int id)
+        public override bool Delete(int id)
         {
             var toBeDeleted = GetById(id);
             if (toBeDeleted != null)
             {
-                _context.Remove(toBeDeleted);
-                Save();
+                _contextSet.Remove(toBeDeleted);
+                return true;
             }
+            return false;
         }
 
         public T GetById(int id)
         {
-            return _categories.CachedItems.First(type => type.Id == id);
+            return _categoriesCache.CachedItems.First(type => type.Id == id);
         }
 
-        public T Update(T type)
+        public async override Task SaveAsync()
         {
-            T updatedType = _context.Update(type).Entity;
-            Save();
-            return updatedType;
-        }
-
-        public void Save()
-        {
-            _dbContext.SaveChanges();
-            Refresh();
+            await _dbContext.SaveChangesAsync();
+            _categoriesCache.CachedItems = _contextSet.ToList();
+            return;
         }
 
         public string FindNameById(int id)
         {
-            return _categories.CachedItems.First(x => x.Id == id).Name;
+            return _categoriesCache.CachedItems.First(x => x.Id == id).Name;
         }
 
         public T FindOrCreateByName(string name)
         {
-            var type = _categories.CachedItems.FirstOrDefault(x => x.Name == name);
+            var type = _categoriesCache.CachedItems.FirstOrDefault(x => x.Name == name);
             if (type == null)
             {
                 var newType = Add(new T { Name = name });
-                Save();                
+                _dbContext.SaveChanges();
+                _categoriesCache.CachedItems = _contextSet.ToList();
                 return newType;
             }
             return type;
@@ -93,14 +80,10 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
 
         public T? FindByName(string name)
         {
-            var type = _categories.CachedItems.FirstOrDefault(x => x.Name == name);
+            var type = _categoriesCache.CachedItems.FirstOrDefault(x => x.Name == name);
             return type;
         }
 
-        public Task<T?> GetByIdAsync(int id)
-        {
-            throw new NotImplementedException();
-        }
     }
 }
 
