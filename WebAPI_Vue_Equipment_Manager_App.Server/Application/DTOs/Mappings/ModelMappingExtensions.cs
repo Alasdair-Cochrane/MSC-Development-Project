@@ -1,24 +1,25 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
+using WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs;
 using WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities;
 using WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.Abstract_Classes;
-using WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories.Interfaces;
 
-namespace WebAPI_Vue_Equipment_Manager_App.Server.DTOs.Mappings
+namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs.Mappings
 {
     public static class ModelMappingExtensions
     {
         public static EquipmentModelDTO ToDTO(this EquipmentModel entity)
         {
-            if(entity == null)
+            if (entity == null)
             {
                 throw new ArgumentNullException(nameof(entity));
             }
-            if(entity.Category == null)
+            if (entity.Category == null)
             {
                 throw new ArgumentNullException(nameof(entity.Category));
             }
-                
-            return new EquipmentModelDTO() {
+
+            return new EquipmentModelDTO()
+            {
                 Id = entity.Id,
                 Model_Number = entity.Model_Number,
                 Model_Name = entity.Model_Name,
@@ -28,7 +29,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.DTOs.Mappings
                 Height = entity.Height,
                 Length = entity.Length,
                 Depth = entity.Depth,
-                Category = entity.Category.Name      
+                Category = entity.Category.Name
             };
         }
 
@@ -46,7 +47,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.DTOs.Mappings
                 Length = entity.Length,
                 Depth = entity.Depth,
                 Category = entity.Category.Name,
-                ListPrice = (int)entity.ListPrice      
+                ListPrice = (int)entity.ListPrice
             };
 
         }
@@ -55,7 +56,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.DTOs.Mappings
         {
             return new EquipmentModelWithDocumentsDTO
             {
-                Id= entity.Id,
+                Id = entity.Id,
                 Model_Number = entity.Model_Number,
                 Model_Name = entity.Model_Name,
                 Description = entity.Description,
@@ -71,7 +72,8 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.DTOs.Mappings
 
         public static EquipmentModel ToEntity(this EquipmentModelDTO dto, int categoryId, int price = 0)
         {
-            return new EquipmentModel {
+            return new EquipmentModel
+            {
                 Id = dto.Id,
                 Model_Number = dto.Model_Number,
                 Model_Name = dto.Model_Name,

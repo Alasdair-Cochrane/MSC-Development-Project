@@ -1,6 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿        using Microsoft.EntityFrameworkCore;
+using WebAPI_Vue_Equipment_Manager_App.Server.Application.Interfaces;
 using WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities;
-using WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories.Interfaces;
 
 namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
 {
@@ -11,7 +11,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
         {
         }
 
-        public override async Task<EquipmentModel?> GetAsync(int id)
+        public async Task<EquipmentModel?> GetWithNavPropertiesAsync(int id)
         {
             var found = await _context.Models.
                 AsNoTracking().
@@ -22,7 +22,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
             return found;
         }
 
-        public override async Task<IEnumerable<EquipmentModel>> GetAllAsync()
+        public async Task<IEnumerable<EquipmentModel>> GetAllWithNavPropertiesAsync()
         {
             return await _context.Models.AsQueryable().
                 Include(x => x.Category).

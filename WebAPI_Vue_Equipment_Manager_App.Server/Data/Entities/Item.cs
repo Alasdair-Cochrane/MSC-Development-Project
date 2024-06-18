@@ -27,7 +27,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities
 
         //Navigation Properties
 
-        public required EquipmentModel Model { get; set; }
+        public required EquipmentModel EquipmentModel { get; set; }
         public required Unit Unit { get; set; }
         public ICollection<ItemDocument>? Documents { get;}
         public ICollection<ItemNote>? Notes { get;}

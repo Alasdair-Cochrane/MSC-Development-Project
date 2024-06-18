@@ -1,6 +1,6 @@
 ﻿using WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities;
 
-namespace WebAPI_Vue_Equipment_Manager_App.Server.DTOs
+namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs
 {
     public class EquipmentModelDTO
     {
@@ -16,12 +16,14 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.DTOs
         public required string Category { get; set; }
     }
 
-    public class EquipmentModelWithPriceDTO : EquipmentModelDTO {
-        public int ListPrice { get; set; }   
+    public class EquipmentModelWithPriceDTO : EquipmentModelDTO
+    {
+        public int ListPrice { get; set; }
     }
 
-    public class EquipmentModelWithDocumentsDTO : EquipmentModelDTO {  
-        public required ICollection<EquipmentModelDocument> Documents { get; set; }    
+    public class EquipmentModelWithDocumentsDTO : EquipmentModelDTO
+    {
+        public required ICollection<EquipmentModelDocument> Documents { get; set; }
     }
 
 

@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs;
+using WebAPI_Vue_Equipment_Manager_App.Server.Application.Services;
 using WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities;
-using WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories.Interfaces;
-using WebAPI_Vue_Equipment_Manager_App.Server.DTOs;
-using WebAPI_Vue_Equipment_Manager_App.Server.Services;
 
 namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
 {
@@ -10,9 +9,9 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
     [Route("[controller]")]
     public class ModelsController : ControllerBase
     {
-        private readonly IModelService _modelService;
+        private readonly IEquipmentModelService _modelService;
 
-        public ModelsController(IModelService modelService) {
+        public ModelsController(IEquipmentModelService modelService) {
             _modelService = modelService;
         }
 

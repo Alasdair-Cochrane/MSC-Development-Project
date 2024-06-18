@@ -1,10 +1,9 @@
 using Microsoft.EntityFrameworkCore;
+using WebAPI_Vue_Equipment_Manager_App.Server.Application.Interfaces;
+using WebAPI_Vue_Equipment_Manager_App.Server.Application.Services;
 using WebAPI_Vue_Equipment_Manager_App.Server.Data;
 using WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities;
 using WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories;
-using WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories.Interfaces;
-using WebAPI_Vue_Equipment_Manager_App.Server.Deprecated;
-using WebAPI_Vue_Equipment_Manager_App.Server.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,7 +27,7 @@ builder.Services.AddTransient<MainDbContext, PostgresDbContext>();
 
 builder.Services.AddScoped<IEquipmentModelRepository, EquipmentModelRepository>();
 builder.Services.AddScoped(typeof(ICategoryRepository<>), typeof(GenericCategoryRepository<>));
-builder.Services.AddScoped<IModelService, ModelsService>();
+builder.Services.AddScoped<IEquipmentModelService, EquipmentModelsService>();
 
 builder.Services.AddSingleton<IEntityCache<EquipmentModelCategory>, InMemoryEntityCache<EquipmentModelCategory>>();
 builder.Services.AddSingleton<IEntityCache<MaintenanceCategory>, InMemoryEntityCache<MaintenanceCategory>>();

@@ -1,7 +1,7 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
+using WebAPI_Vue_Equipment_Manager_App.Server.Application.Interfaces;
 using WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.Abstract_Classes;
-using WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories.Interfaces;
 
 namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
 {
@@ -32,7 +32,10 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
             return true;
         }
 
-        public abstract Task<IEnumerable<T>> GetAllAsync();
+        public async virtual Task<IEnumerable<T>> GetAllAsync()
+        {
+            return await _dbSet.ToListAsync();
+        }
 
 
         public async virtual Task<T?> GetAsync(int id)

@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using WebAPI_Vue_Equipment_Manager_App.Server.Application.Interfaces;
+using WebAPI_Vue_Equipment_Manager_App.Server.Application.Services;
 using WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities;
 using WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.Abstract_Classes;
-using WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories.Interfaces;
-using WebAPI_Vue_Equipment_Manager_App.Server.Services;
 
 namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
 {
@@ -24,33 +24,45 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
             }
         }
 
-        public override async Task<IEnumerable<T>> GetAllAsync()
+        public override async Task<IEnumerable<T>> GetAllWithNavPropertiesAsync()
         {
-            return  await Task.Run(() => _categoriesCache.CachedItems);
+            return await GetAllAsync();
         }
-        public IEnumerable<T> GetAll() { 
-            return _categoriesCache.CachedItems; 
+        public override async Task<IEnumerable<T>> GetAllAsync() {
+            return await Task.Run(() =>
+            {
+                return _categoriesCache.CachedItems.ToList();
+            }) ; 
         }
 
         public override T Add(T type)
         {
             T newEntry = _contextSet.Add(type).Entity;
+           _categoriesCache.Add(newEntry);
             return newEntry;
         }
         public override bool Delete(int id)
         {
-            var toBeDeleted = GetById(id);
+            var toBeDeleted = _categoriesCache.CachedItems.First(type => type.Id == id);
             if (toBeDeleted != null)
             {
                 _contextSet.Remove(toBeDeleted);
+                _categoriesCache.Remove(toBeDeleted);
                 return true;
             }
             return false;
         }
 
-        public T GetById(int id)
+        public async override Task<T?> GetAsync(int id)
         {
-            return _categoriesCache.CachedItems.First(type => type.Id == id);
+            return await Task.Run(() => { 
+                return _categoriesCache.CachedItems.First(type => type.Id == id); }
+            );
+        }
+
+        public async override Task<T?> GetWithNavPropertiesAsync(int id)
+        {
+            return await GetAsync(id);
         }
 
         public async override Task SaveAsync()
@@ -58,11 +70,6 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
             await _dbContext.SaveChangesAsync();
             _categoriesCache.CachedItems = _contextSet.ToList();
             return;
-        }
-
-        public string FindNameById(int id)
-        {
-            return _categoriesCache.CachedItems.First(x => x.Id == id).Name;
         }
 
         public T FindOrCreateByName(string name)
