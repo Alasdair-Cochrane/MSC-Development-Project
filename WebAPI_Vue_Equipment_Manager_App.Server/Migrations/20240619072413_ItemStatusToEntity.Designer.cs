@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using WebAPI_Vue_Equipment_Manager_App.Server.Data;
@@ -11,9 +12,11 @@ using WebAPI_Vue_Equipment_Manager_App.Server.Data;
 namespace WebAPI_Vue_Equipment_Manager_App.Server.Migrations
 {
     [DbContext(typeof(PostgresDbContext))]
-    partial class PostgresDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240619072413_ItemStatusToEntity")]
+    partial class ItemStatusToEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -135,14 +138,17 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Migrations
                     b.Property<string>("Barcode")
                         .HasColumnType("text");
 
-                    b.Property<DateTime?>("Date_Of_Acceptance_Test")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateOnly?>("Date_Of_Acceptance_Test")
+                        .HasColumnType("date");
 
-                    b.Property<DateTime?>("Date_Of_Activation")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateOnly?>("Date_Of_Activation")
+                        .HasColumnType("date");
 
-                    b.Property<DateTime?>("Date_Of_Reciept")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateOnly?>("Date_Of_Reciept")
+                        .HasColumnType("date");
+
+                    b.Property<int>("EquipmentModelId")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Image")
                         .HasMaxLength(100)
@@ -176,9 +182,9 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ItemStatusCategoryId");
+                    b.HasIndex("EquipmentModelId");
 
-                    b.HasIndex("ModelId");
+                    b.HasIndex("ItemStatusCategoryId");
 
                     b.HasIndex("UnitId");
 
@@ -463,15 +469,15 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Migrations
 
             modelBuilder.Entity("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.Item", b =>
                 {
-                    b.HasOne("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.ItemStatusCategory", "StatusCategory")
+                    b.HasOne("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.EquipmentModel", "EquipmentModel")
                         .WithMany()
-                        .HasForeignKey("ItemStatusCategoryId")
+                        .HasForeignKey("EquipmentModelId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.EquipmentModel", "EquipmentModel")
+                    b.HasOne("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.ItemStatusCategory", "StatusCategory")
                         .WithMany()
-                        .HasForeignKey("ModelId")
+                        .HasForeignKey("ItemStatusCategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

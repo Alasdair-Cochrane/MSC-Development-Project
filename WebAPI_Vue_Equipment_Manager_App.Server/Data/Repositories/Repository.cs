@@ -16,9 +16,9 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
             _dbSet = context.Set<T>();
         }
 
-        public async virtual Task<T> AddAsync(T newModel)
+        public async virtual Task<T?> AddAsync(T newEntity)
         {
-            var added = _context.Add(newModel).Entity;
+            var added = _context.Add(newEntity).Entity;
             await _context.SaveChangesAsync();
             return added;
         }

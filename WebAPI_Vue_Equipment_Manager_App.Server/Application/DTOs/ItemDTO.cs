@@ -1,23 +1,40 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
+using WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities;
 
 namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs
 {
-    public class ItemDTO
+    public class ItemSimpleDTO
     {
         public int Id { get; set; }
         public required string SerialNumber { get; set; }
-        public required EquipmentModelDTO Model { get; set; }
+        public int ModelId { get; set; }
         public int UnitId { get; set; }
-        public required string UnitName { get; set; }    
-        public string? Barcode { get; set; }
-        public string? LocalName { get; set; }
-        public DateOnly? Date_Of_Reciept { get; set; }
-        public DateOnly? Date_Of_Acceptance_Test { get; set; }
-        public DateOnly? Date_Of_Activation { get; set; }
+        public string Barcode { get; set; } = string.Empty;
+        public string LocalName { get; set; } = string.Empty;
+        public DateTime? Date_Of_Reciept { get; set; }
+        public DateTime? Date_Of_Acceptance_Test { get; set; }
+        public DateTime? Date_Of_Activation { get; set; }
         public bool? New_On_Reciept { get; set; }
-        public required string Current_Status { get; set; }
-        public string? ImageUrl { get; set; }
+        public required int Current_Status_ID { get; set; }
+        public string ImageUrl { get; set; }
     }
+
+    public class ItemDTO : ItemSimpleDTO
+    {
+        [JsonPropertyOrder(1)]
+        public required EquipmentModelDTO Model { get; set; }
+
+        [JsonPropertyOrder(2)]
+        public required string CurrentStatus { get; set; }
+
+        [JsonPropertyOrder(3)]
+
+        public required string UnitName { get; set; }
+
+    }
+
 
     public class ItemWithPurchaseDTO : ItemDTO
     {
@@ -25,4 +42,6 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs
         public decimal? Purchase_Price { get; set; }
         public int? PurchaseOrder {  get; set; }
     }
+
+
 }

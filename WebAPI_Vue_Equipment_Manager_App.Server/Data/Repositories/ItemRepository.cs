@@ -7,25 +7,63 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
     public class ItemRepository : Repository<Item> , IItemRepository
     {
         public ItemRepository(MainDbContext context) : base(context) { }
-        public async Task<IEnumerable<Item>> GetAllWithNavPropertiesAsync()
+        
+        public override async Task<Item?> GetAsync(int id)
         {
-            var entities = await _context.Items.AsQueryable().
+           var item =  await _context.Items.
+                AsNoTracking().
+                Where(x => x.Id == id).
+                Include(x => x.Unit).
+                Include(x => x.EquipmentModel).
+                Include(x => x.Notes).
+                Include(x => x.StatusCategory).
+                Include(x => x.EquipmentModel.Category).
+                FirstOrDefaultAsync();
+
+            return item;
+        }        
+        
+        public override async Task<IEnumerable<Item>> GetAllAsync()
+        {
+            var entities = await _context.Items.
                 AsNoTracking().
                 Include(x => x.Unit).
                 Include(x => x.EquipmentModel).
                 Include(x => x.Notes).
+                Include(x => x.StatusCategory).
+                Include(x => x.EquipmentModel.Category).
                 ToListAsync();
             return entities;
         }
-        public async Task<Item?> GetWithNavPropertiesAsync(int id)
+
+        public override async Task<Item?> AddAsync(Item item)
         {
-            var found = await _context.Items.
-                AsNoTracking().
+            _context.Items.Add(item);
+            await _context.SaveChangesAsync();
+
+            var added = await _context.Items.
                 Include(x => x.Unit).
                 Include(x => x.EquipmentModel).
                 Include(x => x.Notes).
-                FirstOrDefaultAsync();
-            return found;
+                Include(x => x.StatusCategory).
+                Include(x => x.EquipmentModel.Category).
+                FirstOrDefaultAsync(x => x.Id == item.Id);
+            return added;
         }
+
+        public override async Task<Item?> UpdateAsync(Item item)
+        { 
+             _context.Items.Update(item);
+            await _context.SaveChangesAsync();
+            var added = await _context.Items.
+                Include(x => x.Unit).
+                Include(x => x.EquipmentModel).
+                Include(x => x.Notes).
+                Include(x => x.StatusCategory).
+                Include(x => x.EquipmentModel.Category).
+                FirstOrDefaultAsync(x => x.Id == item.Id);
+            return added;
+        }
+        
     }
 }

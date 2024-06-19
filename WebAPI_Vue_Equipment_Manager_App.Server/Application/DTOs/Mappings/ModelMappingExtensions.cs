@@ -30,42 +30,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs.Mappings
             };
         }
 
-        public static EquipmentModelWithPriceDTO ToDTOWithPrice(this EquipmentModel entity)
-        {
-            return new EquipmentModelWithPriceDTO
-            {
-                Id = entity.Id,
-                Model_Number = entity.Model_Number,
-                Model_Name = entity.Model_Name,
-                Description = entity.Description,
-                Manufacturer = entity.Manufacturer,
-                Weight = entity.Weight,
-                Height = entity.Height,
-                Length = entity.Length,
-                Depth = entity.Depth,
-                Category = entity.Category.Name,
-                ListPrice = (int)entity.ListPrice
-            };
-
-        }
-
-        public static EquipmentModelWithDocumentsDTO ToDTOWithDocuments(this EquipmentModel entity)
-        {
-            return new EquipmentModelWithDocumentsDTO
-            {
-                Id = entity.Id,
-                Model_Number = entity.Model_Number,
-                Model_Name = entity.Model_Name,
-                Description = entity.Description,
-                Manufacturer = entity.Manufacturer,
-                Weight = entity.Weight,
-                Height = entity.Height,
-                Length = entity.Length,
-                Depth = entity.Depth,
-                Category = entity.Category.Name,
-                Documents = entity.Documents
-            };
-        }
+        
 
         public static EquipmentModel ToEntity(this EquipmentModelDTO dto, int categoryId, int price = 0)
         {

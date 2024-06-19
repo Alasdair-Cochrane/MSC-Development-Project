@@ -7,7 +7,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs
         public int Id { get; set; }
         public required string Model_Number { get; set; }
         public required string Model_Name { get; set; }
-        public string? Description { get; set; }
+        public string Description { get; set; } = string.Empty;
         public required string Manufacturer { get; set; }
         public int? Weight { get; set; }
         public int? Height { get; set; }
@@ -16,15 +16,6 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs
         public required string Category { get; set; }
     }
 
-    public class EquipmentModelWithPriceDTO : EquipmentModelDTO
-    {
-        public int ListPrice { get; set; }
-    }
-
-    public class EquipmentModelWithDocumentsDTO : EquipmentModelDTO
-    {
-        public required ICollection<EquipmentModelDocument> Documents { get; set; }
-    }
 
 
 }

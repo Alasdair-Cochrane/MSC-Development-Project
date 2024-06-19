@@ -5,7 +5,5 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Repository_Interfa
 {
     public interface IItemRepository : IRepository<Item>
     {
-        public Task<IEnumerable<Item>> GetAllWithNavPropertiesAsync();
-        public Task<Item?> GetWithNavPropertiesAsync(int id);
     }
 }
