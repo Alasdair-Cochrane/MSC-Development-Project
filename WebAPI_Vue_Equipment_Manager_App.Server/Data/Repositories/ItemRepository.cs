@@ -1,12 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using WebAPI_Vue_Equipment_Manager_App.Server.Application.Repository_Interfaces;
 using WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities;
 
 namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
 {
-    public class EquipmentItemRepository : Repository<Item>
+    public class ItemRepository : Repository<Item> , IItemRepository
     {
-        public EquipmentItemRepository(MainDbContext context) : base(context) { }
-        public async override Task<IEnumerable<Item>> GetAllWithNavPropertiesAsync()
+        public ItemRepository(MainDbContext context) : base(context) { }
+        public async Task<IEnumerable<Item>> GetAllWithNavPropertiesAsync()
         {
             var entities = await _context.Items.AsQueryable().
                 AsNoTracking().
@@ -16,7 +17,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
                 ToListAsync();
             return entities;
         }
-        public async override Task<Item?> GetWithNavPropertiesAsync(int id)
+        public async Task<Item?> GetWithNavPropertiesAsync(int id)
         {
             var found = await _context.Items.
                 AsNoTracking().

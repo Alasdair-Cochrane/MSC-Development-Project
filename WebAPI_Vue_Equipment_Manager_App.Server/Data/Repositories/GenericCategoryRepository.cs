@@ -24,7 +24,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
             }
         }
 
-        public override async Task<IEnumerable<T>> GetAllWithNavPropertiesAsync()
+        public async Task<IEnumerable<T>> GetAllWithNavPropertiesAsync()
         {
             return await GetAllAsync();
         }
@@ -35,19 +35,29 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
             }) ; 
         }
 
-        public override T Add(T type)
+        public override async Task<T> AddAsync(T type)
         {
             T newEntry = _contextSet.Add(type).Entity;
            _categoriesCache.Add(newEntry);
+            await _context.SaveChangesAsync();
             return newEntry;
         }
-        public override bool Delete(int id)
+
+        private T Add(T type)
+        {
+            T newEntry = _contextSet.Add(type).Entity;
+            _categoriesCache.Add(newEntry);
+            _context.SaveChanges();
+            return newEntry;
+        }
+        public async override Task<bool> DeleteAsync(int id)
         {
             var toBeDeleted = _categoriesCache.CachedItems.First(type => type.Id == id);
             if (toBeDeleted != null)
             {
                 _contextSet.Remove(toBeDeleted);
                 _categoriesCache.Remove(toBeDeleted);
+                await _context.SaveChangesAsync();
                 return true;
             }
             return false;
@@ -60,7 +70,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
             );
         }
 
-        public async override Task<T?> GetWithNavPropertiesAsync(int id)
+        public async Task<T?> GetWithNavPropertiesAsync(int id)
         {
             return await GetAsync(id);
         }

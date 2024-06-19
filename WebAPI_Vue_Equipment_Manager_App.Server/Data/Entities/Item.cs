@@ -19,18 +19,19 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities
         public DateOnly? Date_Of_Acceptance_Test { get; set; }
         public DateOnly? Date_Of_Activation { get; set; }
         public bool? New_On_Reciept { get; set; }
-        public int? Current_Status { get; set; }
+        public int ItemStatusCategoryId { get; set; }
         [MaxLength(100)]
         public string? Image { get; set; }
-        public int? Purchase_Price { get; set; }
+        public decimal? Purchase_Price { get; set; }
         public int? Purchase_Order {  get; set; }
 
         //Navigation Properties
 
-        public required EquipmentModel EquipmentModel { get; set; }
-        public required Unit Unit { get; set; }
+        public EquipmentModel EquipmentModel { get; set; } = null!;
+        public  Unit Unit { get; set; } = null!;
         public ICollection<ItemDocument>? Documents { get;}
         public ICollection<ItemNote>? Notes { get;}
+        public ItemStatusCategory StatusCategory { get; set; } = null!;
 
     }
     

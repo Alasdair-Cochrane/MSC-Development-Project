@@ -23,14 +23,14 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services
             EquipmentModelCategory category = _typeRepository.FindOrCreateByName(model.Category);
 
             EquipmentModel newModel = model.ToEntity(category.Id);
-            _repository.Add(newModel);
+            _repository.AddAsync(newModel);
             newModel.Category = category;
             return newModel.ToDTO();
         }
 
         public void Delete(int id)
         {
-            _repository.Delete(id);
+            _repository.DeleteAsync(id);
         }
 
         public async Task<IEnumerable<EquipmentModelDTO>> GetAllAsync()

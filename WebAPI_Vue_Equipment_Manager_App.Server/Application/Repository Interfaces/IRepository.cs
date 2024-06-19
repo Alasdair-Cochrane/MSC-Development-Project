@@ -5,9 +5,9 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Interfaces
 {
     public interface IRepository<T> where T : class, IEntity
     {
-        public T Add(T newModel);
+        public Task<T> AddAsync(T newModel);
         public Task<T?> UpdateAsync(T updatedModel);
-        public bool Delete(int id);
+        public Task<bool> DeleteAsync(int id);
         public Task<T?> GetAsync(int id);
         public Task<IEnumerable<T>> GetAllAsync();
         public Task SaveAsync();

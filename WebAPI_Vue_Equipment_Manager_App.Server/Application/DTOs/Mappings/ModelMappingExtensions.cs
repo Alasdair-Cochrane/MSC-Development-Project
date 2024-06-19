@@ -9,10 +9,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs.Mappings
     {
         public static EquipmentModelDTO ToDTO(this EquipmentModel entity)
         {
-            if (entity == null)
-            {
-                throw new ArgumentNullException(nameof(entity));
-            }
+            
             if (entity.Category == null)
             {
                 throw new ArgumentNullException(nameof(entity.Category));

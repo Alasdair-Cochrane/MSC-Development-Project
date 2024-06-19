@@ -16,19 +16,22 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
             _dbSet = context.Set<T>();
         }
 
-        public virtual T Add(T newModel)
+        public async virtual Task<T> AddAsync(T newModel)
         {
-            return _context.Add(newModel).Entity;
+            var added = _context.Add(newModel).Entity;
+            await _context.SaveChangesAsync();
+            return added;
         }
 
-        public virtual bool Delete(int id)
+        public async virtual Task<bool> DeleteAsync(int id)
         {
-            var toBeDeleted = _dbSet.Find(id);
+            var toBeDeleted = await _dbSet.FindAsync(id);
             if (toBeDeleted == null)
             {
                 return false;
             }
             _context.Remove(toBeDeleted);
+            await _context.SaveChangesAsync();
             return true;
         }
 
@@ -53,6 +56,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
             var existingEntity = await _dbSet.FindAsync(updatedModel.Id);
             if (existingEntity == null) return null;
             _dbSet.Entry(existingEntity).CurrentValues.SetValues(updatedModel);
+            await SaveAsync();
             return updatedModel;
         }
     }
