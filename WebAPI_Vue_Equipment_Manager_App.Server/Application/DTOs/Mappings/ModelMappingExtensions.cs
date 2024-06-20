@@ -20,7 +20,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs.Mappings
                 Id = entity.Id,
                 Model_Number = entity.Model_Number,
                 Model_Name = entity.Model_Name,
-                Description = entity.Description,
+                Description = entity.Description ?? "",
                 Manufacturer = entity.Manufacturer,
                 Weight = entity.Weight,
                 Height = entity.Height,

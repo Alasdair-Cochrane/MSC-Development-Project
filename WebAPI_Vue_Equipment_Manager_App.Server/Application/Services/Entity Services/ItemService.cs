@@ -12,18 +12,25 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Se
     {
         private readonly IItemRepository _ItemRepository;
         private readonly ICategoryRepository<ItemStatusCategory> _statusRepository;
+        private readonly IMaintenanceService _maintenanceService;
 
-        public ItemService(IItemRepository itemRepository, ICategoryRepository<ItemStatusCategory> categories)
+        public ItemService(IItemRepository itemRepository, ICategoryRepository<ItemStatusCategory> categories,
+            IMaintenanceService maintenanceService)
         {
             _ItemRepository = itemRepository;
             _statusRepository = categories;
+            _maintenanceService = maintenanceService;
         }
 
-        public async Task<ItemDTO> AddAsync(ItemDTO item)
+        public async Task<ItemDTO?> AddAsync(ItemDTO item)
         {
             int categoryID = _statusRepository.FindOrCreateByName(item.CurrentStatus).Id;
             Item newItem = item.ToEntity(categoryID);
             var added = await _ItemRepository.AddAsync(newItem);
+            if(added == null)
+            {
+                return null;
+            }
             return added.ToDTO();
         }
 
@@ -58,6 +65,13 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Se
             }
             return updated.ToDTO();
         }
+        public async Task<IEnumerable<ItemDTO>> GetAllByUnitAsync(int UnitID)
+        {
+            var list = await _ItemRepository.GetAllByUnitIdAsync(UnitID);
+            return list.Select(x => x.ToDTO());
+
+        }
+
     }
 
     public interface IItemService
@@ -66,7 +80,9 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Se
         public Task<IEnumerable<ItemDTO>> GetAllAsync();
         public Task<ItemDTO?> UpdateAsync(ItemDTO item);
         public Task DeleteByIdAsync(int id);
-        public Task<ItemDTO> AddAsync(ItemDTO item);
+        public Task<ItemDTO?> AddAsync(ItemDTO item);
+        public Task<IEnumerable<ItemDTO>> GetAllByUnitAsync(int UnitID);
+
 
     }
 }

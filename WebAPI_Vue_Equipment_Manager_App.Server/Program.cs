@@ -31,14 +31,19 @@ builder.Services.AddTransient<MainDbContext, PostgresDbContext>();
 builder.Services.AddScoped<IEquipmentModelRepository, EquipmentModelRepository>();
 builder.Services.AddScoped<IItemRepository, ItemRepository>();
 builder.Services.AddScoped(typeof(ICategoryRepository<>), typeof(GenericCategoryRepository<>));
+builder.Services.AddScoped<IUnitRepository, UnitRepository>();
+builder.Services.AddScoped<IMaintenanceRepository, MaintenanceRepository>();
 
 
 builder.Services.AddScoped<IEquipmentModelService, EquipmentModelsService>();
 builder.Services.AddScoped<IItemService, ItemService>();
+builder.Services.AddScoped<IUnitService, UnitService>();
+builder.Services.AddScoped<IMaintenanceService, MaintenanceService>();
 
 builder.Services.AddSingleton<IEntityCache<EquipmentModelCategory>, InMemoryEntityCache<EquipmentModelCategory>>();
 builder.Services.AddSingleton<IEntityCache<MaintenanceCategory>, InMemoryEntityCache<MaintenanceCategory>>();
 builder.Services.AddSingleton<IEntityCache<ItemStatusCategory>, InMemoryEntityCache<ItemStatusCategory>>();
+
 
 //Configure
 

@@ -49,7 +49,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Tests
         public async Task Get_ReturnsNotNull()
         {
             //Arrange
-            _equipmentModelRepository.GetWithNavPropertiesAsync(Arg.Any<int>()).Returns(_testModel);
+            _equipmentModelRepository.GetAsync(Arg.Any<int>()).Returns(_testModel);
 
             //Act 
             var result = await sut.GetByiDAsync(1);
@@ -62,7 +62,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Tests
 
         public async Task Get_ReturnsNull()
         {
-            _equipmentModelRepository.GetWithNavPropertiesAsync(Arg.Any<int>()).ReturnsNull();
+            _equipmentModelRepository.GetAsync(Arg.Any<int>()).ReturnsNull();
 
             var result = await sut.GetByiDAsync(1);
 
@@ -72,7 +72,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Tests
         [Fact]
         public async Task GetAll_ReturnsList()
         {
-            _equipmentModelRepository.GetAllWithNavPropertiesAsync().Returns(_testModels);
+            _equipmentModelRepository.GetAllAsync().Returns(_testModels);
 
             var result = await sut.GetAllAsync();
 

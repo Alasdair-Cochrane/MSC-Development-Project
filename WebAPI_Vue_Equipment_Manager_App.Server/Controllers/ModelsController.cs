@@ -38,7 +38,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
         {
             if(!ModelState.IsValid) return BadRequest(ModelState);
 
-            var newModel = _modelService.Add(model);
+            var newModel = _modelService.AddAsync(model);
             return CreatedAtAction(nameof(Get), new { id = newModel.Id }, newModel);
         }
 
@@ -47,6 +47,12 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
         {
             var updated = await _modelService.UpdateAsync(model);
             return Ok(updated);
+        }
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            await _modelService.DeleteAsync(id);
+            return Ok();
         }
 
 

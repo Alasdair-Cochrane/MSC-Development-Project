@@ -42,6 +42,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
             await _context.SaveChangesAsync();
 
             var added = await _context.Items.
+                AsNoTracking().
                 Include(x => x.Unit).
                 Include(x => x.EquipmentModel).
                 Include(x => x.Notes).
@@ -56,6 +57,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
              _context.Items.Update(item);
             await _context.SaveChangesAsync();
             var added = await _context.Items.
+                AsNoTracking().
                 Include(x => x.Unit).
                 Include(x => x.EquipmentModel).
                 Include(x => x.Notes).
@@ -64,6 +66,16 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
                 FirstOrDefaultAsync(x => x.Id == item.Id);
             return added;
         }
-        
+        public async Task<IEnumerable<Item>> GetAllByUnitIdAsync(int unitId)
+        {
+            var items = await _context.Items.
+                AsNoTracking().
+                Where(x => x.UnitId == unitId)
+                .Include(x => x.EquipmentModel).
+                Include(x => x.StatusCategory).
+                ToListAsync();
+            return items;
+        }
+
     }
 }

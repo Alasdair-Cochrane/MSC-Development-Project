@@ -35,7 +35,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
             }) ; 
         }
 
-        public override async Task<T> AddAsync(T type)
+        public override async Task<T?> AddAsync(T type)
         {
             T newEntry = _contextSet.Add(type).Entity;
            _categoriesCache.Add(newEntry);

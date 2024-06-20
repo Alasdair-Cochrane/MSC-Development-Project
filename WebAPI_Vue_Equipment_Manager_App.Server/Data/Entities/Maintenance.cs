@@ -9,9 +9,9 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities
         public int ItemId { get; set; }
         [MaxLength(50)]
         public required string Provider_Name { get; set; }
-        public DateOnly Date_Completed { get; set; }
+        public DateTime Date_Completed { get; set; }
         public required int TypeId { get; set; }
-        public required MaintenanceCategory Type { get; set; }
+        public MaintenanceCategory Type { get; set; } = null!;
 
     }
     
