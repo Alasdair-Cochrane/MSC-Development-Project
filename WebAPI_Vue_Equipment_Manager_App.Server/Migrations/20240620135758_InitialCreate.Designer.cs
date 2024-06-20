@@ -11,9 +11,9 @@ using WebAPI_Vue_Equipment_Manager_App.Server.Data;
 
 namespace WebAPI_Vue_Equipment_Manager_App.Server.Migrations
 {
-    [DbContext(typeof(PostgresDbContext))]
-    [Migration("20240619105838_DateOnly_to_DateTime")]
-    partial class DateOnly_to_DateTime
+    [DbContext(typeof(MainDbContext))]
+    [Migration("20240620135758_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -257,13 +257,6 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ItemStatusCategory");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "Active"
-                        });
                 });
 
             modelBuilder.Entity("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.Maintenance", b =>
@@ -274,8 +267,8 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateOnly>("Date_Completed")
-                        .HasColumnType("date");
+                    b.Property<DateTime>("Date_Completed")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("ItemId")
                         .HasColumnType("integer");
@@ -388,10 +381,17 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .HasColumnType("text");
+
                     b.Property<string>("Email")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
+                        .HasColumnType("text");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -402,6 +402,36 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Migrations
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasColumnType("text");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasColumnType("text");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("text");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("UserName")
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 

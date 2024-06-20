@@ -1,4 +1,5 @@
-using Microsoft.AspNetCore.Http.Json;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.EntityFrameworkCore;
 using WebAPI_Vue_Equipment_Manager_App.Server.Application.Interfaces;
 using WebAPI_Vue_Equipment_Manager_App.Server.Application.Repository_Interfaces;
@@ -7,6 +8,8 @@ using WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Servic
 using WebAPI_Vue_Equipment_Manager_App.Server.Data;
 using WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities;
 using WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories;
+using Microsoft.AspNetCore.Identity;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,16 +18,36 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddAuthorization();
 
+var key = Encoding.ASCII.GetBytes("TEST KEY DO NOT USE");
 
+builder.Services.AddAuthentication(options =>
+    {
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;}
+    ).AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true, //source of token must be confirmed against approved issuer
+            ValidateAudience = true, //recipient of token must be confirmed against approved recipients
+            ValidateLifetime = true, // checks that the token has not expired
+            ValidateIssuerSigningKey = true, // checks the signature is valid - against the private key
+            ValidIssuer = "ISSUER",
+            ValidAudience = "AUDIENCE",
+            IssuerSigningKey = new SymmetricSecurityKey(key)        
+        };
+    });
+
+builder.Services.AddIdentityApiEndpoints<User>().
+    AddEntityFrameworkStores<MainDbContext>();
 //Connect Database
 
-builder.Services.AddDbContext<PostgresDbContext>(
+builder.Services.AddDbContext<MainDbContext>(
     options => {
         options.UseNpgsql(builder.Configuration.GetConnectionString("PostgresRun")); 
         });
-
-builder.Services.AddTransient<MainDbContext, PostgresDbContext>();
 
 //Register Dependencies
 
@@ -52,7 +75,7 @@ var app = builder.Build();
 
 app.UseDefaultFiles();
 app.UseStaticFiles();
-
+app.MapIdentityApi<User>();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

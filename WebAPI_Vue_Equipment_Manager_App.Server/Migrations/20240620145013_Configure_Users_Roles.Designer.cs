@@ -11,9 +11,9 @@ using WebAPI_Vue_Equipment_Manager_App.Server.Data;
 
 namespace WebAPI_Vue_Equipment_Manager_App.Server.Migrations
 {
-    [DbContext(typeof(PostgresDbContext))]
-    [Migration("20240616072917_TypeNamesUnique")]
-    partial class TypeNamesUnique
+    [DbContext(typeof(MainDbContext))]
+    [Migration("20240620145013_Configure_Users_Roles")]
+    partial class Configure_Users_Roles
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,24 +25,107 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.Assignment", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
                 {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("text");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetRoleClaims", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("text");
+
                     b.Property<int>("UserId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("UnitId")
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserClaims", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
+                {
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ProviderKey")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ProviderDisplayName")
+                        .HasColumnType("text");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("LoginProvider", "ProviderKey");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserLogins", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<int>", b =>
+                {
+                    b.Property<int>("UserId")
                         .HasColumnType("integer");
 
                     b.Property<int>("RoleId")
                         .HasColumnType("integer");
 
-                    b.HasKey("UserId", "UnitId");
+                    b.HasKey("UserId", "RoleId");
 
                     b.HasIndex("RoleId");
 
-                    b.HasIndex("UnitId");
+                    b.ToTable("AspNetUserRoles", (string)null);
+                });
 
-                    b.ToTable("Assignments");
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("text");
+
+                    b.HasKey("UserId", "LoginProvider", "Name");
+
+                    b.ToTable("AspNetUserTokens", (string)null);
                 });
 
             modelBuilder.Entity("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.EquipmentModel", b =>
@@ -52,6 +135,9 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Migrations
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("integer");
 
                     b.Property<int?>("Depth")
                         .HasColumnType("integer");
@@ -84,20 +170,17 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
 
-                    b.Property<int?>("TypeId")
-                        .HasColumnType("integer");
-
                     b.Property<int?>("Weight")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TypeId");
+                    b.HasIndex("CategoryId");
 
                     b.ToTable("Models");
                 });
 
-            modelBuilder.Entity("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.EquipmentType", b =>
+            modelBuilder.Entity("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.EquipmentModelCategory", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -107,8 +190,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -125,6 +207,29 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Migrations
                         });
                 });
 
+            modelBuilder.Entity("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.EquipmentModelDocument", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ModelId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("URL")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ModelId");
+
+                    b.ToTable("ModelDocuments");
+                });
+
             modelBuilder.Entity("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.Item", b =>
                 {
                     b.Property<int>("Id")
@@ -136,21 +241,21 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Migrations
                     b.Property<string>("Barcode")
                         .HasColumnType("text");
 
-                    b.Property<int?>("Current_Status")
-                        .HasColumnType("integer");
+                    b.Property<DateTime?>("Date_Of_Acceptance_Test")
+                        .HasColumnType("timestamp with time zone");
 
-                    b.Property<DateOnly?>("Date_Of_Acceptance_Test")
-                        .HasColumnType("date");
+                    b.Property<DateTime?>("Date_Of_Activation")
+                        .HasColumnType("timestamp with time zone");
 
-                    b.Property<DateOnly?>("Date_Of_Activation")
-                        .HasColumnType("date");
-
-                    b.Property<DateOnly?>("Date_Of_Reciept")
-                        .HasColumnType("date");
+                    b.Property<DateTime?>("Date_Of_Reciept")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Image")
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
+
+                    b.Property<int>("ItemStatusCategoryId")
+                        .HasColumnType("integer");
 
                     b.Property<string>("LocalName")
                         .HasMaxLength(50)
@@ -165,8 +270,8 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Migrations
                     b.Property<int?>("Purchase_Order")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("Purchase_Price")
-                        .HasColumnType("integer");
+                    b.Property<decimal?>("Purchase_Price")
+                        .HasColumnType("numeric");
 
                     b.Property<string>("SerialNumber")
                         .IsRequired()
@@ -176,6 +281,8 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ItemStatusCategoryId");
 
                     b.HasIndex("ModelId");
 
@@ -238,6 +345,23 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Migrations
                     b.ToTable("ItemNotes");
                 });
 
+            modelBuilder.Entity("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.ItemStatusCategory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ItemStatusCategory");
+                });
+
             modelBuilder.Entity("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.Maintenance", b =>
                 {
                     b.Property<int>("Id")
@@ -246,11 +370,8 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateOnly>("Date_Completed")
-                        .HasColumnType("date");
-
-                    b.Property<int?>("DocumentID")
-                        .HasColumnType("integer");
+                    b.Property<DateTime>("Date_Completed")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("ItemId")
                         .HasColumnType("integer");
@@ -265,11 +386,29 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DocumentID");
-
                     b.HasIndex("TypeId");
 
                     b.ToTable("Maintenances");
+                });
+
+            modelBuilder.Entity("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.MaintenanceCategory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("MaintenanceTypes");
                 });
 
             modelBuilder.Entity("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.MaintenanceFrequency", b =>
@@ -280,86 +419,19 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Migrations
                     b.Property<int>("UnitId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("TypeId")
+                    b.Property<int>("CategoryId")
                         .HasColumnType("integer");
 
                     b.Property<int>("Frquency")
                         .HasColumnType("integer");
 
-                    b.HasKey("ModelId", "UnitId", "TypeId");
+                    b.HasKey("ModelId", "UnitId", "CategoryId");
+
+                    b.HasIndex("CategoryId");
 
                     b.HasIndex("UnitId");
 
                     b.ToTable("MaintenanceFrequencys");
-                });
-
-            modelBuilder.Entity("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.MaintenanceType", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Name")
-                        .IsUnique();
-
-                    b.ToTable("MaintenanceTypes");
-                });
-
-            modelBuilder.Entity("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.ModelDocument", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ModelId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("URL")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ModelId");
-
-                    b.ToTable("ModelDocuments");
-                });
-
-            modelBuilder.Entity("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.Role", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Roles");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = -1,
-                            Name = "Administrator"
-                        });
                 });
 
             modelBuilder.Entity("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.Unit", b =>
@@ -412,10 +484,19 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("text");
+
                     b.Property<string>("Email")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -427,50 +508,190 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)");
 
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("text");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("UserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.HasIndex("NormalizedEmail")
+                        .HasDatabaseName("EmailIndex");
+
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasDatabaseName("UserNameIndex");
+
+                    b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.Assignment", b =>
+            modelBuilder.Entity("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.UserAssignment", b =>
                 {
-                    b.HasOne("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.Role", "Role")
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("UnitId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("UserId", "UnitId");
+
+                    b.ToTable("Assignments");
+                });
+
+            modelBuilder.Entity("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.UserRole", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.Property<string>("NormalizedName")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasDatabaseName("RoleNameIndex");
+
+                    b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = -1,
+                            Description = "Administrator"
+                        });
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
+                {
+                    b.HasOne("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.UserRole", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>", b =>
+                {
+                    b.HasOne("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
+                {
+                    b.HasOne("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<int>", b =>
+                {
+                    b.HasOne("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.UserRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.Unit", "Unit")
+                    b.HasOne("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.User", null)
                         .WithMany()
-                        .HasForeignKey("UnitId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.User", "User")
-                        .WithMany("Assignments")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
 
-                    b.Navigation("Role");
-
-                    b.Navigation("Unit");
-
-                    b.Navigation("User");
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
+                {
+                    b.HasOne("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.EquipmentModel", b =>
                 {
-                    b.HasOne("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.EquipmentType", "Type")
+                    b.HasOne("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.EquipmentModelCategory", "Category")
                         .WithMany()
-                        .HasForeignKey("TypeId");
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Navigation("Type");
+                    b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.EquipmentModelDocument", b =>
+                {
+                    b.HasOne("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.EquipmentModel", "Model")
+                        .WithMany("Documents")
+                        .HasForeignKey("ModelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Model");
                 });
 
             modelBuilder.Entity("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.Item", b =>
                 {
-                    b.HasOne("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.EquipmentModel", "Model")
+                    b.HasOne("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.ItemStatusCategory", "StatusCategory")
+                        .WithMany()
+                        .HasForeignKey("ItemStatusCategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.EquipmentModel", "EquipmentModel")
                         .WithMany()
                         .HasForeignKey("ModelId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -482,7 +703,9 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Model");
+                    b.Navigation("EquipmentModel");
+
+                    b.Navigation("StatusCategory");
 
                     b.Navigation("Unit");
                 });
@@ -498,7 +721,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Migrations
 
             modelBuilder.Entity("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.ItemNote", b =>
                 {
-                    b.HasOne("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.Item", "Item")
+                    b.HasOne("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.Item", null)
                         .WithMany("Notes")
                         .HasForeignKey("ItemId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -510,30 +733,28 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Item");
-
                     b.Navigation("User");
                 });
 
             modelBuilder.Entity("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.Maintenance", b =>
                 {
-                    b.HasOne("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.ItemDocument", "Document")
-                        .WithMany()
-                        .HasForeignKey("DocumentID");
-
-                    b.HasOne("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.MaintenanceType", "Type")
+                    b.HasOne("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.MaintenanceCategory", "Type")
                         .WithMany()
                         .HasForeignKey("TypeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Document");
 
                     b.Navigation("Type");
                 });
 
             modelBuilder.Entity("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.MaintenanceFrequency", b =>
                 {
+                    b.HasOne("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.MaintenanceCategory", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.EquipmentModel", "Model")
                         .WithMany()
                         .HasForeignKey("ModelId")
@@ -546,20 +767,11 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("Category");
+
                     b.Navigation("Model");
 
                     b.Navigation("Unit");
-                });
-
-            modelBuilder.Entity("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.ModelDocument", b =>
-                {
-                    b.HasOne("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.EquipmentModel", "Model")
-                        .WithMany("Documents")
-                        .HasForeignKey("ModelId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Model");
                 });
 
             modelBuilder.Entity("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.Unit", b =>
@@ -569,6 +781,15 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Migrations
                         .HasForeignKey("ParentId");
 
                     b.Navigation("Parent");
+                });
+
+            modelBuilder.Entity("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.UserAssignment", b =>
+                {
+                    b.HasOne("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.User", null)
+                        .WithMany("Assignments")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.EquipmentModel", b =>

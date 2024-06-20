@@ -1,16 +1,15 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities;
 
 
 namespace WebAPI_Vue_Equipment_Manager_App.Server.Data
 {
-    public class MainDbContext : DbContext 
+    public class MainDbContext : IdentityDbContext<User,UserRole,int>
     {
         public DbSet<Item> Items { get; set; }
         public DbSet<EquipmentModel> Models { get; set; }
         public DbSet<Unit> Units { get; set; }
-        public DbSet<User> Users { get; set; }
-        public DbSet<UserRole> Roles { get; set; }
         public DbSet<UserAssignment> Assignments { get; set; }
         public DbSet<MaintenanceFrequency> MaintenanceFrequencys { get;set; }
         public DbSet<Maintenance> Maintenances { get; set; }
@@ -29,6 +28,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            base.OnModelCreating(builder);
             builder.Entity<MaintenanceCategory>().HasIndex(e => e.Name).IsUnique();
             builder.Entity<EquipmentModelCategory>().HasIndex(e => e.Name).IsUnique();
 
