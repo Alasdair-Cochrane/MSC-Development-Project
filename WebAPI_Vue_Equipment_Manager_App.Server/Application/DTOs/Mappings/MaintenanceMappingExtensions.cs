@@ -12,7 +12,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs.Mappings
                 ItemId = entity.ItemId,
                 Provider_Name = entity.Provider_Name,
                 Date_Completed = entity.Date_Completed,
-                CategoryName = entity.Type.Name
+                CategoryName = entity.Category.Name
             };
             return dto;  
         }
@@ -25,7 +25,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs.Mappings
                 ItemId = dto.ItemId,
                 Provider_Name = dto.Provider_Name,
                 Date_Completed = dto.Date_Completed,
-                TypeId = CategoryId,
+                CategoryId = CategoryId,
             };
             return entity;    
         }

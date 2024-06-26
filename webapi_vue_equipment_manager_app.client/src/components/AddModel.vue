@@ -11,7 +11,8 @@
         
         async function add(){
             post.value = await AddNew(model);
-        }
+            }
+          
         return {
             model,
             add,
@@ -35,5 +36,7 @@
     </form>
 
     <p>{{post}}</p>
+   
+
     <button type="submit" @click="add">Submit</button>
 </template>

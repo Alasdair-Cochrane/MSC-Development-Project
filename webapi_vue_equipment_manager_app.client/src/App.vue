@@ -1,6 +1,9 @@
 <script setup>
 import AddModel from './components/AddModel.vue'
-import AddItem  from './components/AddItem.vue'
+    import AddItem from './components/AddItem.vue'
+    import InputForm from './components/InputForm.vue'
+
+
 </script>
 
 <template>
@@ -11,8 +14,9 @@ import AddItem  from './components/AddItem.vue'
   </header>
 
   <main>
-      <AddModel/>
+
       <AddItem/>
+
   </main>
 </template>
 

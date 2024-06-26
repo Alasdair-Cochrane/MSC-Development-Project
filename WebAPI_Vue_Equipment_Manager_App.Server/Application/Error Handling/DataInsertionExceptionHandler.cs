@@ -19,6 +19,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Error_Handling
         {
             if (exception is not DataInsertionException)
             {
+                await httpContext.Response.WriteAsJsonAsync("something happened");
                 _logger.LogError(exception.Message);
                 return false;
             }

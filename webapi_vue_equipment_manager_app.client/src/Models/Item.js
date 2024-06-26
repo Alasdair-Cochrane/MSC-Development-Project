@@ -7,8 +7,7 @@ export class Item {
         this.UnitID = UnitID;
         this.Barcode = Barcode;
         this.Date_Of_Reciept = DOR;
-        this.Date_Of_Acceptance_Test = DOAT;
-        this.Date_Of_Activation = DOA;
+        this.Date_Of_Commissioning = DOAT;
         this.New_On_Reciept = NOR;
         this.Current_Status_ID = statusID;
         this.ImageUrl = image;

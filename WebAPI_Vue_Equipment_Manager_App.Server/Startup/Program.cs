@@ -19,7 +19,10 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddAuthorization();
 builder.Services.AddProblemDetails();
+
 builder.Services.AddExceptionHandler<DataInsertionExceptionHandler>();
+builder.Logging.AddConsole();
+builder.Services.AddHttpLogging(o => { });
 
 
 //Configure Authentication/Authorisation
@@ -67,6 +70,7 @@ var app = builder.Build();
 app.UseDefaultFiles();
 app.UseStaticFiles();
 app.UseStatusCodePages();
+app.UseHttpLogging();
 
 app.MapIdentityApi<User>();
 

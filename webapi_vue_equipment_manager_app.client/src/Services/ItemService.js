@@ -1,7 +1,7 @@
 const route = "api/Items"
 
-export default async function addItem(item) {
-    console.log(JSON.stringify(item));
+export async function addItem(item) {
+   
     const response = await fetch(route, {
         method: 'POST',
         body: JSON.stringify(item),
@@ -9,7 +9,20 @@ export default async function addItem(item) {
         headers: {
             "Content-Type" : "application/json"
         }
-    })
-    
-    return response.json();
+    }).catch(err => console.warn(err))
+    let added = response.json();
+    return added
+}
+
+export  async function getAllItems() {
+    const response = await fetch(route,
+        {
+           method : "GET",
+            headers: {
+                "Content-Type" : "application/json"
+            }
+        })
+    let list = response.json()
+    console.log(list);
+    return list;
 }

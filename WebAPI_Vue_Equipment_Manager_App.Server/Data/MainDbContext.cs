@@ -35,8 +35,8 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data
 
 
 
-            builder.Entity<Unit>().HasData(
-                new Unit { Id = 1, Name = "Admin" });
+            //builder.Entity<Unit>().HasData(
+                // new Unit { Id = 1, Name = "Admin" });
 
             builder.Entity<UserRole>().HasData(
                 new UserRole { Id = 1,Name = "Administrator" });

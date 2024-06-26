@@ -13,7 +13,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
         {
             var found = await _context.Maintenances.
                 AsNoTracking().
-                Include(x => x.Type).
+                Include(x => x.Category).
                 FirstOrDefaultAsync(x => x.Id == id);   
             return found;
         }
@@ -22,7 +22,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
         {
             var list = await _context.Maintenances.
                 AsNoTracking().
-                Include(x => x.Type).
+                Include(x => x.Category).
                 ToListAsync();
             return list;
         }
@@ -47,8 +47,8 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
         {
             var list = await _context.Maintenances.
                 AsNoTracking().
-                Include(x => x.Type).
-                Where(x => x.TypeId == id).
+                Include(x => x.Category).
+                Where(x => x.CategoryId == id).
                 ToListAsync();
             return list;
         }

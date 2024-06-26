@@ -20,8 +20,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs.Mappings
                 Barcode = item.Barcode ?? "",
 
                 Date_Of_Reciept = item.Date_Of_Reciept,
-                Date_Of_Acceptance_Test = item.Date_Of_Acceptance_Test,
-                Date_Of_Activation = item.Date_Of_Activation,
+                Date_Of_Commissioning = item.Date_Of_Commissioning,
                 New_On_Reciept = item.New_On_Reciept,
                 Current_Status_ID = item.ItemStatusCategoryId,
                 ImageUrl = item.Image ?? "",
@@ -45,9 +44,9 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs.Mappings
                 Barcode = item.Barcode ?? "",
 
                 Date_Of_Reciept = item.Date_Of_Reciept,
-                Date_Of_Acceptance_Test = item.Date_Of_Acceptance_Test,
-                Date_Of_Activation = item.Date_Of_Activation,
-                New_On_Reciept = item.New_On_Reciept,
+                Date_Of_Commissioning = item.Date_Of_Commissioning,
+
+        New_On_Reciept = item.New_On_Reciept,
                 Current_Status_ID = item.ItemStatusCategoryId,
                 ImageUrl = item.Image ?? "",
             };
@@ -76,8 +75,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs.Mappings
                 LocalName = item.LocalName,
                 Barcode = item.Barcode,
                 Date_Of_Reciept = item.Date_Of_Reciept,
-                Date_Of_Acceptance_Test = item.Date_Of_Acceptance_Test,
-                Date_Of_Activation = item.Date_Of_Activation,
+                Date_Of_Commissioning = item.Date_Of_Commissioning,
                 New_On_Reciept = item.New_On_Reciept,
                 ItemStatusCategoryId = categoryID,
                 Image = item.ImageUrl,

@@ -13,16 +13,19 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
     public class ItemsController : ControllerBase
     {
         private readonly IItemService _itemSerivce;
+        private readonly ILogger<ItemsController> _logger;
 
-        public ItemsController(IItemService itemSerivce)
+        public ItemsController(IItemService itemSerivce, ILogger<ItemsController> logger)
         {
             _itemSerivce = itemSerivce;
+            _logger = logger;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
             var items = await _itemSerivce.GetAllAsync();
+            _logger.LogInformation("a get request");
             return Ok(items);
         }
 
@@ -40,8 +43,9 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
         [HttpPost]
         public async Task<IActionResult> Insert(ItemDTO item)
         {
-            if (!ModelState.IsValid) return BadRequest(item);
             Debug.WriteLine(JsonSerializer.Serialize(item));
+
+            if (!ModelState.IsValid) return BadRequest(item);
             var added = await _itemSerivce.AddAsync(item);
             if (added != null)
             {
