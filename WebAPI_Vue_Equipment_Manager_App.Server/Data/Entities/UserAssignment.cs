@@ -12,5 +12,9 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities
         public int UnitId { get; set; }
         public int RoleId { get; set; }
 
+        public User User { get; set; }
+        public Unit Unit { get; set; }
+        public UserRole Role { get; set; }
+
     }
 }

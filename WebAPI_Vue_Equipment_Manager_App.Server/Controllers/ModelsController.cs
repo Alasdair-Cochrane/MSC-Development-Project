@@ -6,7 +6,7 @@ using WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities;
 namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class ModelsController : ControllerBase
     {
         private readonly IEquipmentModelService _modelService;
@@ -34,11 +34,14 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
 
 
         [HttpPost]
-        public IActionResult Add(EquipmentModelDTO model)
+        public async Task<IActionResult> Add(EquipmentModelDTO model)
         {
             if(!ModelState.IsValid) return BadRequest(ModelState);
 
-            var newModel = _modelService.AddAsync(model);
+            var newModel = await _modelService.AddAsync(model);
+            if(newModel == null) {
+                return BadRequest();
+            }
             return CreatedAtAction(nameof(Get), new { id = newModel.Id }, newModel);
         }
 

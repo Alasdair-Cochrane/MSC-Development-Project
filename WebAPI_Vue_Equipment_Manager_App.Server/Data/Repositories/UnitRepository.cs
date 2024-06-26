@@ -10,6 +10,16 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
         {
         }
 
-       
+       public async Task<int> FindByName(string name)
+        {
+            var unit = await _context.Units.
+                Where(x => x.Name == name).
+                SingleOrDefaultAsync();
+            if(unit == null)
+            {
+                return -1;
+            }
+            return unit.Id;
+        }
     }
 }

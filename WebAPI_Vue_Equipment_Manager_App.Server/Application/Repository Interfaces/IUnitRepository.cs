@@ -5,5 +5,6 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Repository_Interfa
 {
     public interface IUnitRepository : IRepository<Unit>
     {
+        public Task<int> FindByName(string name);
     }
 }

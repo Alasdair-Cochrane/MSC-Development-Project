@@ -8,7 +8,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services
      */
     public class InMemoryEntityCache<T> : IEntityCache<T>
     {
-        public ICollection<T> CachedItems { get; set; }
+        public required ICollection<T> CachedItems { get; set; }
         public void Add(T entity) {
             CachedItems.Add(entity);
         }

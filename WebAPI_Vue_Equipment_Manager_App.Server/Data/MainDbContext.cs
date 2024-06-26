@@ -31,12 +31,15 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data
             base.OnModelCreating(builder);
             builder.Entity<MaintenanceCategory>().HasIndex(e => e.Name).IsUnique();
             builder.Entity<EquipmentModelCategory>().HasIndex(e => e.Name).IsUnique();
+            builder.Entity<ItemStatusCategory>().HasIndex(e => e.Name).IsUnique();
+
+
 
             builder.Entity<Unit>().HasData(
-                new Unit { Id = -1, Name = "Admin" });
+                new Unit { Id = 1, Name = "Admin" });
 
             builder.Entity<UserRole>().HasData(
-                new UserRole { Id = -1,Name = "Administrator" });
+                new UserRole { Id = 1,Name = "Administrator" });
 
             builder.Entity<EquipmentModelCategory>().HasData(
                 new EquipmentModelCategory { Id = -1,Name = "Centrifuge" });

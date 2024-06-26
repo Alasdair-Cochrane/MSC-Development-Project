@@ -1,6 +1,8 @@
 ﻿using System.Diagnostics;
+using System.Text.Json;
 using WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs;
 using WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs.Mappings;
+using WebAPI_Vue_Equipment_Manager_App.Server.Application.Error_Handling;
 using WebAPI_Vue_Equipment_Manager_App.Server.Application.Interfaces;
 using WebAPI_Vue_Equipment_Manager_App.Server.Application.Repository_Interfaces;
 using WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities;
@@ -13,23 +15,49 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Se
         private readonly IItemRepository _ItemRepository;
         private readonly ICategoryRepository<ItemStatusCategory> _statusRepository;
         private readonly IMaintenanceService _maintenanceService;
-
+        private readonly IEquipmentModelRepository _modelRepository;
+        private readonly ICategoryRepository<EquipmentModelCategory> _modelCategories;
+        private readonly IUnitRepository _unitRepository;
         public ItemService(IItemRepository itemRepository, ICategoryRepository<ItemStatusCategory> categories,
-            IMaintenanceService maintenanceService)
+            IMaintenanceService maintenanceService, IEquipmentModelRepository modelRepository, 
+            ICategoryRepository<EquipmentModelCategory> modelCategories, IUnitRepository unitRepository)
         {
             _ItemRepository = itemRepository;
             _statusRepository = categories;
             _maintenanceService = maintenanceService;
+            _modelRepository = modelRepository;
+            _modelCategories = modelCategories;
+            _unitRepository = unitRepository;
         }
 
         public async Task<ItemDTO?> AddAsync(ItemDTO item)
         {
-            int categoryID = _statusRepository.FindOrCreateByName(item.CurrentStatus).Id;
-            Item newItem = item.ToEntity(categoryID);
+            int statusCategoryID = _statusRepository.FindOrCreateByName(item.CurrentStatus).Id;
+            int modelCategoryID = _modelCategories.FindOrCreateByName(item.Model.Category).Id;
+
+            EquipmentModel? model = await _modelRepository.FindOrCreate(item.Model.ToEntity(modelCategoryID));
+            if(model == null)
+            {
+                string entity = JsonSerializer.Serialize(item);
+                //throw an exception
+                throw new DataInsertionException("failed to find or create model entry when adding item", entity);
+            }
+            int unitId = await _unitRepository.FindByName(item.UnitName);
+            if(unitId == -1)
+            {
+                string entity = JsonSerializer.Serialize(item);
+
+                throw new DataInsertionException("Specified admin unit of item does not exist", entity);
+            }
+            Item newItem = item.ToEntity(statusCategoryID);
+            newItem.ModelId = model.Id;
+            newItem.UnitId = unitId;
             var added = await _ItemRepository.AddAsync(newItem);
             if(added == null)
             {
-                return null;
+                string entity = JsonSerializer.Serialize(item);
+
+                throw new DataInsertionException("Failed to create item", entity);
             }
             return added.ToDTO();
         }

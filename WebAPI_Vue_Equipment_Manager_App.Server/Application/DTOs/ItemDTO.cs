@@ -17,7 +17,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs
         public DateTime? Date_Of_Acceptance_Test { get; set; }
         public DateTime? Date_Of_Activation { get; set; }
         public bool? New_On_Reciept { get; set; }
-        public required int Current_Status_ID { get; set; }
+        public int Current_Status_ID { get; set; }
         public string? ImageUrl { get; set; }
     }
 

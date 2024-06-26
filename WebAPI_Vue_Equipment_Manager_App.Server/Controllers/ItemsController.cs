@@ -1,18 +1,20 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
+using System.Net;
+using System.Text.Json;
 using WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs;
 using WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Services;
 
 namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
 {
     [ApiController]
-    [Authorize]
-    [Route("[controller]")]
-    public class ItemController : ControllerBase
+    [Route("api/[controller]")]
+    public class ItemsController : ControllerBase
     {
         private readonly IItemService _itemSerivce;
 
-        public ItemController(IItemService itemSerivce)
+        public ItemsController(IItemService itemSerivce)
         {
             _itemSerivce = itemSerivce;
         }
@@ -21,11 +23,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
         public async Task<IActionResult> GetAll()
         {
             var items = await _itemSerivce.GetAllAsync();
-            if (items != null)
-            {
-                return Ok(items);
-            }
-            return NotFound();
+            return Ok(items);
         }
 
         [HttpGet("id")]
@@ -42,13 +40,15 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
         [HttpPost]
         public async Task<IActionResult> Insert(ItemDTO item)
         {
-            if(!ModelState.IsValid) return BadRequest(item);
+            if (!ModelState.IsValid) return BadRequest(item);
+            Debug.WriteLine(JsonSerializer.Serialize(item));
             var added = await _itemSerivce.AddAsync(item);
             if (added != null)
             {
                 return CreatedAtAction(nameof(Get), new { id = item.Id }, added);
             }
             return BadRequest();
+
         }
 
         [HttpPut]

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using WebAPI_Vue_Equipment_Manager_App.Server.Data;
@@ -11,9 +12,11 @@ using WebAPI_Vue_Equipment_Manager_App.Server.Data;
 namespace WebAPI_Vue_Equipment_Manager_App.Server.Migrations
 {
     [DbContext(typeof(MainDbContext))]
-    partial class MainDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240625125134_LatestCheck")]
+    partial class LatestCheck
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -356,9 +359,6 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Name")
-                        .IsUnique();
-
                     b.ToTable("ItemStatusCategory");
                 });
 
@@ -471,7 +471,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Migrations
                     b.HasData(
                         new
                         {
-                            Id = 1,
+                            Id = -1,
                             Name = "Admin"
                         });
                 });
@@ -594,7 +594,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Migrations
                     b.HasData(
                         new
                         {
-                            Id = 1,
+                            Id = -1,
                             Name = "Administrator"
                         });
                 });
