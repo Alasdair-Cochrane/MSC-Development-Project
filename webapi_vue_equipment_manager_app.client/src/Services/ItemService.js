@@ -23,6 +23,5 @@ export  async function getAllItems() {
             }
         })
     let list = response.json()
-    console.log(list);
     return list;
 }

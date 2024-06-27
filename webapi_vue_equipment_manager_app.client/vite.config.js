@@ -6,6 +6,8 @@ import fs from 'fs';
 import path from 'path';
 import child_process from 'child_process';
 import { env } from 'process';
+import Components from 'unplugin-vue-components/vite';
+import { PrimeVueResolver } from '@primevue/auto-import-resolver';
 
 const baseFolder =
     env.APPDATA !== undefined && env.APPDATA !== ''
@@ -35,7 +37,12 @@ const target = env.ASPNETCORE_HTTPS_PORT ? `https://localhost:${env.ASPNETCORE_H
 
 // https://vitejs.dev/config/
 export default defineConfig({
-    plugins: [plugin()],
+    plugins: [plugin(),
+        Components({
+            resolvers: [
+                PrimeVueResolver()
+            ]
+        })],
     resolve: {
         alias: {
             '@': fileURLToPath(new URL('./src', import.meta.url))

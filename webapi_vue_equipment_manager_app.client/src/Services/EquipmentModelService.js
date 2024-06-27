@@ -11,6 +11,19 @@ export default async function AddNew(model) {
         }
     })
     return response.json();
-    }
+}
+
+export async function GetAllModels() {
+    const response = await fetch(apiRoute,
+        {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+    let list = response.json()
+    console.log(list)
+    return list;
+}
    
 

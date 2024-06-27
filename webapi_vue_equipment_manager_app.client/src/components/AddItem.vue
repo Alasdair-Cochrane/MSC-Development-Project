@@ -1,70 +1,173 @@
 <script>
-    import { reactive, ref } from "vue"
+    import { reactive, ref, onMounted } from "vue"
     import { Item } from '@/Models/Item';
     import {EquipmentModel } from '@/Models/EquipmentModel'
     import { addItem, getAllItems } from '@/Services/ItemService'
+    import {GetAllModels} from '@/Services/EquipmentModelService'
+
 
 import { store } from "@/Store/UserStore";
 
     export default {
         setup() {
             const item = reactive(new Item());
-            const model = reactive(new EquipmentModel());
-            const added = ref("response");
-            const items = ref([""])
+            const model = ref(new EquipmentModel());
+            const added = ref();
 
-            async function Add() {
-                item.Model = model;
-                added.value = await addItem(item);
+            const models = ref()
+            const filteredModels = ref()
+
+
+
+            onMounted(() => {
+                GetAllModels().then((data) => (models.value = data));
+                added.value = models.value;
+            })
+
+                async function Add() {
+                    item.Model = model.value;
+                    added.value = await addItem(item);
+                }
+
+                //https://primevue.org/autocomplete/
+                async function searchModelName(event) {
+                    setTimeout(() => {
+                        if (!event.query.trim().length) {
+                            filteredModels.value = [...models.value];
+                        } else {
+                            filteredModels.value = models.value.filter((modelX) => {
+                                return modelX.model_Name.toLowerCase().startsWith(event.query.toLowerCase());
+                            });
+                        }
+                    }, 250);
             }
-            async function Get() {
-                items.value = await getAllItems();
+            async function searchModelNumber(event) {
+                setTimeout(() => {
+                    if (!event.query.trim().length) {
+                        filteredModels.value = [...models.value];
+                    } else {
+                        filteredModels.value = models.value.filter((modelY) => {
+                            return modelY.model_Number.toLowerCase().startsWith(event.query.toLowerCase());
+                        });
+                    }
+                }, 250);
+
             }
-            return {
-                items,
-                Add,
-                added,
-                model,
-                store,
-                Get,
-                item
+
+                return {
+
+                    Add,
+                    added,
+                    model,
+                    store,
+                    searchModelName,
+                    searchModelNumber,
+                    item,
+                    filteredModels,
+                }
             }
-        }
-    }
+            }
+    
+   
+   
 </script>
 <template>
-  
-    <v-app>
-        <v-form>
-            <v-container>
-                <v-row>
-                    <v-col>
-                        <v-text-field class="input-field" v-model="item.SerialNumber" label="Serial Number" />
-                        <v-text-field v-model="item.LocalName" label="Local Identifier" />
-                    </v-col>
-                </v-row>
-                <v-row>
-                    <v-col>
-                        <v-text-field v-model="model.model_Number" label="Model Number" />
-                        <v-text-field v-model="model.model_Name" label="Model Name" />
-                        <v-text-field v-model="model.Manufacturer" label="Manufacturer" />
-                        <v-text-field v-model="model.category" label="Category" />
-                    </v-col>
-                </v-row>
-                <v-row>
-                    <v-col>
-                        <v-text-field  type="date" v-model="item.Date_Of_Reciept" label="Date of Reciept" />
-                        <v-text-field  type="date" v-model="item.Date_Of_Commissioning" label="Date of Commissioning" />
-                        <v-checkbox  v-model="item.New_On_Reciept" label="New?" />
-                        <v-text-field v-model="item.CurrentStatus" label="Current Status" />
-                        <v-autocomplete  :items="store.Units" v-model="item.UnitName" label="Unit" />
-                    </v-col>
-                </v-row>
-            </v-container>
-        </v-form>
-        <v-btn variant="outlined" prepend-icon="mdi-content-save" type="submit" @click="Add">Save</v-btn>
+    <div>
+        <form>
+            <FloatLabel>
+                <InputText id="serial" v-model="item.SerialNumber" />
+                <label for="serial">Serial Number</label>
+            </FloatLabel>
+
+            <FloatLabel>
+                <InputText id="local" v-model="item.LocalName" />
+                <label for="local">Local Identifier</label>
+            </FloatLabel>
+
+            <FloatLabel>
+                <AutoComplete v-model="model" dropdown inputId="autoMNum" optionLabel="model_Number" :suggestions="filteredModels" @complete="searchModelNumber">
+                    <template #option="slotProps">
+                        <div class="flex items-center">
+                            <div>{{slotProps.option.model_Number}}</div>
+                            <div>{{slotProps.option.model_Name}}</div>
+                            <div>{{slotProps.option.manufacturer}}</div>
+                            </div>
+                    </template>
+                </AutoComplete>
+                <label for="autoMNum">Model Num Auto</label>
+            </FloatLabel>
+
+            <FloatLabel>
+                <InputText id="mName" v-model="model.model_Name" />
+                <label for="mName">Model Name</label>
+            </FloatLabel>
+
+            <FloatLabel>
+                <InputText id="manufacturer" v-model="model.manufacturer" />
+                <label for="manufacturer">Manufacturer</label>
+            </FloatLabel>
+
+            <FloatLabel>
+                <InputText id="cat" v-model="model.category" />
+                <label for="cat">Category</label>
+            </FloatLabel>
+
+            <FloatLabel>
+                <DatePicker v-model="item.Date_Of_Reciept" inputId="reciept" />
+                <label for="reciept">Date Of Reciept</label>
+            </FloatLabel>
+
+            <FloatLabel>
+                <DatePicker v-model="item.Date_Of_Commissioning" inputId="commission" />
+                <label for="commission">Date Of Commissioning</label>
+            </FloatLabel>
+
+            <FloatLabel>
+        <AutoComplete v-model="item.CurrentStatus" inputId="status" :suggestions="items" @complete="search" />
+        <label for="status">Current Satus</label>
+    </FloatLabel>
+
+    <FloatLabel>
+        <AutoComplete v-model="item.UnitName" inputId="unit" :suggestions="store.Units" @complete="search" />
+        <label for="unit">Unit</label>
+    </FloatLabel>
+
+            <div class="checkbox">
+                <Checkbox v-model="item.New_On_Reciept" name="new" inputID="new" :binary="true" />
+                <label for="new">New On Reciept?</label>
+            </div>
+
+            <FloatLabel>
+                <InputText id="status" v-model="item.CurrentStatus" />
+                <label for="status">Current Status</label>
+            </FloatLabel>
+            <FloatLabel class="inputfield">
+                <InputText id="unit" v-model="item.UnitName" />
+                <label for="unit">Unit</label>
+            </FloatLabel>
+
+        </form>
+        <div class="choices">
+            <Button label="Save" icon="pi pi-save" @click="Add"></Button>
+            <Button label="Clear" icon="pi pi-eraser"></Button>
+            <Button label="Add Same" icon="pi pi-plus-circle"></Button>
+        </div>
 
         <p>{{ added }}</p>
-    </v-app>
-
+    </div>
 </template>
+<style scoped>
+    .p-floatlabel{
+        margin-top : 2rem;
+    }
+    .checkbox{
+        margin-top:2rem;
+        display: flex;
+        justify-content : space-evenly;
+    }
+    .choices {
+        margin-top: 2rem;
+        display: flex;
+        justify-content: space-evenly;
+    }
+</style>
