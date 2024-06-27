@@ -7,7 +7,6 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs
         public int Id { get; set; }
         public required string Model_Number { get; set; }
         public required string Model_Name { get; set; }
-        public string Description { get; set; } = string.Empty;
         public required string Manufacturer { get; set; }
         public int? Weight { get; set; }
         public int? Height { get; set; }

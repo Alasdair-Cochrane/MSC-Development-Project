@@ -11,8 +11,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities
         public required string Model_Number { get; set; }
         [MaxLength(50)]
         public required string Model_Name { get; set;}
-        [MaxLength(255)]
-        public string? Description { get; set; }
+
         [MaxLength(50)]
         public required string Manufacturer { get; set;}
         public int? Weight { get; set;}

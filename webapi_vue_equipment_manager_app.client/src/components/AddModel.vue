@@ -26,7 +26,6 @@
     <form>
         <input v-model="model.model_Name" placeholder="Model Name"/>
         <input v-model="model.model_Number" placeholder="Model Number"/>
-        <input v-model="model.description" placeholder="Description"/>
         <input v-model="model.manufacturer" placeholder="Manufacturer"/>
         <input v-model="model.category" placeholder="Category"/>
         <input v-model="model.weight" placeholder="Weight"/>

@@ -33,22 +33,38 @@ import { store } from "@/Store/UserStore";
     }
 </script>
 <template>
-    <v-form>
-        <v-text-field v-model="item.SerialNumber" label="serial number" />
-        <v-text-field v-model="model.model_Number" label="Model Number" />
-        <v-text-field v-model="model.model_Name" label="Model Name" />
-        <v-text-field v-model="model.Manufacturer" label="Manufacturer" />
-        <v-text-field v-model="model.category" label="Category" />
-        <v-text-field v-model="model.Description" label="Description" />
+  
+    <v-app>
+        <v-form>
+            <v-container>
+                <v-row>
+                    <v-col>
+                        <v-text-field class="input-field" v-model="item.SerialNumber" label="Serial Number" />
+                        <v-text-field v-model="item.LocalName" label="Local Identifier" />
+                    </v-col>
+                </v-row>
+                <v-row>
+                    <v-col>
+                        <v-text-field v-model="model.model_Number" label="Model Number" />
+                        <v-text-field v-model="model.model_Name" label="Model Name" />
+                        <v-text-field v-model="model.Manufacturer" label="Manufacturer" />
+                        <v-text-field v-model="model.category" label="Category" />
+                    </v-col>
+                </v-row>
+                <v-row>
+                    <v-col>
+                        <v-text-field  type="date" v-model="item.Date_Of_Reciept" label="Date of Reciept" />
+                        <v-text-field  type="date" v-model="item.Date_Of_Commissioning" label="Date of Commissioning" />
+                        <v-checkbox  v-model="item.New_On_Reciept" label="New?" />
+                        <v-text-field v-model="item.CurrentStatus" label="Current Status" />
+                        <v-autocomplete  :items="store.Units" v-model="item.UnitName" label="Unit" />
+                    </v-col>
+                </v-row>
+            </v-container>
+        </v-form>
+        <v-btn variant="outlined" prepend-icon="mdi-content-save" type="submit" @click="Add">Save</v-btn>
 
-        <v-checkbox v-model="item.New_On_Reciept" label="New on Reciept?" />
-        <v-text-field v-model="item.CurrentStatus" label="Current Status" />
-        <v-autocomplete :items="store.Units" v-model="item.UnitName" label="Unit" />
-    </v-form>
-    <button type="submit" @click="Add">Submit</button>
-
-    <p>{{ added }}</p>
-    <p>{{items}}</p>
-    <button @click="Get">Get Items</button>
+        <p>{{ added }}</p>
+    </v-app>
 
 </template>

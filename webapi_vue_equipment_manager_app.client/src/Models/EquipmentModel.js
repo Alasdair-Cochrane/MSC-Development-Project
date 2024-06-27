@@ -4,7 +4,6 @@ export class EquipmentModel {
         this.id = id;
         this.model_Number = ModelNumber;
         this.model_Name = ModelName;
-        this.description = Description;
         this.manufacturer = Manufacturer;
         this.weight = Weight;
         this.height = Height;
