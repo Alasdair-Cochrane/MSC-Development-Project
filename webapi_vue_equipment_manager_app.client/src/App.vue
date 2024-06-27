@@ -1,5 +1,6 @@
 <script setup>
     import AddItem from './components/AddItem.vue'
+    import ViewItem from './components/ViewItem.vue'
 
 
 </script>
@@ -13,7 +14,7 @@
 
   <main>
 
-      <AddItem/>
+      <ViewItem/>
 
   </main>
 </template>

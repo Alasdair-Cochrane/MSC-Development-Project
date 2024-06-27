@@ -77,5 +77,25 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
             return items;
         }
 
+        public async Task<bool> SetImageUrlAsync(int id, string url)
+        {
+            int updates = await _context.Items.Where(x => x.Id == id).
+                ExecuteUpdateAsync(i =>
+                i.SetProperty(f =>
+                f.Image, url));
+            if(updates > 0) { return true; }
+            return false;
+        }
+
+        public async Task<string?> GetImageUrl(int id)
+        {
+            string? url = await _context.Items.
+                Where(x => x.Id == id).
+                Select(x => x.Image).
+                FirstOrDefaultAsync();
+
+            return url;
+        }
+
     }
 }

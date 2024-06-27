@@ -24,10 +24,12 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Startup
             services.AddScoped<IItemService, ItemService>();
             services.AddScoped<IUnitService, UnitService>();
             services.AddScoped<IMaintenanceService, MaintenanceService>();
+            services.AddScoped<IImageService, ServerImageService>();
 
             services.AddSingleton<IEntityCache<EquipmentModelCategory>, InMemoryEntityCache<EquipmentModelCategory>>();
             services.AddSingleton<IEntityCache<MaintenanceCategory>, InMemoryEntityCache<MaintenanceCategory>>();
             services.AddSingleton<IEntityCache<ItemStatusCategory>, InMemoryEntityCache<ItemStatusCategory>>();
+
         }
     }
 }

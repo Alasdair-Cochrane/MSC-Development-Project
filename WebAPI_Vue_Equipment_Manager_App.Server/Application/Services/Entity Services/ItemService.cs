@@ -100,6 +100,18 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Se
 
         }
 
+        public async Task SetImageUrl(int itemId, string url)
+        {
+           await  _ItemRepository.SetImageUrlAsync(itemId, url);
+        }
+
+        public async Task<string?> GetImageUrl(int id)
+        {
+            var url = await _ItemRepository.GetImageUrl(id);
+            if (url == null) return null;
+            return url;
+        }
+
     }
 
     public interface IItemService
@@ -110,7 +122,8 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Se
         public Task DeleteByIdAsync(int id);
         public Task<ItemDTO?> AddAsync(ItemDTO item);
         public Task<IEnumerable<ItemDTO>> GetAllByUnitAsync(int UnitID);
-
+        public Task SetImageUrl(int itemId, string url);
+        public Task<string?> GetImageUrl(int id);
 
     }
 }

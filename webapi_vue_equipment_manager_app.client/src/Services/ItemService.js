@@ -25,3 +25,16 @@ export  async function getAllItems() {
     let list = response.json()
     return list;
 }
+
+export async function GetItem(id) {
+    const response = await fetch(route + "/" + id,
+        {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+    let list = response.json()
+
+    return list;
+}

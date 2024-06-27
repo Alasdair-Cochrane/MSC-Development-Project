@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
-using System.Net;
+
 using System.Text.Json;
 using WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs;
+using WebAPI_Vue_Equipment_Manager_App.Server.Application.Error_Handling;
+using WebAPI_Vue_Equipment_Manager_App.Server.Application.Services;
 using WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Services;
 
 namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
@@ -14,11 +16,13 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
     {
         private readonly IItemService _itemSerivce;
         private readonly ILogger<ItemsController> _logger;
+        private readonly IImageService _imageService;
 
-        public ItemsController(IItemService itemSerivce, ILogger<ItemsController> logger)
+        public ItemsController(IItemService itemSerivce, ILogger<ItemsController> logger, IImageService imageService)
         {
             _itemSerivce = itemSerivce;
             _logger = logger;
+            _imageService = imageService;
         }
 
         [HttpGet]
@@ -29,7 +33,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
             return Ok(items);
         }
 
-        [HttpGet("id")]
+        [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
             var item = await _itemSerivce.GetByIdAsync(id);
@@ -66,11 +70,57 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
             return BadRequest();
         }
 
-        [HttpDelete("id")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
             await _itemSerivce.DeleteByIdAsync(id);
             return Ok();
         }
+
+        [HttpPost("{id}/image")]
+        public async Task<IActionResult> UploadImage(int id, IFormFile file)
+        {
+            string extension = Path.GetExtension(file.FileName);
+         
+            string fileName = $"--{id}--" + Guid.NewGuid().ToString() + extension;
+
+            try
+            {
+                await _imageService.Upload(file, fileName);
+                var uri = Url.Link("GetImage", new {url = fileName});
+               await _itemSerivce.SetImageUrl(id, uri);
+
+            }
+            catch (Exception ex)
+            {
+                throw new DataInsertionException("Failed to add Image");
+            }
+            return Ok();
+        }
+
+        [HttpGet("{id}/image")]
+        public async Task<IActionResult> GetImageById(int id)
+        {
+            string? url = await _itemSerivce.GetImageUrl(id);
+            if(url == null) return NotFound();
+            var image = await _imageService.Retrieve(url);
+
+            if(image == null) return NotFound();
+
+            var returnFile = File(image, "image/jpeg");
+            return Ok(returnFile);
+        }
+
+        [HttpGet]
+        [Route("[controller]/image/{url}", Name="GetImage")]
+        public async Task<IActionResult> GetImageByUrl(string url)
+        {
+            var image = await _imageService.Retrieve(url);
+
+            if(image == null) return NotFound();
+            return File(image, "image/jpeg");
+            
+        }
+
     }
 }

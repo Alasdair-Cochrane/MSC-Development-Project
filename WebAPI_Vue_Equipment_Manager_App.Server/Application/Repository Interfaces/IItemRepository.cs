@@ -6,6 +6,8 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Repository_Interfa
     public interface IItemRepository : IRepository<Item>
     {
         public Task<IEnumerable<Item>> GetAllByUnitIdAsync(int unitId);
+        public Task<bool> SetImageUrlAsync(int id, string url);
+        public Task<string?> GetImageUrl(int id);
 
     }
 }
