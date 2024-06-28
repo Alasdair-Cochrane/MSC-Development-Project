@@ -25,6 +25,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Startup
             services.AddScoped<IUnitService, UnitService>();
             services.AddScoped<IMaintenanceService, MaintenanceService>();
             services.AddScoped<IImageService, ServerImageService>();
+            services.AddScoped<IDocumentService, DocumentService>();
 
             services.AddSingleton<IEntityCache<EquipmentModelCategory>, InMemoryEntityCache<EquipmentModelCategory>>();
             services.AddSingleton<IEntityCache<MaintenanceCategory>, InMemoryEntityCache<MaintenanceCategory>>();

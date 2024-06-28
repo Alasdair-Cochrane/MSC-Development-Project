@@ -14,5 +14,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="src\components\icons\" />
+    <Folder Include="src\router\" />
   </ItemGroup>
 </Project>

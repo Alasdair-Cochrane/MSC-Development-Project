@@ -7,6 +7,7 @@ using WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs;
 using WebAPI_Vue_Equipment_Manager_App.Server.Application.Error_Handling;
 using WebAPI_Vue_Equipment_Manager_App.Server.Application.Services;
 using WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Services;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
 {
@@ -29,7 +30,6 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
         public async Task<IActionResult> GetAll()
         {
             var items = await _itemSerivce.GetAllAsync();
-            _logger.LogInformation("a get request");
             return Ok(items);
         }
 
@@ -82,7 +82,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
         {
             string extension = Path.GetExtension(file.FileName);
          
-            string fileName = $"--{id}--" + Guid.NewGuid().ToString() + extension;
+            string fileName = $"-{id}-" + Guid.NewGuid().ToString() + extension;
 
             try
             {
@@ -116,10 +116,10 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
         public async Task<IActionResult> GetImageByUrl(string url)
         {
             var image = await _imageService.Retrieve(url);
-
-            if(image == null) return NotFound();
-            return File(image, "image/jpeg");
             
+            if(image == null) return NotFound();
+            
+             return File(image, Image.Jpeg);
         }
 
     }

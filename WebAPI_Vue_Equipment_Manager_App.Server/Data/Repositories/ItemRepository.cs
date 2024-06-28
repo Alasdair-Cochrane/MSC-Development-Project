@@ -92,9 +92,15 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
             string? url = await _context.Items.
                 Where(x => x.Id == id).
                 Select(x => x.Image).
-                FirstOrDefaultAsync();
-
+                SingleAsync();
             return url;
+        }
+
+        public async Task<ItemDocument> AddDocument(ItemDocument document)
+        {
+            var doc = await _context.ItemDocuments.AddAsync(document);
+            await SaveAsync();
+            return doc.Entity;
         }
 
     }

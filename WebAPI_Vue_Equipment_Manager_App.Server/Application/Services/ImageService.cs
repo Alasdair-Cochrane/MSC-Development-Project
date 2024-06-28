@@ -47,8 +47,6 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services
         public Task<byte[]?> Retrieve(string fileName);
         public Task Upload(IFormFile file, string fileName);
 
-
-
     }
 
 }

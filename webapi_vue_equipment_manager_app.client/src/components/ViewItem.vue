@@ -10,7 +10,7 @@
             const text = ref("")
 
             onMounted(async () => {
-                item.value = await GetItem(12);
+                item.value = await GetItem(13);
                 console.log(JSON.stringify(item.value));
                 loaded.value = true;
             })
@@ -33,7 +33,5 @@
 </script>
 <template>
 
-    <img v-if="loaded" :src="item.imageUrl"/>
-    <label v-if="loaded" >{{text}}</label>
-    <button @click="Load">LOAD</button>
+
 </template>

@@ -1,10 +1,10 @@
 import './assets/main.css';
-import './assets/InputForm.css';
 import 'primeicons/primeicons.css'
 import Primeview from 'primevue/config';
 import { createApp } from 'vue';
 import App from './App.vue';
 import Aura from '@primevue/themes/aura';
+import router from '@/router/index'
 
 
 
@@ -20,4 +20,5 @@ createApp(App).
                 }
             }
         }).
+        use(router).
     mount('#app')
