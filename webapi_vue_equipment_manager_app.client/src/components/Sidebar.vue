@@ -9,35 +9,31 @@
                 <i class="pi pi-arrow-right nav-icon" style="font-size : 2rem ; color: white"/>
             </button>
         </div>
-        <h3>Menu</h3>
         <div class="menu">
-            <RouterLink class="menu-button">
-                <i class="pi pi-arrow-right menu-icon" />
+            <RouterLink to="/items/add" class="menu-button">
+                <i class="pi pi-plus menu-icon" />
                 <span class="menu-text">Add</span>
             </RouterLink>
             <RouterLink class="menu-button">
-                <i class="pi pi-arrow-right menu-icon" />
-                <span class="menu-text">Add</span>
+                <i class="pi pi-search menu-icon" />
+                <span class="menu-text">Search</span>
             </RouterLink>
             <RouterLink class="menu-button">
-                <i class="pi pi-arrow-right menu-icon" />
-                <span class="menu-text">Add</span>
+                <i class="pi pi-table menu-icon" />
+                <span class="menu-text">View All</span>
             </RouterLink>
             <RouterLink class="menu-button">
-                <i class="pi pi-arrow-right menu-icon" />
-                <span class="menu-text">Add</span>
+                <i class="pi pi-users menu-icon" />
+                <span class="menu-text">Manage Users</span>
             </RouterLink>
             <RouterLink class="menu-button">
-                <i class="pi pi-arrow-right menu-icon" />
-                <span class="menu-text">Add</span>
+                <i class="pi pi-building menu-icon" />
+                <span class="menu-text">Manage Locations</span>
             </RouterLink>
         </div>
 
     </aside>
 </template>
-
-
-
 <script>
 
     import { ref } from 'vue'
@@ -73,12 +69,16 @@
         display: flex;
         flex-direction: column;
 
-        background-color: cornflowerblue;
+        background-color: var(--p-primary-color); /*COLOUR*/
         width: 4rem;
+        height: 100%;
         min-height: 100vh;
         overflow: hidden;
         padding: 1rem;
+        position: sticky;
+        top: 0;
         transition: 0.2s ease-out;
+       
 
         .menu-toggle-wrap{
              display:flex;
@@ -105,14 +105,14 @@
          }
 
         &.expanded{
-             width: 300px; /*SIZE*/
+             min-width: 250px; /*SIZE*/
                 .menu-toggle-wrap{
                             top: -3rem;
                         }
                         .menu-toggle{
                             transform: rotate(-180deg);
                         }
-            h3, .menu-button .menu-text {
+            .menu-button .menu-text {
                 opacity: 1;
                 
             }
@@ -124,7 +124,7 @@
 
         }
 
-        @media(max-width:769px){
+        @media(max-width:768px){
             position:fixed;
             z-index: 99;
         }
@@ -143,6 +143,7 @@
                    display: flex;
                    align-items: center;
                    text-decoration: none;
+                   
 
                    padding: 0.5rem 1rem;
                    transition: 0.2s ease-out;
@@ -158,23 +159,24 @@
                         transition: 0.2s ease-out;
                     }
                     &:hover{
-                        background-color: lightblue; /*COLOUR*/
+                        background-color: var(--p-surface-0); /*COLOUR*/
                         .menu-text, .menu-icon{
-                                                 color: dodgerblue; /*COLOUR*/
+                                                 color: var(--p-blue-900); /*COLOUR*/
                                              }
                     }
 
                }
     }
 
-    h3, .menu-button .menu-text {
+    .menu-button .menu-text {
         opacity: 0;
         transition: 0.3s ease-out;
     }
-    h3{
-        color:white; /*COLOUR*/
-    }
 
+
+    .menu-text{
+        font-size: 1.2rem;
+    }
 
 
     
