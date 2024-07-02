@@ -10,6 +10,5 @@ export class EquipmentModel {
         this.length = Length;
         this.depth = Depth;
         this.category = Category;
-
     }
 }

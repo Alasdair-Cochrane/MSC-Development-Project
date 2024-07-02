@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '@/views/HomeView.vue'
 import  AddItemView  from '@/views/AddItemView.vue'
+import SearchItemView from '@/views/SearchItemView.vue'
 
 const router = createRouter({
     history: createWebHistory(),
@@ -12,9 +13,15 @@ const router = createRouter({
         },
         {
             path: '/items/add',
-            name: 'additem',
+            name: 'addItem',
             component: AddItemView
         },
+        {
+            path: '/items/search',
+            name: 'searchItem',
+            component: SearchItemView,
+
+        }
     ]
 })
 

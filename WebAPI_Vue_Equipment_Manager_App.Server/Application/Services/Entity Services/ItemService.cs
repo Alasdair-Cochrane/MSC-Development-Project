@@ -1,7 +1,9 @@
-﻿using System.Diagnostics;
+﻿using Microsoft.IdentityModel.Tokens;
+using System.Diagnostics;
 using System.Text.Json;
 using WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs;
 using WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs.Mappings;
+using WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs.Queries;
 using WebAPI_Vue_Equipment_Manager_App.Server.Application.Error_Handling;
 using WebAPI_Vue_Equipment_Manager_App.Server.Application.Interfaces;
 using WebAPI_Vue_Equipment_Manager_App.Server.Application.Repository_Interfaces;
@@ -18,9 +20,11 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Se
         private readonly IEquipmentModelRepository _modelRepository;
         private readonly ICategoryRepository<EquipmentModelCategory> _modelCategories;
         private readonly IUnitRepository _unitRepository;
+        private readonly IItemQueryBuilder _itemQueryBuilder;
         public ItemService(IItemRepository itemRepository, ICategoryRepository<ItemStatusCategory> categories,
             IMaintenanceService maintenanceService, IEquipmentModelRepository modelRepository, 
-            ICategoryRepository<EquipmentModelCategory> modelCategories, IUnitRepository unitRepository)
+            ICategoryRepository<EquipmentModelCategory> modelCategories, IUnitRepository unitRepository,
+            IItemQueryBuilder itemQueryBuilder)
         {
             _ItemRepository = itemRepository;
             _statusRepository = categories;
@@ -28,6 +32,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Se
             _modelRepository = modelRepository;
             _modelCategories = modelCategories;
             _unitRepository = unitRepository;
+            _itemQueryBuilder = itemQueryBuilder;
         }
 
         public async Task<ItemDTO?> AddAsync(ItemDTO item)
@@ -112,6 +117,21 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Se
             return url;
         }
 
+        public async Task<IEnumerable<ItemDTO>?> Search(ItemQuery query)
+        {
+            var items = await _itemQueryBuilder.QueryItems(query);
+            List<ItemDTO>? result = new List<ItemDTO>();
+            if (items.IsNullOrEmpty())
+            {
+                return null;
+            }
+            foreach(Item item in items)
+            {
+                result.Add(item.ToDTO());
+            }
+            return result;
+        }
+
     }
 
     public interface IItemService
@@ -124,6 +144,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Se
         public Task<IEnumerable<ItemDTO>> GetAllByUnitAsync(int UnitID);
         public Task SetImageUrl(int itemId, string url);
         public Task<string?> GetImageUrl(int id);
+        public Task<IEnumerable<ItemDTO>?> Search(ItemQuery query);
 
     }
 }

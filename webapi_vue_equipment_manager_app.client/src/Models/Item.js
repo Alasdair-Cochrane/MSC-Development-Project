@@ -16,6 +16,15 @@ export class Item {
         this.CurrentStatus = status;
         this.UnitName = unit;
     }
+}
 
-
+export function getSearchFields(){
+    return {"Serial Number" : "SerialNumber" , 
+         "Local Name" :"LocalName" , 
+         "Barcode" : "Barcode", 
+         "Unit Name" : "UnitName",
+         "Model Name" : "Model.model_Name", 
+         "Model Number" : "Model.model_Number",
+         "Manufacturer" : "Model.manufacturer",
+         "Category" : "Model.category" }
 }

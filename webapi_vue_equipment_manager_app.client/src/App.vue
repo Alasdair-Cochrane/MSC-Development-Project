@@ -2,6 +2,7 @@
     import AddItem from './components/AddItem.vue'
     import {RouterLink, RouterView} from 'vue-router'
     import Sidebar from './components/Sidebar.vue'
+    import BarcodeScanner from './components/BarcodeScanner.vue';
 
 
 </script>

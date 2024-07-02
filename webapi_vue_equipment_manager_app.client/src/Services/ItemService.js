@@ -38,3 +38,21 @@ export async function GetItem(id) {
 
     return list;
 }
+
+export async function QueryItems(key, value){
+
+    let query = `/?${key}=${value}`
+    console.log(route + query)
+    const response = await fetch(route + query, 
+        {
+        method: "Get",
+        headers: {
+            "Content-Type": "application/json"
+        },
+
+    })
+    let list = response.json()
+    return list;
+}
+
+

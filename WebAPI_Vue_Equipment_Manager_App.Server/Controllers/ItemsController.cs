@@ -4,6 +4,7 @@ using System.Diagnostics;
 
 using System.Text.Json;
 using WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs;
+using WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs.Queries;
 using WebAPI_Vue_Equipment_Manager_App.Server.Application.Error_Handling;
 using WebAPI_Vue_Equipment_Manager_App.Server.Application.Services;
 using WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Services;
@@ -26,12 +27,12 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
             _imageService = imageService;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAll()
-        {
-            var items = await _itemSerivce.GetAllAsync();
-            return Ok(items);
-        }
+        //[HttpGet]
+        //public async Task<IActionResult> GetAll()
+        //{
+        //    var items = await _itemSerivce.GetAllAsync();
+        //    return Ok(items);
+        //}
 
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
@@ -43,6 +44,18 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
             }
             return NotFound();
         }
+
+        [HttpGet]
+        public async Task<IActionResult> Search([FromQuery]ItemQuery query)
+        {
+            var results =  await _itemSerivce.Search(query);
+            if(results != null)
+            {
+                return Ok(results);
+            }
+            return NotFound();
+        }
+
 
         [HttpPost]
         public async Task<IActionResult> Insert(ItemDTO item)

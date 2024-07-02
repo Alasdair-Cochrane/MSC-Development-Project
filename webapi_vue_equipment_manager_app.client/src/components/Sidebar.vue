@@ -14,7 +14,7 @@
                 <i class="pi pi-plus menu-icon" />
                 <span class="menu-text">Add</span>
             </RouterLink>
-            <RouterLink class="menu-button">
+            <RouterLink to="/items/search" class="menu-button">
                 <i class="pi pi-search menu-icon" />
                 <span class="menu-text">Search</span>
             </RouterLink>
