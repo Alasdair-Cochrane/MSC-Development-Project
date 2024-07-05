@@ -13,9 +13,9 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs
         public int UnitId { get; set; }
         public string Barcode { get; set; } = string.Empty;
         public string LocalName { get; set; } = string.Empty;
-        public DateTime? Date_Of_Reciept { get; set; }
-        public DateTime? Date_Of_Commissioning { get; set; }
-        public bool? New_On_Reciept { get; set; }
+        public DateTime? Date_of_reciept { get; set; }
+        public DateTime? Date_of_commissioning { get; set; }
+        public string? Condition_on_reciept { get; set; }
         public int Current_Status_ID { get; set; }
         public string? ImageUrl { get; set; }
     }

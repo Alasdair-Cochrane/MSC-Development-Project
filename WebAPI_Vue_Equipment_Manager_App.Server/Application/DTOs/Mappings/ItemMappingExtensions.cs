@@ -19,9 +19,9 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs.Mappings
                 LocalName = item.LocalName ?? "",
                 Barcode = item.Barcode ?? "",
 
-                Date_Of_Reciept = item.Date_Of_Reciept,
-                Date_Of_Commissioning = item.Date_Of_Commissioning,
-                New_On_Reciept = item.New_On_Reciept,
+                Date_of_reciept = item.Date_Of_Reciept,
+                Date_of_commissioning = item.Date_Of_Commissioning,
+                Condition_on_reciept = item.Condition_On_Reciept,
                 Current_Status_ID = item.ItemStatusCategoryId,
                 ImageUrl = item.Image ?? "",
 
@@ -43,10 +43,10 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs.Mappings
                 LocalName = item.LocalName ?? "",
                 Barcode = item.Barcode ?? "",
 
-                Date_Of_Reciept = item.Date_Of_Reciept,
-                Date_Of_Commissioning = item.Date_Of_Commissioning,
+               Date_of_reciept = item.Date_Of_Reciept,
+               Date_of_commissioning = item.Date_Of_Commissioning,
 
-        New_On_Reciept = item.New_On_Reciept,
+                Condition_on_reciept = item.Condition_On_Reciept,
                 Current_Status_ID = item.ItemStatusCategoryId,
                 ImageUrl = item.Image ?? "",
             };
@@ -74,9 +74,9 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs.Mappings
                 UnitId = item.UnitId,
                 LocalName = item.LocalName,
                 Barcode = item.Barcode,
-                Date_Of_Reciept = item.Date_Of_Reciept,
-                Date_Of_Commissioning = item.Date_Of_Commissioning,
-                New_On_Reciept = item.New_On_Reciept,
+                Date_Of_Reciept = item.Date_of_reciept,
+                Date_Of_Commissioning = item.Date_of_commissioning,
+                Condition_On_Reciept = item.Condition_on_reciept,
                 ItemStatusCategoryId = categoryID,
                 Image = item.ImageUrl,
 

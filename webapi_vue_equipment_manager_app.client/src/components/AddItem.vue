@@ -1,46 +1,84 @@
-<script>
+<script setup>
     import { reactive, ref, onMounted } from "vue"
     import { Item } from '@/Models/Item';
     import {EquipmentModel } from '@/Models/EquipmentModel'
-    import { addItem, getAllItems } from '@/Services/ItemService'
+    import { addItem, UploadImage } from '@/Services/ItemService'
     import {GetAllModels} from '@/Services/EquipmentModelService'
-    import { store } from "@/Store/UserStore";
+    import { store, UpdateModels } from "@/Store/Store";
     import { IsMobile } from "@/Services/DeviceService";
     import {useToast} from 'primevue/usetoast'
+import CustomFileUpload from "./CustomFileUpload.vue";
 
 
+const item = ref(new Item(new EquipmentModel(null,"","")))
+var mobile = ref(false);
+const condOptions = ["New", "Used"]
+const toast = useToast();
+const emit = defineEmits('itemSaved')
 
-    export default {
-        setup() {
-            const value = ref(null)
-            const item = ref(new Item())
-            const model = ref(new EquipmentModel())
-            var mobile = ref(false);
-            const condOptions = ["New", "Used"]
-            const ownerOptions = ["Admin"]
-            const toast = useToast();
-            
-            onMounted(() => {
-                mobile.value = IsMobile();
-            })
+onMounted(() => {
+    mobile.value = IsMobile();
+})
 
-            const onAdvancedUpload = () => {
-            toast.add({ severity: 'info', summary: 'Success', detail: 'File Uploaded', life: 3000 });
-};
+const imageUploaded = ref()
 
-            return{
-                value,
-                item,
-                model,
-                condOptions,
-                ownerOptions,
-                mobile,
-                onAdvancedUpload,
-            }
+const onUpload = async (event) =>{
+    if(event.files[0] != null)
+    {
+        let result = await UploadImage(event.files[0])
+        if(result.successful){
+            item.value.imageUrl = result.url
+            console.log(result.url)
+            toast.add({severity:'success', summary: 'Image Upload Successful', life: 2000 })
 
         }
+        else{
+            toast.add({severity:'error', summary: 'Image Upload Unsuccessful', detail: result.error.title, life: 2000 })
+        }
+    
     }
-            
+    else{
+        toast.add({severity:'error', summary: 'Image Not Found',life: 2000 })
+    }
+}
+
+function clear(){
+    item.value = new Item(new EquipmentModel())
+}
+
+async function save(){
+    const response = await addItem(item.value);
+    if(response.successful){
+        toast.add({severity:'success', summary: 'Operation Successful', life: 2000 })
+        const newItem = response.item
+        item.value.serialNumber="";
+        item.value.localName="";
+        item.value.barcode="";
+        emit("itemSaved",newItem)
+        return true;
+    }
+    else{
+        toast.add({severity:'error', summary: 'Operation unsuccessfull', detail: response.error.title, life: 2000 })
+        return false;
+    }
+}
+
+async function addNew(){
+    if(await save()){
+    item.value = new Item(new EquipmentModel())
+    }
+
+}
+const searchedModels = ref([])
+
+async function searchModelName(event){
+    if(store.Models.length === 0) {await UpdateModels()}
+    searchedModels.value = store.Models.filter(x => x.modelName.startsWith(event.query))
+}
+async function searchModelNumber(event){
+    if(store.Models.length === 0) {await UpdateModels()}
+    searchedModels.value = store.Models.filter(x => x.modelNumber.startsWith(event.query))
+}
 </script>
 <template>
 <div class="grid-nogutter container">
@@ -50,12 +88,12 @@
         <div class="input-group">
             <div class="input-field">
                 <label for="serial">Serial Number</label>
-                <InputText id="serial" size="small" v-model="item.SerialNumber"/>
+                <InputText id="serial" size="small" v-model="item.serialNumber"/>
             </div>
             <div class="input-field">
                     <label for="serial">Barcode</label>
                     <InputGroup>
-                        <InputText id="serial" size="small" v-model="item.Barcode"/>
+                        <InputText id="serial" size="small" v-model="item.barcode"/>
                         <Button icon="pi pi-barcode"> </Button>
                     </InputGroup>
                 </div>
@@ -63,42 +101,44 @@
             <div class="input-group">
                 <div class="input-field">
                     <label for="serial">Local Name</label>
-                    <InputText id="serial" size="small" v-model="item.LocalName"/>
+                    <InputText id="serial" size="small" v-model="item.localName"/>
                 </div>
                 
                 <div class="input-field">
             <label for="owner">Owner</label>
-            <Select id="owner" size="small" v-model="item.UnitName" showClear :options="ownerOptions"/>
+            <Select id="owner" size="small" v-model="item.unitName" showClear :options="store.Units"/>
         </div>
         </div>
         
         <div class="input-group">
         <div class="input-field">
             <label for="modelName">Model Name</label>
-            <InputText id="modelName" size="small" v-model="model.model_Name"/>
+            <AutoComplete v-model="item.model" :suggestions="searchedModels" optionLabel="modelName" @complete="searchModelName" />
+            <!-- <InputText id="modelName" size="small" v-model="item.model.modelName"/> -->
         </div>
         <div class="input-field">
             <label for="modelNum">Model Number</label>
-            <InputText id="modelNum" size="small" v-model="model.model_Number"/>
+            <!-- <InputText id="modelNum" size="small" v-model="item.model.modelNumber"/> -->
+            <AutoComplete v-model="item.model" :suggestions="searchedModels" optionLabel="modelNumber" @complete="searchModelNumber" />
+
         </div>
         </div>  
         <div class="input-group">
         <div class="input-field">
             <label for="Manufacturer">Manufacturer</label>
-            <InputText id="manufacturer" size="small" v-model="model.manufacturer"/>
+            <InputText id="manufacturer" size="small" v-model="item.model.manufacturer"/>
         </div>
         <div class="input-field ">
             <label for="category">Category</label>
-            <InputText id="category" size="small" v-model="model.category"/>
+            <InputText id="category" size="small" v-model="item.model.category"/>
         </div>
         </div>
-
 
             <div class="input-field">
                 <label for="weight">Weight</label>
                 <InputGroup class="num-input">
                     <InputGroupAddon>kg</InputGroupAddon>
-                    <InputNumber id="weight" size="small" v-model="model.weight" :minFractionDigits="2"/>             
+                    <InputNumber id="weight" size="small" v-model="item.model.weight" :minFractionDigits="2"/>             
                 </InputGroup>
             </div>
             <div class="input-group">
@@ -106,14 +146,14 @@
                 <label for="length">Length</label>
                 <InputGroup class="num-input">
                     <InputGroupAddon>mm</InputGroupAddon>
-                    <InputNumber id="length" size="small" v-model="model.length"/>             
+                    <InputNumber id="length" size="small" v-model="item.model.length"/>             
                 </InputGroup>
             </div>  
             <div class="input-field">
                 <label for="depth">Depth</label>
                 <InputGroup class="num-input">
                     <InputGroupAddon>mm</InputGroupAddon>
-                    <InputNumber id="depth" size="small" v-model="model.depth"/>             
+                    <InputNumber id="depth" size="small" v-model="item.model.width"/>             
                 </InputGroup>
             </div>
 
@@ -121,7 +161,7 @@
                 <label for="height">Height</label>
                 <InputGroup class="num-input">
                     <InputGroupAddon>mm</InputGroupAddon>
-                    <InputNumber id="height" size="small" v-model="model.height"/>             
+                    <InputNumber id="height" size="small" v-model="item.model.height"/>             
                 </InputGroup>
             </div>
         </div>
@@ -129,50 +169,45 @@
         <div class="input-group">
             <div class="input-field">
                 <label for="recieptDate">Date of Reciept</label>
-                <DatePicker showIcon icon-display="input" v-model="item.Date_Of_Reciept"/>
+                <DatePicker showIcon icon-display="input" v-model="item.date_of_reciept"/>
             </div>
             <div class="input-field">
             <label for="condition">Condition on Reciept</label>
-            <SelectButton id="condition" size="small" v-model="item.Condition" :options="condOptions"/>
+            <SelectButton id="condition" size="small" v-model="item.condition_on_reciept" :options="condOptions"/>
             </div>
         </div>
         <div class="input-field">
         <label for="commisionDate">Date of Commissioning</label>
-        <DatePicker showIcon icon-display="input" v-model="item.Date_Of_Commissioning"/>
+        <DatePicker showIcon icon-display="input" v-model="item.date_of_commissioning"/>
         </div>
         <div class="input-field">
             <label for="status">Current Status</label>
-            <InputText id="status" size="small" v-model="item.CurrentStatus"/>
+            <InputText id="status" size="small" v-model="item.currentStatus"/>
+        </div>
+        <div class="card image-upload">
+            <label>Upload Image</label>
+                <FileUpload  
+                ref="imageUploaded" 
+                mode="basic" 
+                name="imageFile[]" 
+                accept="image/*" 
+                :maxFileSize="1000000"
+                :custom-upload="true"
+                @uploader="onUpload"                
+                />
         </div>
         <div class="submit-btns mobile" >
-            <Button icon="pi pi-save" label="Save" class="s-btn"></Button>
-            <Button icon="pi pi-plus" label="New" class="s-btn"></Button>
-            <Button icon="pi pi-eraser" label="Clear" severity="danger" class="s-btn"></Button>
+            <Button icon="pi pi-save" label="Save" class="s-btn" @click="save"></Button>
+            <Button icon="pi pi-plus" label="New" class="s-btn" @click="addNew"></Button>
+            <Button icon="pi pi-eraser" label="Clear" severity="danger" class="s-btn" @click="clear"></Button>
         </div>
     </form>
     </div>
 
     <div  class="col-12 md:col-5 right">
+        <Image v-bind:src="item.imageUrl" width="250" preview></Image>
         
-        <div class="card ">
-            <label>Image</label>
-                <Toast />
-                <FileUpload  class="image-upload" name="demo[]" url="/api/upload" @upload="onAdvancedUpload($event)" :multiple="false" accept="image/*" :maxFileSize="1000000"
-                :pt="{}">
-                    <template #empty>
-                        <span>Drag and drop files to here to upload.</span>
-                    </template>
-                </FileUpload>
-        </div>
-        <div class="card document-upload">
-            <label>Upload Documents</label>
-                <Toast />
-                <FileUpload name="demo[]" url="/api/upload" @upload="onAdvancedUpload($event)" :multiple="true" accept=".pdf" :maxFileSize="1000000">
-                    <template #empty>
-                        <span>Drag and drop files to here to upload.</span>
-                    </template>
-                </FileUpload>
-        </div>
+
     </div>
     
 </div>
@@ -188,10 +223,10 @@
     width: fit-content;
     margin-right: 0.5rem;
 
-    label{
-        color: black;
-        margin-block: 0.2rem;
-    }
+}
+.input-field label{
+    color: black;
+    margin-block: 0.2rem;
 }
 
 .input-group{
@@ -206,6 +241,7 @@ form{
     flex-direction: column;
 }
 
+
 .num-input{
     max-width: 128px;
 }
@@ -218,11 +254,11 @@ form{
     padding: 0.5rem;
     gap:0.5rem;
     z-index: 98;
-    
-    Button{
-        height: 3rem;
-        flex: 1;
-    }
+
+}
+.submit-btns Button{
+    height: 3rem;
+    flex: 1;
 }
 
 .container{
@@ -248,13 +284,33 @@ form{
     font-size: smaller;
     flex: 1;
     container-type: inline-size;
+    max-width: 150px;
  
     }    
 
 .p-fileupload :deep(.p-button-label){
-    @container(width < 50px){
+        @container(width < 50px){
         display: none;
 }
+}
+
+.p-fileupload-basic{
+    justify-content: flex-start;
+    width: 50%;
+}
+.image-upload{
+    margin-block: 2rem;
+    display:flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+.image-upload label{
+    width:100%;
+}
+.image-upload .p-button{
+    flex:1;
+    max-width: 100px;
+    font-size: smaller;
 }
 
 Button {

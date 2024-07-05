@@ -1,20 +1,19 @@
+import { EquipmentModel } from "./EquipmentModel";
 
 export class Item {
-    constructor(ID, SerialNumber, localName, ModelID, UnitID, Barcode, LocalName, DOR, DOAT, DOA, Condition, statusID, image, model, status, unit) {
-        this.Id = ID;
-        this.SerialNumber = SerialNumber;
-        this.LocalName = localName,
-        this.Barcode = Barcode;
-        this.ModelId = ModelID;
-        this.UnitID = UnitID;  
-        this.Date_Of_Reciept = DOR;
-        this.Date_Of_Commissioning = DOAT;
-        this.Condition = Condition;
-        this.Current_Status_ID = statusID;
-        this.ImageUrl = image;
-        this.Model = model;
-        this.CurrentStatus = status;
-        this.UnitName = unit;
+    constructor(model, iD, serialNumber, localName, barcode, DOR, DOC, Condition, image, status, unit, purchaseOrder) {
+        this.id = iD;
+        this.serialNumber = serialNumber;
+        this.localName = localName,
+        this.barcode = barcode; 
+        this.date_of_reciept = DOR;
+        this.date_of_commissioning = DOC;
+        this.condition_on_reciept = Condition;
+        this.imageUrl = image;
+        this.model = model;
+        this.currentStatus = status;
+        this.unitName = unit;
+        this.purchaseOrder = purchaseOrder
     }
 }
 
@@ -23,8 +22,12 @@ export function getSearchFields(){
          "Local Name" :"LocalName" , 
          "Barcode" : "Barcode", 
          "Unit Name" : "UnitName",
-         "Model Name" : "Model.model_Name", 
-         "Model Number" : "Model.model_Number",
-         "Manufacturer" : "Model.manufacturer",
-         "Category" : "Model.category" }
+         "Model Name" : "ModelName", 
+         "Model Number" : "ModelNumber",
+         "Manufacturer" : "Manufacturer",
+         "Category" : "Category" }
+}
+
+export function mapIncoming(){
+
 }

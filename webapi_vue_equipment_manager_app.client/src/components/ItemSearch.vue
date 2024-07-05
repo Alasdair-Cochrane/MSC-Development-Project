@@ -1,26 +1,20 @@
 <script setup>
 import {onMounted, ref} from 'vue'
-import { getSearchFields } from '@/Models/Item';
-import { QueryItems } from '@/Services/ItemService';
+import { Item, getSearchFields } from '@/Models/Item';
+import { QueryItems, GetItem } from '@/Services/ItemService';
 
-const searchValue = ref()
+const searchValue = ref("")
 const searchProperty = ref("Serial Number")
 const searchFields = getSearchFields()
 const searchTerms = ref([""])
+const searchResults = ref()
 onMounted(() => searchTerms.value = Object.keys(searchFields))
 
-function search(){
+async function search(){
 
     let queryProperty = searchFields[searchProperty.value];
-    if(queryProperty.startsWith("Model"))
-    {
-        console.log("Model Search")
-        QueryItems(queryProperty, searchValue.value)
-    }
-    else{
-        console.log("Item Search")
-        QueryItems(queryProperty, searchValue.value)
-    }
+    searchResults.value = await QueryItems(queryProperty, searchValue.value)
+
 }
 </script>
 <template>
@@ -34,7 +28,13 @@ function search(){
         <Button id="search" label="Search" @click="search"></Button>
     </div>
     <div class="entries">
-        <h1>entries</h1>
+        <ul v-for="i in searchResults" :key="i.Id">
+           <div class="search-result">
+               <label>{{i.serialNumber}}</label>
+               <label>{{i.model.modelName}}</label>
+               <label>{{i.model.modelNumber}}</label>
+           </div>
+        </ul>
     </div>
 </div>
 </template>
@@ -44,30 +44,42 @@ function search(){
     flex: 1;
     flex-direction: column;
     height: auto;
-    border: 2px red solid;
-    padding: 1rem;
+    min-width: 320px;
+    max-width: 350px;
 }
 .search-input{
     display:flex;
     flex: 1;
     flex-wrap: wrap;
-    gap: 10px;
-    #scan{
+    gap: 10px;    
+}
+
+#scan{
         flex: 1;
     }
-    #search{
-        min-width: 100%;
-    }
-    .text-input{
-        display:flex;
+#search{
+    min-width: 100%;
+}
+.search-input .text-input{
+    display:flex;
         flex-direction: column;
         gap: 5px;
-    }
 }
+
+ul{
+    list-style-type: none;
+}
+
+.search-result{
+    display: flex;
+    justify-content: space-between;
+}
+
 .entries{
         display: flex;
         flex-direction: column;
         flex: 1;
         height: 100%;
+        padding: 0.5rem;
     }
 </style>

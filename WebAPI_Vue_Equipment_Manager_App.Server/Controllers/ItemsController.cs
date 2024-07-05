@@ -1,9 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using System.Diagnostics;
 
 using System.Text.Json;
+using System.Web.Http.Results;
 using WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs;
+using WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs.Mappings;
 using WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs.Queries;
 using WebAPI_Vue_Equipment_Manager_App.Server.Application.Error_Handling;
 using WebAPI_Vue_Equipment_Manager_App.Server.Application.Services;
@@ -44,7 +47,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
             }
             return NotFound();
         }
-
+        
         [HttpGet]
         public async Task<IActionResult> Search([FromQuery]ItemQuery query)
         {
@@ -60,16 +63,24 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
         [HttpPost]
         public async Task<IActionResult> Insert(ItemDTO item)
         {
-            Debug.WriteLine(JsonSerializer.Serialize(item));
 
-            if (!ModelState.IsValid) return BadRequest(item);
+            //if(image != null) {
+            //    string? imageUrl = await UploadImage(image);
+            //    if(imageUrl != null) { item.ImageUrl = imageUrl; }
+            //    else { throw new ImageUploadException("Failed to upload : image url is null", new Exception()); }
+            //}
+            //if (!documents.IsNullOrEmpty())
+            //{
+            //    //handle document upload
+            //}
+
+            if (!ModelState.IsValid) return BadRequest();
             var added = await _itemSerivce.AddAsync(item);
             if (added != null)
             {
                 return CreatedAtAction(nameof(Get), new { id = item.Id }, added);
             }
-            return BadRequest();
-
+            return StatusCode(500);
         }
 
         [HttpPut]
@@ -90,25 +101,22 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
             return Ok();
         }
 
-        [HttpPost("{id}/image")]
-        public async Task<IActionResult> UploadImage(int id, IFormFile file)
+        private async Task<string?> UploadImage(IFormFile file)
         {
             string extension = Path.GetExtension(file.FileName);
          
-            string fileName = $"-{id}-" + Guid.NewGuid().ToString() + extension;
+            string fileName = Guid.NewGuid().ToString() + extension;
 
             try
             {
                 await _imageService.Upload(file, fileName);
                 var uri = Url.Link("GetImage", new {url = fileName});
-               await _itemSerivce.SetImageUrl(id, uri);
-
+                return uri;
             }
             catch (Exception ex)
             {
-                throw new DataInsertionException("Failed to add Image");
+                throw new ImageUploadException("Failed to add Image", ex);
             }
-            return Ok();
         }
 
         [HttpGet("{id}/image")]
@@ -125,7 +133,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
         }
 
         [HttpGet]
-        [Route("[controller]/image/{url}", Name="GetImage")]
+        [Route("/image/{url}", Name="GetImage")]
         public async Task<IActionResult> GetImageByUrl(string url)
         {
             var image = await _imageService.Retrieve(url);

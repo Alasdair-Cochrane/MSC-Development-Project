@@ -129,6 +129,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Se
             {
                 result.Add(item.ToDTO());
             }
+            
             return result;
         }
 

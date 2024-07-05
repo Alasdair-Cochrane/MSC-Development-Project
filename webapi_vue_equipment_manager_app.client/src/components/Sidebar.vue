@@ -10,15 +10,15 @@
             </button>
         </div>
         <div class="menu">
-            <RouterLink to="/items/add" class="menu-button">
+            <RouterLink to="/add" class="menu-button">
                 <i class="pi pi-plus menu-icon" />
                 <span class="menu-text">Add</span>
             </RouterLink>
-            <RouterLink to="/items/search" class="menu-button">
+            <RouterLink to="/search" class="menu-button">
                 <i class="pi pi-search menu-icon" />
                 <span class="menu-text">Search</span>
             </RouterLink>
-            <RouterLink class="menu-button">
+            <RouterLink class="menu-button" to="/manage">
                 <i class="pi pi-table menu-icon" />
                 <span class="menu-text">View All</span>
             </RouterLink>

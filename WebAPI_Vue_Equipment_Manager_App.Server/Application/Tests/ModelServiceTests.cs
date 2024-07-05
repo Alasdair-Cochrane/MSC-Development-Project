@@ -28,8 +28,8 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Tests
 
             _testModel = new EquipmentModel
             {
-                Model_Number = "TEST_MODEL_NUMBER",
-                Model_Name = "TEST NAME",
+                ModelNumber = "TEST_MODEL_NUMBER",
+                ModelName = "TEST NAME",
                 Manufacturer = "TEST MANUFACTURER",
                 Category = _testCategory
             };
@@ -37,8 +37,8 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Tests
             _testModels = new List<EquipmentModel> { _testModel ,
             new EquipmentModel
             {
-                Model_Name = "Model 2",
-                Model_Number = "Model 2",
+                ModelName = "Model 2",
+                ModelNumber = "Model 2",
                 Manufacturer = "Model 2",
                 Category = _testCategory
             } };

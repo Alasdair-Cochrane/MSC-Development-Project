@@ -1,14 +1,14 @@
 
 export class EquipmentModel {
-    constructor(id, ModelNumber, ModelName, Description, Manufacturer, Weight, Height, Length, Depth, Category) {
+    constructor(id, ModelNumber, ModelName, Description, Manufacturer, Weight, Height, Length, Width, Category) {
         this.id = id;
-        this.model_Number = ModelNumber;
-        this.model_Name = ModelName;
+        this.modelNumber = ModelNumber;
+        this.modelName = ModelName;
         this.manufacturer = Manufacturer;
         this.weight = Weight;
         this.height = Height;
         this.length = Length;
-        this.depth = Depth;
+        this.width = Width;
         this.category = Category;
     }
 }

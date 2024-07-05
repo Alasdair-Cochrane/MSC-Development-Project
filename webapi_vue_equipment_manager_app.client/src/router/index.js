@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '@/views/HomeView.vue'
 import  AddItemView  from '@/views/AddItemView.vue'
 import SearchItemView from '@/views/SearchItemView.vue'
+import ManageItemsView from '@/views/ManageItemsView.vue'
 
 const router = createRouter({
     history: createWebHistory(),
@@ -12,15 +13,20 @@ const router = createRouter({
             component: HomeView
         },
         {
-            path: '/items/add',
+            path: '/add',
             name: 'addItem',
             component: AddItemView
         },
         {
-            path: '/items/search',
+            path: '/search',
             name: 'searchItem',
             component: SearchItemView,
 
+        },
+        {
+            path: '/manage',
+            name: 'manageItems',
+            component: ManageItemsView
         }
     ]
 })

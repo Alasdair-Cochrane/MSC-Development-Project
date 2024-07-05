@@ -31,11 +31,11 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Filters
     {
         public static IQueryable<EquipmentModel> FilterModelName(this IQueryable<EquipmentModel> query, string value)
         {
-            return query.Where(x => x.Model_Name.StartsWith(value));
+            return query.Where(x => x.ModelName.StartsWith(value));
         }
         public static IQueryable<EquipmentModel> FilterModelNumber(this IQueryable<EquipmentModel> query, string value)
         {
-            return query.Where(x => x.Model_Number.StartsWith(value));
+            return query.Where(x => x.ModelNumber.StartsWith(value));
         }
         public static IQueryable<EquipmentModel> FilterManufacturer(this IQueryable<EquipmentModel> query, string value)
         {

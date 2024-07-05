@@ -19,7 +19,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities
         public string? LocalName { get; set; }
         public DateTime? Date_Of_Reciept { get; set; }
         public DateTime? Date_Of_Commissioning { get; set; }
-        public bool? New_On_Reciept { get; set; }
+        public string? Condition_On_Reciept { get; set; }
         public int ItemStatusCategoryId { get; set; }
         [MaxLength(100)]
         public string? Image { get; set; }

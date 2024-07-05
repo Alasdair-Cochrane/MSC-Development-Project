@@ -67,14 +67,14 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
                 if (!queryObject.ModelNumber.IsNullOrEmpty())
                 {
                     modelIds.UnionWith(await _context.Models.
-                        Where(x => x.Model_Number.StartsWith(queryObject.ModelNumber)).
+                        Where(x => x.ModelNumber.StartsWith(queryObject.ModelNumber)).
                         Select(x => x.Id).
                         ToListAsync());
                 }
                 if (!queryObject.ModelName.IsNullOrEmpty())
                 {
                     modelIds.UnionWith(await _context.Models.
-                        Where(x => x.Model_Name.StartsWith(queryObject.ModelName)).
+                        Where(x => x.ModelName.StartsWith(queryObject.ModelName)).
                         Select(x => x.Id).
                         ToListAsync());
                 }

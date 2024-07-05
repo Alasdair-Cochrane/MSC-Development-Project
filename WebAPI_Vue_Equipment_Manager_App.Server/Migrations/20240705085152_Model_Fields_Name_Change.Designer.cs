@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using WebAPI_Vue_Equipment_Manager_App.Server.Data;
@@ -11,9 +12,11 @@ using WebAPI_Vue_Equipment_Manager_App.Server.Data;
 namespace WebAPI_Vue_Equipment_Manager_App.Server.Migrations
 {
     [DbContext(typeof(MainDbContext))]
-    partial class MainDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240705085152_Model_Fields_Name_Change")]
+    partial class Model_Fields_Name_Change
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -234,9 +237,6 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Migrations
                     b.Property<string>("Barcode")
                         .HasColumnType("text");
 
-                    b.Property<string>("Condition_On_Reciept")
-                        .HasColumnType("text");
-
                     b.Property<DateTime?>("Date_Of_Commissioning")
                         .HasColumnType("timestamp with time zone");
 
@@ -256,6 +256,9 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Migrations
 
                     b.Property<int>("ModelId")
                         .HasColumnType("integer");
+
+                    b.Property<bool?>("New_On_Reciept")
+                        .HasColumnType("boolean");
 
                     b.Property<int?>("Purchase_Order")
                         .HasColumnType("integer");

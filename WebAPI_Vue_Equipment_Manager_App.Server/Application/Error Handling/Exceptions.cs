@@ -17,5 +17,8 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Error_Handling
         {
             Entity = entity;
         }
+
     }
+    public class ImageUploadException(string message, Exception innerException) :Exception(message, innerException) { }
+
 }

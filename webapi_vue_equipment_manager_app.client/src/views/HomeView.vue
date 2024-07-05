@@ -174,13 +174,25 @@ return{
     flex-wrap: wrap;
     height: 100%;
     border-radius: 40%;
-    margin-inline: 1rem;
-    @media(max-width:768px){
+    margin-inline: 1rem;    
+}
+
+@media(max-width:768px){
+    .right-panels{
             height: auto;
             margin-left: 2.5rem;
         }
-
+    .right{
+        flex-direction: row;
+            max-height: 300px;
+    }
+    /* .p-chart{
+    height: auto;
+    } */
 }
+
+
+
 .panel{
     display: flex;
     flex-wrap: wrap;
@@ -188,34 +200,26 @@ return{
     max-height: 50%;
     margin-block: 0.5rem;
 
-    .right{
-        flex: 1;
+    
+     
+}
+.right{
+    flex: 1;
         height: auto; 
         display: flex;
         flex-direction: column;
         justify-content: center; 
         gap: 1rem;  
-        @media(max-width:768px){
-            flex-direction: row;
-            max-height: 300px;
-        }   
-    }  
-    .left{
-        padding: 1rem;
-    }  
-
 }
-.p-chart{
-        height: 40%;
-        @media(max-width:768px){
-            height: auto;
-        }
-        
-    }
 .left{
+        padding: 1rem;
         flex-direction: column;
         display: flex;
         justify-content: space-between;
+} 
+
+.p-chart{
+        height: 40%;
     }
 
 .c-main{
@@ -245,28 +249,27 @@ return{
     align-items: center;
     margin-top: 1.5rem;
 
+}
 
-    label{
+.btn-box :hover label{
+    background-color: rgba(0, 0, 0, 0);
+        top: -2.6rem;
+        transition: 0.2s ease-out;
+}
+.btn-box label{
         position: relative;
         color:black;
         top:-1.9rem;
         margin-bottom: -2.5rem;
         font-size:large;
         background-color: var(--p-surface-0);
-    }
-    img{
-        height: 100%;
-        z-index: 98;
-    }
-    
-    &:hover label{
-        background-color: rgba(0, 0, 0, 0);
-        top: -2.6rem;
-        transition: 0.2s ease-out;
-    }
-
-    
 }
+
+.btn-box img{
+    height: 100%;
+    z-index: 98;
+}
+
 .btn-group{
     display: flex;
         height: fit-content;  

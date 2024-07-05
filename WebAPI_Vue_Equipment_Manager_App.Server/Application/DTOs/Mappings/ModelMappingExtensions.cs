@@ -18,13 +18,13 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs.Mappings
             return new EquipmentModelDTO()
             {
                 Id = entity.Id,
-                Model_Number = entity.Model_Number,
-                Model_Name = entity.Model_Name,
+                ModelNumber = entity.ModelNumber,
+                ModelName = entity.ModelName,
                 Manufacturer = entity.Manufacturer,
                 Weight = entity.Weight,
                 Height = entity.Height,
                 Length = entity.Length,
-                Depth = entity.Depth,
+                Width = entity.Width,
                 Category = entity.Category.Name
             };
         }
@@ -36,13 +36,13 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs.Mappings
             return new EquipmentModel
             {
                 Id = dto.Id,
-                Model_Number = dto.Model_Number,
-                Model_Name = dto.Model_Name,
+                ModelNumber = dto.ModelNumber,
+                ModelName = dto.ModelName,
                 Manufacturer = dto.Manufacturer,
                 Weight = dto.Weight,
                 Height = dto.Height,
                 Length = dto.Length,
-                Depth = dto.Depth,
+                Width = dto.Width,
                 ListPrice = price,
                 CategoryId = categoryId,
             };

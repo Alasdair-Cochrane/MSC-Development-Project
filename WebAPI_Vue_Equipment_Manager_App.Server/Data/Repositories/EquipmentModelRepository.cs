@@ -62,8 +62,8 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
             else
             {
                 var searched = await _context.Models.
-                    Where(x => x.Model_Number == model.Model_Number && x.Manufacturer == model.Manufacturer
-                    || x.Model_Name == model.Model_Name && x.Manufacturer == model.Manufacturer).
+                    Where(x => x.ModelNumber == model.ModelNumber && x.Manufacturer == model.Manufacturer
+                    || x.ModelName == model.ModelName && x.Manufacturer == model.Manufacturer).
                     FirstOrDefaultAsync();
                 if (searched != null)
                 {
