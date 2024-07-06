@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities;
@@ -7,16 +8,16 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs
 {
     public class ItemSimpleDTO
     {
-        public int Id { get; set; }
+        public int? Id { get; set; }
         public required string SerialNumber { get; set; }
-        public int ModelId { get; set; }
-        public int UnitId { get; set; }
+        public int? ModelId { get; set; }
+        public int? UnitId { get; set; }
         public string Barcode { get; set; } = string.Empty;
         public string LocalName { get; set; } = string.Empty;
         public DateTime? Date_of_reciept { get; set; }
         public DateTime? Date_of_commissioning { get; set; }
         public string? Condition_on_reciept { get; set; }
-        public int Current_Status_ID { get; set; }
+        public int? Current_Status_ID { get; set; }
         public string? ImageUrl { get; set; }
     }
 
@@ -31,7 +32,6 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs
         [JsonPropertyOrder(3)]
 
         public required string UnitName { get; set; }
-
     }
 
 

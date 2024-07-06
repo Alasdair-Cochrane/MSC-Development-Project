@@ -8,13 +8,21 @@ using WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities;
 using System.Text;
 using WebAPI_Vue_Equipment_Manager_App.Server.Startup;
 using WebAPI_Vue_Equipment_Manager_App.Server.Application.Error_Handling;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(
+    //options =>
+    //{
+    //    options.ModelBinderProviders.Insert(0, new ItempPostBinderProvider() );
+    //    options.ModelBinderProviders.Insert(1, new FormFileModelBinderProvider() );
+    //}
+    );
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddAuthorization();

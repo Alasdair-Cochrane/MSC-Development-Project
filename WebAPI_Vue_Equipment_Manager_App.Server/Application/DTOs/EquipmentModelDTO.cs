@@ -4,7 +4,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs
 {
     public class EquipmentModelDTO
     {
-        public int Id { get; set; }
+        public int? Id { get; set; }
         public required string ModelNumber { get; set; }
         public required string ModelName { get; set; }
         public required string Manufacturer { get; set; }

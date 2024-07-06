@@ -1,20 +1,20 @@
 const route = "api/Items"
 
-export async function addItem(item, image, files) {
+export async function addItem(item, image) {
 
     const formdata = new FormData();
-    formdata.append('item', JSON.stringify(item))
-    if(image != null) {formdata.append('image',image)}
-    if(files != null || !files.length === 0) {formdata.append('documents', files)}
+    Object.keys(item).forEach(key => {if(item[key]) formdata.append(key,item[key])})
+    Object.keys(item.model).forEach(key => {if(item.model[key]) formdata.append(key,item.model[key])})
+    if(image) {formdata.append('image',image)}
+
+    for(let pair of formdata.entries()){
+        console.log(pair[0] + ": " + pair[1]);
+    }
     
-    console.log(JSON.stringify(item))
     try{
     const response = await fetch(route, {
         method: 'POST',
-        body: formdata,    
-        headers: {
-            "Content-Type" : "multipart/form-data"
-        }
+        body: formdata,
     })
     if(response.ok) {
         let added = await response.json();

@@ -59,19 +59,19 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs.Mappings
             int modelID;
             if (item.Model == null || item.Model.Id == 0)
             {
-                modelID = item.ModelId;
+                modelID = item.ModelId ?? 0;
             }
             else
             {
-                modelID = item.Model.Id;
+                modelID = item.Model.Id ?? 0;
             }
 
             Item entity = new Item
             {
-                Id = item.Id,
+                Id = item.Id ?? 0,
                 SerialNumber = item.SerialNumber,
                 ModelId = modelID,
-                UnitId = item.UnitId,
+                UnitId = item.UnitId ?? 0,
                 LocalName = item.LocalName,
                 Barcode = item.Barcode,
                 Date_Of_Reciept = item.Date_of_reciept,
@@ -84,6 +84,37 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs.Mappings
                 Purchase_Order = PurchaseOrder,
             };
             return entity;
+        }
+
+        public static ItemDTO ToItemDTOFromPost(this ItemPostDTO post)
+        {
+            EquipmentModelDTO model = new EquipmentModelDTO {
+                ModelName = post.ModelName,
+                ModelNumber = post.ModelNumber,
+                Category = post.Category,
+                Manufacturer = post.Manufacturer,
+                Weight = post.Weight,
+                Length = post.Length,
+                Height = post.Height,
+                Width   = post.Width,
+            };
+
+            ItemDTO item = new ItemDTO {
+
+                SerialNumber = post.SerialNumber,
+                LocalName = post.LocalName ?? "",
+                Barcode = post.Barcode ?? "",
+                Date_of_reciept = post.Date_of_reciept,
+                Date_of_commissioning = post.Date_of_commissioning,
+                Condition_on_reciept = post.Condition_on_reciept,
+                Current_Status_ID = post.Current_Status_ID,
+                Model = model,
+                UnitName = post.UnitName,
+                CurrentStatus = post.CurrentStatus
+            };
+            return item;
+
+
         }
     }
 }

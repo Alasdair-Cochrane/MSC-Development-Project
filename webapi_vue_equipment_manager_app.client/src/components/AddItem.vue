@@ -7,14 +7,14 @@
     import { store, UpdateModels } from "@/Store/Store";
     import { IsMobile } from "@/Services/DeviceService";
     import {useToast} from 'primevue/usetoast'
-import CustomFileUpload from "./CustomFileUpload.vue";
 
-
-const item = ref(new Item(new EquipmentModel(null,"","")))
+const item = ref(new Item(new EquipmentModel()))
 var mobile = ref(false);
 const condOptions = ["New", "Used"]
 const toast = useToast();
 const emit = defineEmits('itemSaved')
+const modelName = ref("")
+const modelNumber = ref("")
 
 onMounted(() => {
     mobile.value = IsMobile();
@@ -69,7 +69,7 @@ async function addNew(){
     }
 
 }
-const searchedModels = ref([])
+const searchedModels = ref([new EquipmentModel()])
 
 async function searchModelName(event){
     if(store.Models.length === 0) {await UpdateModels()}
@@ -78,6 +78,16 @@ async function searchModelName(event){
 async function searchModelNumber(event){
     if(store.Models.length === 0) {await UpdateModels()}
     searchedModels.value = store.Models.filter(x => x.modelNumber.startsWith(event.query))
+}
+
+function modelNameSelected(event){
+    item.value.model = event.value
+    modelNumber.value = item.value.model.modelNumber
+}
+
+function modelNumberSelected(event){
+    item.value.model = event.value
+    modelName.value = item.value.model.modelName
 }
 </script>
 <template>
@@ -113,13 +123,13 @@ async function searchModelNumber(event){
         <div class="input-group">
         <div class="input-field">
             <label for="modelName">Model Name</label>
-            <AutoComplete v-model="item.model" :suggestions="searchedModels" optionLabel="modelName" @complete="searchModelName" />
+            <AutoComplete v-model="modelName" :suggestions="searchedModels" optionLabel="modelName" @complete="searchModelName" @option-select="modelNameSelected"/>
             <!-- <InputText id="modelName" size="small" v-model="item.model.modelName"/> -->
         </div>
         <div class="input-field">
             <label for="modelNum">Model Number</label>
             <!-- <InputText id="modelNum" size="small" v-model="item.model.modelNumber"/> -->
-            <AutoComplete v-model="item.model" :suggestions="searchedModels" optionLabel="modelNumber" @complete="searchModelNumber" />
+            <AutoComplete v-model="modelNumber" :suggestions="searchedModels" optionLabel="modelNumber" @complete="searchModelNumber" @option-select="modelNumberSelected"/>
 
         </div>
         </div>  

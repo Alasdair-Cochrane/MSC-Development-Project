@@ -35,7 +35,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs.Mappings
         {
             return new EquipmentModel
             {
-                Id = dto.Id,
+                Id = dto.Id ?? 0,
                 ModelNumber = dto.ModelNumber,
                 ModelName = dto.ModelName,
                 Manufacturer = dto.Manufacturer,

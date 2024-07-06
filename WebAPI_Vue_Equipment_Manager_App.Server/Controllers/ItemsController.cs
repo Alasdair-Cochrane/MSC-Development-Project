@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using BrunoZell.ModelBinding;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using Microsoft.IdentityModel.Tokens;
 using System.Diagnostics;
 
@@ -61,24 +64,14 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> Insert(ItemDTO item)
+        public async Task<IActionResult> Insert([FromForm]ItemPostDTO item, IFormFile? image)
         {
 
-            //if(image != null) {
-            //    string? imageUrl = await UploadImage(image);
-            //    if(imageUrl != null) { item.ImageUrl = imageUrl; }
-            //    else { throw new ImageUploadException("Failed to upload : image url is null", new Exception()); }
-            //}
-            //if (!documents.IsNullOrEmpty())
-            //{
-            //    //handle document upload
-            //}
-
             if (!ModelState.IsValid) return BadRequest();
-            var added = await _itemSerivce.AddAsync(item);
+            var added = await _itemSerivce.AddAsync(item.ToItemDTOFromPost());
             if (added != null)
             {
-                return CreatedAtAction(nameof(Get), new { id = item.Id }, added);
+                return CreatedAtAction(nameof(Get), new { id = added.Id }, added);
             }
             return StatusCode(500);
         }
@@ -145,3 +138,6 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
 
     }
 }
+
+
+

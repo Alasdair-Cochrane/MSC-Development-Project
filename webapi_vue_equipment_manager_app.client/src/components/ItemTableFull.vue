@@ -110,7 +110,7 @@ const onRowEditSave = () => {}
                     </IconField>
                 </div>
                 <MultiSelect :modelValue="shownColumns" :options="columns" optionLabel="label" placeholder="Show Columns"
-                @update:modelValue="onToggle" display="chip" maxSelectedLabels="2"></MultiSelect>
+                @update:modelValue="onToggle" display="chip" maxSelectedLabels=2></MultiSelect>
             </div>
         </template>
 
