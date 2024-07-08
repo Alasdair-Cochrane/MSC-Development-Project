@@ -66,6 +66,14 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
         [HttpPost]
         public async Task<IActionResult> Insert([FromForm]ItemPostDTO item, IFormFile? image)
         {
+            
+            if(image != null)
+            {
+                item.ImageURL = await UploadImage(image);
+            }
+            else
+            {
+            }
 
             if (!ModelState.IsValid) return BadRequest();
             var added = await _itemSerivce.AddAsync(item.ToItemDTOFromPost());

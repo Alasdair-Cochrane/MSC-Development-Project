@@ -18,24 +18,13 @@ export default{
     </div>
     <div class="col-12 sm:col-4 right">
     <div class="added-list">
-        <div v-for="n in 15" class="item-content">
+        <div v-for="n in 1" class="item-content">
             <label>serial</label>
             <label>serial</label>
             <label>serial</label>
             <Button icon="pi pi-pencil"/>
         </div>
-        <div class="item-content">
-            <label>serial</label>
-            <label>serial</label>
-            <label>serial</label>
-            <Button icon="pi pi-pencil"/>
-        </div>
-        <div class="item-content">
-            <label>serial very large text</label>
-            <label>serial</label>
-            <label>serial</label>
-            <Button icon="pi pi-pencil"/>
-        </div>
+        
     </div>
 
     </div>

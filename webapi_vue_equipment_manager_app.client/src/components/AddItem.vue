@@ -1,53 +1,64 @@
 <script setup>
-    import { reactive, ref, onMounted } from "vue"
+    import { ref, onMounted } from "vue"
     import { Item } from '@/Models/Item';
     import {EquipmentModel } from '@/Models/EquipmentModel'
-    import { addItem, UploadImage } from '@/Services/ItemService'
-    import {GetAllModels} from '@/Services/EquipmentModelService'
+    import { addItem} from '@/Services/ItemService'
     import { store, UpdateModels } from "@/Store/Store";
     import { IsMobile } from "@/Services/DeviceService";
     import {useToast} from 'primevue/usetoast'
+
 
 const item = ref(new Item(new EquipmentModel()))
 var mobile = ref(false);
 const condOptions = ["New", "Used"]
 const toast = useToast();
 const emit = defineEmits('itemSaved')
-const modelName = ref("")
-const modelNumber = ref("")
+const selectedImage = ref()
+
+
 
 onMounted(() => {
     mobile.value = IsMobile();
+    item.value.condition_on_reciept = condOptions[0]
 })
 
 const imageUploaded = ref()
 
-const onUpload = async (event) =>{
-    if(event.files[0] != null)
-    {
-        let result = await UploadImage(event.files[0])
-        if(result.successful){
-            item.value.imageUrl = result.url
-            console.log(result.url)
-            toast.add({severity:'success', summary: 'Image Upload Successful', life: 2000 })
-
-        }
-        else{
-            toast.add({severity:'error', summary: 'Image Upload Unsuccessful', detail: result.error.title, life: 2000 })
-        }
-    
+const  isNotEmpty = (model) =>{
+    if(model === null || model === "" || model === undefined) {
+        return false;
     }
     else{
-        toast.add({severity:'error', summary: 'Image Not Found',life: 2000 })
+        return true;
     }
 }
+const requiredMessage = "Field Is Required"
+
+const validateSubmission = () =>
+{
+    if(
+        isNotEmpty(item.value.serialNumber) &&
+        isNotEmpty(item.value.unitName) &&
+        isNotEmpty(item.value.model.modelNumber) &&
+        isNotEmpty(item.value.model.modelName) &&
+        isNotEmpty(item.value.category) &&
+        isNotEmpty(item.value.currentStatus)
+    ) return true;
+    else {
+        return false
+    }
+}
+
 
 function clear(){
     item.value = new Item(new EquipmentModel())
 }
 
 async function save(){
-    const response = await addItem(item.value);
+    if(!validateSubmission()) {
+        return;
+    }
+    const response = await addItem(item.value, selectedImage.value);
     if(response.successful){
         toast.add({severity:'success', summary: 'Operation Successful', life: 2000 })
         const newItem = response.item
@@ -66,16 +77,28 @@ async function save(){
 async function addNew(){
     if(await save()){
     item.value = new Item(new EquipmentModel())
+    modelName.value = ""
+    modelNumber.value = ""
     }
-
 }
+
+function imageSelected(event){
+    selectedImage.value = event.files[0]
+    console.log("image selected")
+}
+
+
 const searchedModels = ref([new EquipmentModel()])
+const modelName = ref("")
+const modelNumber = ref("")
 
 async function searchModelName(event){
+    item.value.model.modelName = event.query
     if(store.Models.length === 0) {await UpdateModels()}
     searchedModels.value = store.Models.filter(x => x.modelName.startsWith(event.query))
 }
 async function searchModelNumber(event){
+    item.value.model.modelNumber = event.query
     if(store.Models.length === 0) {await UpdateModels()}
     searchedModels.value = store.Models.filter(x => x.modelNumber.startsWith(event.query))
 }
@@ -98,7 +121,8 @@ function modelNumberSelected(event){
         <div class="input-group">
             <div class="input-field">
                 <label for="serial">Serial Number</label>
-                <InputText id="serial" size="small" v-model="item.serialNumber"/>
+                <!-- <label class="validation-warning" v-if="!isNotEmpty(item.serialNumber) ">{{ requiredMessage }}</label> -->
+                <InputText id="serial" size="small" v-model="item.serialNumber" :invalid="!isNotEmpty(item.serialNumber)"/>
             </div>
             <div class="input-field">
                     <label for="serial">Barcode</label>
@@ -116,31 +140,35 @@ function modelNumberSelected(event){
                 
                 <div class="input-field">
             <label for="owner">Owner</label>
-            <Select id="owner" size="small" v-model="item.unitName" showClear :options="store.Units"/>
+            <!-- <label class="validation-warning" v-if="!isNotEmpty(item.unitName) ">{{ requiredMessage }}</label> -->
+            <Select id="owner" size="small" v-model="item.unitName" showClear 
+            :options="store.Units" :invalid="!isNotEmpty(item.unitName)"/>
         </div>
         </div>
         
         <div class="input-group">
         <div class="input-field">
             <label for="modelName">Model Name</label>
-            <AutoComplete v-model="modelName" :suggestions="searchedModels" optionLabel="modelName" @complete="searchModelName" @option-select="modelNameSelected"/>
-            <!-- <InputText id="modelName" size="small" v-model="item.model.modelName"/> -->
+            <!-- <label class="validation-warning" v-if="!isNotEmpty(modelName) ">{{ requiredMessage }}</label> -->
+            <AutoComplete v-model="modelName" :suggestions="searchedModels" optionLabel="modelName" @complete="searchModelName" @option-select="modelNameSelected" :invalid="!isNotEmpty(modelName)" />
         </div>
         <div class="input-field">
             <label for="modelNum">Model Number</label>
-            <!-- <InputText id="modelNum" size="small" v-model="item.model.modelNumber"/> -->
-            <AutoComplete v-model="modelNumber" :suggestions="searchedModels" optionLabel="modelNumber" @complete="searchModelNumber" @option-select="modelNumberSelected"/>
+            <!-- <label class="validation-warning" v-if="!isNotEmpty(modelNumber) ">{{ requiredMessage }}</label> -->
+            <AutoComplete v-model="modelNumber" :suggestions="searchedModels" optionLabel="modelNumber" @complete="searchModelNumber" @option-select="modelNumberSelected"  :invalid="!isNotEmpty(modelNumber)"/>
 
         </div>
         </div>  
         <div class="input-group">
         <div class="input-field">
             <label for="Manufacturer">Manufacturer</label>
-            <InputText id="manufacturer" size="small" v-model="item.model.manufacturer"/>
+            <!-- <label class="validation-warning" v-if="!isNotEmpty(item.model.manufacturer) ">{{ requiredMessage }}</label> -->
+            <InputText id="manufacturer" size="small" v-model="item.model.manufacturer"  :invalid="!isNotEmpty(item.model.manufacturer)"/>
         </div>
         <div class="input-field ">
             <label for="category">Category</label>
-            <InputText id="category" size="small" v-model="item.model.category"/>
+            <!-- <label class="validation-warning" v-if="!isNotEmpty(item.model.category) ">{{ requiredMessage }}</label> -->
+            <InputText id="category" size="small" v-model="item.model.category" :invalid="!isNotEmpty(item.model.category)"/>
         </div>
         </div>
 
@@ -192,7 +220,8 @@ function modelNumberSelected(event){
         </div>
         <div class="input-field">
             <label for="status">Current Status</label>
-            <InputText id="status" size="small" v-model="item.currentStatus"/>
+            <!-- <label class="validation-warning" v-if="!isNotEmpty(item.currentStatus) ">{{ requiredMessage }}</label> -->
+            <InputText id="status" size="small" v-model="item.currentStatus" :invalid="!isNotEmpty(item.currentStatus)"/>
         </div>
         <div class="card image-upload">
             <label>Upload Image</label>
@@ -203,7 +232,7 @@ function modelNumberSelected(event){
                 accept="image/*" 
                 :maxFileSize="1000000"
                 :custom-upload="true"
-                @uploader="onUpload"                
+                @select="imageSelected"                
                 />
         </div>
         <div class="submit-btns mobile" >
@@ -225,6 +254,11 @@ function modelNumberSelected(event){
 </template>
 <style scoped>
 
+.validation-warning{
+    font-size: small;
+    color: red !important;
+}
+
 
 .input-field{
     display: grid;
@@ -232,11 +266,11 @@ function modelNumberSelected(event){
     grid-template-rows: 1fr, 1fr;
     width: fit-content;
     margin-right: 0.5rem;
+    margin-top: 0.5rem;
 
 }
 .input-field label{
     color: black;
-    margin-block: 0.2rem;
 }
 
 .input-group{

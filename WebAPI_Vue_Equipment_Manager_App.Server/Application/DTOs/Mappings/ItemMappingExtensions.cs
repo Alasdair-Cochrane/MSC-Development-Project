@@ -110,7 +110,9 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs.Mappings
                 Current_Status_ID = post.Current_Status_ID,
                 Model = model,
                 UnitName = post.UnitName,
-                CurrentStatus = post.CurrentStatus
+                CurrentStatus = post.CurrentStatus,
+                ImageUrl = post.ImageURL,
+                
             };
             return item;
 

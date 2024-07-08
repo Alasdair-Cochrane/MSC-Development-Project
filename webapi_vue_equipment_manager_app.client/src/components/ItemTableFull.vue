@@ -261,4 +261,13 @@ const onRowEditSave = () => {}
     display: flex;
     justify-content: space-between
 }
+
+.p-datatable.p-datatable-sm .p-datatable-tbody  tr  td {
+    padding: 0 0 0 0.5rem !important;
+
+}
+.p-datatable.p-datatable-sm .p-datatable-tbody  tr {
+    height: 10px !important;
+}
+
 </style>

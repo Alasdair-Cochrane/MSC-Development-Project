@@ -1,6 +1,12 @@
 const route = "api/Items"
+import { Item } from "@/Models/Item";
+import { FormatDate } from "./FormatService";
 
 export async function addItem(item, image) {
+
+    var x = new Item()
+    item.date_of_commissioning = FormatDate(item.date_of_commissioning)
+    item.date_of_reciept = FormatDate(item.date_of_reciept)
 
     const formdata = new FormData();
     Object.keys(item).forEach(key => {if(item[key]) formdata.append(key,item[key])})
