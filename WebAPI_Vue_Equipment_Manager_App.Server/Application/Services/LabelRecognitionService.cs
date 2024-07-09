@@ -8,11 +8,11 @@ using System.Text.Json;
 
 namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services
 {
-    public class GoogleLabelRecognitionService : ILabelRecognitionService
+    public class GoogleLabelReaderService : ILabelReaderService
     {
         private readonly IWebHostEnvironment _env;
 
-        public GoogleLabelRecognitionService(IWebHostEnvironment env)
+        public GoogleLabelReaderService(IWebHostEnvironment env)
         {
             _env = env;
         }
@@ -55,7 +55,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services
 
     }
 }
-public interface ILabelRecognitionService {
+public interface ILabelReaderService {
 
     public Task<string> ReadImageAsync(IFormFile image);
 

@@ -32,7 +32,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Startup
             services.AddSingleton<IEntityCache<MaintenanceCategory>, InMemoryEntityCache<MaintenanceCategory>>();
             services.AddSingleton<IEntityCache<ItemStatusCategory>, InMemoryEntityCache<ItemStatusCategory>>();
 
-            services.AddScoped<ILabelRecognitionService, GoogleLabelRecognitionService>();
+            services.AddScoped<ILabelInterpretationService, GoogleLabelInterpretationService>();
 
         }
     }

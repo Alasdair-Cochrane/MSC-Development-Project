@@ -73,7 +73,6 @@ builder.Services.RegisterServices();
 
 //Configure
 
-
 var app = builder.Build();
 
 app.UseDefaultFiles();

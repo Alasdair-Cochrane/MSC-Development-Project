@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using WebAPI_Vue_Equipment_Manager_App.Server.Application.Services;
 
 namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
 {
@@ -6,18 +7,18 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
     [Route("api/[controller]")]
     public class AiController : ControllerBase
     {
-        private ILabelRecognitionService _labelRecognitionService;
+        private ILabelInterpretationService _interpretationService;
 
-        public AiController(ILabelRecognitionService labelRecognitionService)
+        public AiController(ILabelInterpretationService service)
         {
-            _labelRecognitionService = labelRecognitionService;
+           _interpretationService = service;
         }
 
         [HttpPost]
 
         public async Task<IActionResult> ReadLabel(IFormFile image)
         {
-            return  Ok( await _labelRecognitionService.ReadImageAsync(image));
+            return  Ok( await _interpretationService.InterpretLabelAsync(image));
         }
 
 
