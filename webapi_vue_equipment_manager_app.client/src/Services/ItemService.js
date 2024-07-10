@@ -4,7 +4,6 @@ import { FormatDate } from "./FormatService";
 
 export async function addItem(item, image) {
 
-    var x = new Item()
     item.date_of_commissioning = FormatDate(item.date_of_commissioning)
     item.date_of_reciept = FormatDate(item.date_of_reciept)
 
@@ -110,3 +109,48 @@ export async function UploadImage(image){
     }
 }
 
+export async function queryLabelImage(image){
+    const data = new FormData()
+    if(image) {
+        data.append('image', image)
+    }
+    else{
+        return {isValidLabel: false, errors: "submitted image is empty"}
+    }
+    try{
+        const response = await fetch("api/ai",{
+            method: "POST",
+            body: data
+        })
+        if(response.ok){            
+            var queryResponse =  await response.json();            
+            if(queryResponse.isValidLabel){
+                return {
+                    isValidLabel : true,
+                    item : {
+                        serialNumber : queryResponse.query.serialNumber,
+                        modelName : queryResponse.query.modelName,
+                        modelNumber : queryResponse.query.modelNumber,
+                        manufacturer : queryResponse.query.manufacturer,
+                        category : queryResponse.query.category,
+                        weight : queryResponse.query.weight,
+                        height : queryResponse.query.height,
+                        length : queryResponse.query.length,
+                        width : queryResponse.query.width,
+                    },
+                    errors :  queryResponse.errors
+                }                
+            }
+            else{
+                return {isValidLabel : false, errors : queryResponse.errors}
+            }
+        }
+        else{
+            console.log(await response.text())
+            return {isValidLabel : false, errors : [`Request to server failed: ${response.statusText}`]}
+        }
+    }
+    catch(err){
+        return {isValidLabel: false, errors: [err]}
+    }
+}

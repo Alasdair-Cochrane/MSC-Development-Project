@@ -15,13 +15,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers(
-    //options =>
-    //{
-    //    options.ModelBinderProviders.Insert(0, new ItempPostBinderProvider() );
-    //    options.ModelBinderProviders.Insert(1, new FormFileModelBinderProvider() );
-    //}
-    );
+builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -31,7 +25,7 @@ builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<DataInsertionExceptionHandler>();
 builder.Logging.AddConsole();
 builder.Services.AddHttpLogging(o => { });
-
+builder.Services.AddScoped<LoggingActionFilter>();
 
 //Configure Authentication/Authorisation
 

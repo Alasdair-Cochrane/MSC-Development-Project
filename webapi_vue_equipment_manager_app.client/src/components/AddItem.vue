@@ -2,10 +2,11 @@
     import { ref, onMounted } from "vue"
     import { Item } from '@/Models/Item';
     import {EquipmentModel } from '@/Models/EquipmentModel'
-    import { addItem} from '@/Services/ItemService'
+    import { addItem, queryLabelImage} from '@/Services/ItemService'
     import { store, UpdateModels } from "@/Store/Store";
     import { IsMobile } from "@/Services/DeviceService";
     import {useToast} from 'primevue/usetoast'
+    import InterpretImage from "@/components/InterpretImage.vue";
 
 
 const item = ref(new Item(new EquipmentModel()))
@@ -14,6 +15,8 @@ const condOptions = ["New", "Used"]
 const toast = useToast();
 const emit = defineEmits('itemSaved')
 const selectedImage = ref()
+const labelImage = ref()
+const showScanner = ref(false)
 
 
 
@@ -87,6 +90,32 @@ function imageSelected(event){
     console.log("image selected")
 }
 
+function labelImageSelected(event){
+    labelImage.value = event.files[0]
+}
+async function scanImage(){
+    if(labelImage.value)
+    var response = await queryLabelImage(labelImage.value)
+    console.log(response)
+    if(response.isValidLabel){
+        item.value = new Item(new EquipmentModel(null,
+        response.item.modelNumber,
+        response.item.modelName,
+        null,
+        response.item.manufacturer,
+        response.item.weight,
+        response.item.height,
+        response.item.length,
+        response.item.width,
+        response.item.category),
+        null,
+        response.item.serialNumber)
+        modelName.value = response.item.modelName,
+        modelNumber.value = response.item.modelNumber
+    }
+    
+}
+
 
 const searchedModels = ref([new EquipmentModel()])
 const modelName = ref("")
@@ -114,9 +143,12 @@ function modelNumberSelected(event){
 }
 </script>
 <template>
+    <Dialog v-model:visible="showScanner" modal header="Add New Item" :closable=false>
+        <InterpretImage @cancelled="showScanner = false"></InterpretImage>
+    </Dialog>
 <div class="grid-nogutter container">
 <div class="col-12 md:col-7">
-    
+        <Button @click="showScanner = true" label="scan"></Button>
     <form >
         <div class="input-group">
             <div class="input-field">
