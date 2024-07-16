@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebAPI_Vue_Equipment_Manager_App.Server.Application.Services;
 
@@ -6,6 +7,8 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
+
     public class DocumentsController : ControllerBase
     {
         private readonly IDocumentService _documentService;

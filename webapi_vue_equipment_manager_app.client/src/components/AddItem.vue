@@ -2,11 +2,12 @@
     import { ref, onMounted } from "vue"
     import { Item } from '@/Models/Item';
     import {EquipmentModel } from '@/Models/EquipmentModel'
-    import { addItem, queryLabelImage} from '@/Services/ItemService'
+    import { addItem} from '@/Services/ItemService'
     import { store, UpdateModels } from "@/Store/Store";
     import { IsMobile } from "@/Services/DeviceService";
     import {useToast} from 'primevue/usetoast'
     import InterpretImage from "@/components/InterpretImage.vue";
+import CaptureImage from "./CaptureImage.vue";
 
 
 const item = ref(new Item(new EquipmentModel()))
@@ -15,8 +16,9 @@ const condOptions = ["New", "Used"]
 const toast = useToast();
 const emit = defineEmits('itemSaved')
 const selectedImage = ref()
-const labelImage = ref()
+const imageDisplay = ref()
 const showScanner = ref(false)
+const showCamera = ref(false)
 
 
 
@@ -27,8 +29,8 @@ onMounted(() => {
 
 const imageUploaded = ref()
 
-const  isNotEmpty = (model) =>{
-    if(model === null || model === "" || model === undefined) {
+const  isNotEmpty = (modelField) =>{
+    if(modelField === null || modelField === "" || modelField === undefined) {
         return false;
     }
     else{
@@ -38,15 +40,17 @@ const  isNotEmpty = (model) =>{
 const requiredMessage = "Field Is Required"
 
 const validateSubmission = () =>
-{
+{   
     if(
         isNotEmpty(item.value.serialNumber) &&
         isNotEmpty(item.value.unitName) &&
         isNotEmpty(item.value.model.modelNumber) &&
         isNotEmpty(item.value.model.modelName) &&
-        isNotEmpty(item.value.category) &&
+        isNotEmpty(item.value.model.category) &&
         isNotEmpty(item.value.currentStatus)
-    ) return true;
+    ) {
+        return true;
+    }
     else {
         return false
     }
@@ -55,10 +59,16 @@ const validateSubmission = () =>
 
 function clear(){
     item.value = new Item(new EquipmentModel())
+    modelName.value = ""
+    modelNumber.value = ""
 }
 
 async function save(){
+    item.value.model.modelName = modelName.value;
+    item.value.model.modelNumber = modelNumber.value;
     if(!validateSubmission()) {
+        toast.add({severity:'error', summary: 'Required Fields Empty', life: 2000 })
+        console.log("item Invalid");
         return;
     }
     const response = await addItem(item.value, selectedImage.value);
@@ -68,6 +78,7 @@ async function save(){
         item.value.serialNumber="";
         item.value.localName="";
         item.value.barcode="";
+        console.log("Save Successful " + newItem)
         emit("itemSaved",newItem)
         return true;
     }
@@ -85,37 +96,17 @@ async function addNew(){
     }
 }
 
-function imageSelected(event){
-    selectedImage.value = event.files[0]
-    console.log("image selected")
+function assignImage(selectedImage){
+    selectedImage.value = selectedImage
+    imageDisplay.value.src = URL.createObjectURL(selectedImage)
 }
 
-function labelImageSelected(event){
-    labelImage.value = event.files[0]
+function imageScanConfirmed(scannedItem){
+    item.value = scannedItem;
+    modelName.value = scannedItem.model.modelName;
+    modelNumber.value = scannedItem.model.modelNumber;
+    showScanner.value = false;
 }
-async function scanImage(){
-    if(labelImage.value)
-    var response = await queryLabelImage(labelImage.value)
-    console.log(response)
-    if(response.isValidLabel){
-        item.value = new Item(new EquipmentModel(null,
-        response.item.modelNumber,
-        response.item.modelName,
-        null,
-        response.item.manufacturer,
-        response.item.weight,
-        response.item.height,
-        response.item.length,
-        response.item.width,
-        response.item.category),
-        null,
-        response.item.serialNumber)
-        modelName.value = response.item.modelName,
-        modelNumber.value = response.item.modelNumber
-    }
-    
-}
-
 
 const searchedModels = ref([new EquipmentModel()])
 const modelName = ref("")
@@ -143,12 +134,14 @@ function modelNumberSelected(event){
 }
 </script>
 <template>
-    <Dialog v-model:visible="showScanner" modal header="Add New Item" :closable=false>
-        <InterpretImage @cancelled="showScanner = false"></InterpretImage>
+<!--AI image scanner-->
+    <Dialog v-model:visible="showScanner" modal header="Scan" :closable=false :style="{ width: '400px' }" :breakpoints="{ '1199px': '75vw', '575px': '90vw' }">
+        <InterpretImage @cancelled="showScanner = false" @confirmed="imageScanConfirmed"></InterpretImage>
     </Dialog>
+
 <div class="grid-nogutter container">
 <div class="col-12 md:col-7">
-        <Button @click="showScanner = true" label="scan"></Button>
+        <Button @click="showScanner = true" label="Scan" id="btn-scan" icon="pi pi-camera"></Button>
     <form >
         <div class="input-group">
             <div class="input-field">
@@ -256,16 +249,9 @@ function modelNumberSelected(event){
             <InputText id="status" size="small" v-model="item.currentStatus" :invalid="!isNotEmpty(item.currentStatus)"/>
         </div>
         <div class="card image-upload">
-            <label>Upload Image</label>
-                <FileUpload  
-                ref="imageUploaded" 
-                mode="basic" 
-                name="imageFile[]" 
-                accept="image/*" 
-                :maxFileSize="1000000"
-                :custom-upload="true"
-                @select="imageSelected"                
-                />
+            <Dialog v-model:visible="showCamera" modal header="Scan Label" :closable=false :style="{ width: '400px' }" :breakpoints="{ '1199px': '75vw', '575px': '90vw' }">
+                <CaptureImage @imageConfirmed="assignImage" @cancelled="showCamera = false"/>
+            </Dialog>
         </div>
         <div class="submit-btns mobile" >
             <Button icon="pi pi-save" label="Save" class="s-btn" @click="save"></Button>
@@ -273,12 +259,12 @@ function modelNumberSelected(event){
             <Button icon="pi pi-eraser" label="Clear" severity="danger" class="s-btn" @click="clear"></Button>
         </div>
     </form>
+    <Image ref="imageDisplay" v-bind:src="item.imageUrl" width="250" preview></Image>
     </div>
 
     <div  class="col-12 md:col-5 right">
-        <Image v-bind:src="item.imageUrl" width="250" preview></Image>
         
-
+        
     </div>
     
 </div>
@@ -392,6 +378,10 @@ form{
 Button {
     container-type: inline-size;
 }
+#btn-scan{
+    width: 80%;
+}
+
 .p-fileupload :deep(.p-fileupload-header){
     padding: 0.4rem;
     display: flex;

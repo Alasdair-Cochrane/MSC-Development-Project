@@ -3,6 +3,9 @@ import HomeView from '@/views/HomeView.vue'
 import  AddItemView  from '@/views/AddItemView.vue'
 import SearchItemView from '@/views/SearchItemView.vue'
 import ManageItemsView from '@/views/ManageItemsView.vue'
+import LoginView from '@/views/LoginView.vue'
+
+
 
 const router = createRouter({
     history: createWebHistory(),
@@ -27,7 +30,13 @@ const router = createRouter({
             path: '/manage',
             name: 'manageItems',
             component: ManageItemsView
-        }
+        },
+        {
+            path: '/login',
+            name: 'login',
+            component: LoginView
+        },
+
     ]
 })
 

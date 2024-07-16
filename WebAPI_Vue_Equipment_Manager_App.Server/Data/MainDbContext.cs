@@ -36,10 +36,15 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data
 
 
             //builder.Entity<Unit>().HasData(
-                // new Unit { Id = 1, Name = "Admin" });
+            // new Unit { Id = 1, Name = "Admin" });
 
             builder.Entity<UserRole>().HasData(
-                new UserRole { Id = 1,Name = "Administrator" });
+                new UserRole { Id = 1, Name = "Administrator", NormalizedName = "ADMIN" },
+                new UserRole { Id = 2, Name = "PrivateUser", NormalizedName = "PRIVATE" },
+                new UserRole { Id = 3, Name = "PublicUser", NormalizedName = "PUBLIC" },
+                new UserRole { Id = 4, Name = "TemporaryUser", NormalizedName = "TEMP" }
+                ); ;
+
 
             builder.Entity<EquipmentModelCategory>().HasData(
                 new EquipmentModelCategory { Id = -1,Name = "Centrifuge" });

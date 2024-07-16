@@ -1,6 +1,7 @@
 <script setup>
 //https://developer.mozilla.org/en-US/docs/Web/API/Media_Capture_and_Streams_API/Taking_still_photos
 //https://stackoverflow.com/questions/11642926/stop-close-webcam-stream-which-is-opened-by-navigator-mediadevices-getusermedia
+//https://stackoverflow.com/questions/51755989/how-i-display-as-image-a-blob-object-with-js
 import {ref, onMounted} from 'vue'
 const width = 320
 var height = 320
@@ -69,8 +70,12 @@ function takePhoto() {
 
     context.drawImage(video.value, 0, 0, width, height);
     const data = canvas.value.toDataURL("image/png");
+  
+    //set value of file to be returned to the parent 
     canvas.value.toBlob((blob) => {capturedImage.value = blob}, "image/png" )
+    //set value of image element within component
     imageElement.value.setAttribute("src", data);
+    //close the video stream
     window.localStream.getTracks().forEach((track) => track.stop())
     imageCaptured.value = true;
   } else {
@@ -108,12 +113,12 @@ function submit(){
 <div class="container">
     <div class="viewport">
         <video v-show="!imageCaptured" ref="video"></video>
-        <img  v-show="imageCaptured" ref="imageElement" width="320" height="320">
+        <img  v-show="imageCaptured" ref="imageElement" width="320" height="240">
         <canvas ref="canvas" style="display:none;"></canvas>
         <div class="bttn-group">
           <Button v-if="!imageCaptured" id="btn-capture" @click="takePhoto" label="Capture"></Button>
           <input type="file" accept="image/*" @change="imageSelected"/>
-          <Button v-if="!imageCaptured" id="btn-cancel" @click="cancel" label="Cancel"></Button>
+          <Button v-if="!imageCaptured" id="btn-cancel" @click="cancel" label="Cancel" severity="danger"></Button>
         </div>
         <div class="bttn-group">
           <Button v-if="imageCaptured" id="btn-retake" @click="reTake" label="Re-Take"></Button>

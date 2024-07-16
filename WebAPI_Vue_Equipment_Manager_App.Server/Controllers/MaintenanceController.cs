@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs;
 using WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Services;
 
@@ -6,6 +7,8 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [Authorize]
+
     public class MaintenanceController : ControllerBase
     {
         private readonly IMaintenanceService _maintenanceService;

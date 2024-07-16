@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs;
 using WebAPI_Vue_Equipment_Manager_App.Server.Application.Services;
 using WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities;
@@ -7,6 +8,8 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
+
     public class ModelsController : ControllerBase
     {
         private readonly IEquipmentModelService _modelService;

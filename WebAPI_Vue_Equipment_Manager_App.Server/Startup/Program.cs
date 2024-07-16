@@ -29,25 +29,7 @@ builder.Services.AddScoped<LoggingActionFilter>();
 
 //Configure Authentication/Authorisation
 
-var key = Encoding.ASCII.GetBytes("TEST KEY DO NOT USE");
-
-builder.Services.AddAuthentication(options =>
-    {
-        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;}
-    ).AddJwtBearer(options =>
-    {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true, //source of token must be confirmed against approved issuer
-            ValidateAudience = true, //recipient of token must be confirmed against approved recipients
-            ValidateLifetime = true, // checks that the token has not expired
-            ValidateIssuerSigningKey = true, // checks the signature is valid - against the private key
-            ValidIssuer = "ISSUER",
-            ValidAudience = "AUDIENCE",
-            IssuerSigningKey = new SymmetricSecurityKey(key)        
-        };
-    });
+builder.Services.AddAuthentication();
 
 builder.Services.AddIdentityApiEndpoints<User>().
     AddEntityFrameworkStores<MainDbContext>();
@@ -69,12 +51,13 @@ builder.Services.RegisterServices();
 
 var app = builder.Build();
 
+
 app.UseDefaultFiles();
 app.UseStaticFiles();
 app.UseStatusCodePages();
 app.UseHttpLogging();
 
-app.MapIdentityApi<User>();
+app.MapGroup("/api").MapIdentityApi<User>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -83,11 +66,17 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+//https://weblog.west-wind.com/posts/2020/Mar/13/Back-to-Basics-Rewriting-a-URL-in-ASPNET-Core
+//need to rewrite login requests because of proxy routing 
+
 app.UseHttpsRedirection();
+
 
 app.UseAuthorization();
 
+
 app.MapControllers();
+
 
 app.MapFallbackToFile("/index.html");
 

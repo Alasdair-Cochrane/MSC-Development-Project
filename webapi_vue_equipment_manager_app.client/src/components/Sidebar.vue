@@ -1,3 +1,22 @@
+<script setup>
+
+import { ref } from 'vue'
+import { RouterLink} from 'vue-router'
+import { userLogout } from '@/Services/UserService';
+
+const expanded = ref(localStorage.getItem("expanded") === "true")
+
+const ToggleMenu = () => {
+    expanded.value = !expanded.value
+    localStorage.setItem("expanded", expanded.value)
+}
+
+const logOut = () => userLogout()
+
+
+
+</script>
+
 <template>
     <aside :class="`${expanded ? 'expanded' : ''}`">
         <div class="logo">
@@ -10,6 +29,11 @@
             </button>
         </div>
         <div class="menu">
+            <div>
+            <RouterLink to="/" class="menu-button">
+                <i class="pi pi-home menu-icon" />
+                <span class="menu-text">Home</span>
+            </RouterLink>
             <RouterLink to="/add" class="menu-button">
                 <i class="pi pi-plus menu-icon" />
                 <span class="menu-text">Add</span>
@@ -30,38 +54,18 @@
                 <i class="pi pi-building menu-icon" />
                 <span class="menu-text">Manage Locations</span>
             </RouterLink>
+         </div>
+         <div>
+            <div class="menu-button" id="sign-out" @click="logOut">
+                <i class="pi pi-sign-out menu-icon" />
+                <span class="menu-text">Sign Out</span>
+            </div>
         </div>
+        </div>
+       
 
     </aside>
 </template>
-<script>
-
-    import { ref } from 'vue'
-    import { RouterLink} from 'vue-router'
-
-    export default {
-        setup() {
-
-            const expanded = ref(localStorage.getItem("expanded") === "true")
-
-            const ToggleMenu = () => {
-                expanded.value = !expanded.value
-
-                localStorage.setItem("expanded", expanded.value)
-            }
-
-            return {
-                expanded,
-                ToggleMenu
-            }
-        }
-    }
-
-
-</script>
-
-
-
 
 <style scoped>
 
@@ -71,6 +75,7 @@
 
         background-color: var(--p-primary-color); /*COLOUR*/
         width: 4rem;
+        min-width: 4rem;
         height: 100%;
         min-height: 100vh;
         overflow: hidden;
@@ -139,6 +144,11 @@
 
     .menu{
         margin: 0 -1rem;
+        height: 100%;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
         .menu-button{
                    display: flex;
                    align-items: center;
@@ -178,6 +188,4 @@
         font-size: 1.2rem;
     }
 
-
-    
 </style>

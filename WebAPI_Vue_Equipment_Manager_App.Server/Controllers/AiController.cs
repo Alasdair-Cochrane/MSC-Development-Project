@@ -1,12 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using WebAPI_Vue_Equipment_Manager_App.Server.Application.Services;
 using WebAPI_Vue_Equipment_Manager_App.Server.Startup;
 
 namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Microsoft.AspNetCore.Mvc.Route("api/[controller]")]
     [ServiceFilter(typeof(LoggingActionFilter))]
+    [Authorize]
     public class AiController : ControllerBase
     {
         private ILabelInterpretationService _interpretationService;

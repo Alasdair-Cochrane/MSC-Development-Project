@@ -19,5 +19,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities
         [ForeignKey(nameof(ParentId))]
         public Unit? Parent { get; set; }
 
+        public ICollection<Unit> Children { get; set; }
+
     }
 }

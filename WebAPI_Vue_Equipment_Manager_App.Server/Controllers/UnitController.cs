@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs;
 using WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Services;
 
@@ -6,6 +7,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    //[Authorize]
     public class UnitController : ControllerBase
     {
         private readonly IUnitService _unitService;
@@ -21,10 +23,13 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
             var list = await _unitService.GetAllAsync();
             return Ok(list);
         }
+
+
+
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            var found = await _unitService.GetAsync(id);
+            var found = await _unitService.GetParentsById(id);
             if (found == null) {
                 return NotFound();
             }

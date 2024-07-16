@@ -1,6 +1,7 @@
 const route = "api/Items"
 import { Item } from "@/Models/Item";
 import { FormatDate } from "./FormatService";
+import { getAccessToken } from "./UserService";
 
 export async function addItem(item, image) {
 
@@ -19,6 +20,9 @@ export async function addItem(item, image) {
     try{
     const response = await fetch(route, {
         method: 'POST',
+        headers : {
+            "Authorization" : await getAccessToken()
+        },
         body: formdata,
     })
     if(response.ok) {
@@ -37,13 +41,46 @@ export async function addItem(item, image) {
     }
 }
 
+export async function updateItem(item){
+    item.date_of_commissioning = FormatDate(item.date_of_commissioning)
+    item.date_of_reciept = FormatDate(item.date_of_reciept)    
+    try{
+    const response = await fetch(route, {
+        method: 'PUT',
+        headers: {
+            "Content-Type" : "application/json",
+            "Authorization" : await getAccessToken()
+
+        },
+        body: JSON.stringify(item),
+    })
+    if(response.ok) {
+        let updated = await response.json();
+        console.log("update successful" + JSON.stringify(updated))
+        return {successful : true , item: updated}
+    }
+    else{
+        const errorDetails = await response.json()
+        console.log(`HTTP RESPONSE:${response.status} ${response.statusText}`)
+        console.log('Erorror Details:', errorDetails)
+        return {successful : false, error: errorDetails}
+    }
+    }catch(err){
+        console.error('Fetch Error: ',err)
+        return {successful : false, error: err}
+    }
+}
+
 export async function getAllItems() {
     let list = []
+    console.log(await getAccessToken())
     await fetch(route,
         {
            method : "GET",
             headers: {
-                "Content-Type" : "application/json"
+                "Content-Type" : "application/json",
+                "Authorization" : await getAccessToken()
+
             }
         }).then((response) => response.json()).then((data)=>
         list.push(...data))
@@ -58,7 +95,9 @@ export async function GetItem() {
         {
             method: "GET",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "Authorization" : await getAccessToken()
+
             }
         })
     let list = response.json()
@@ -77,16 +116,36 @@ export async function QueryItems(key, value){
         method: "GET",
         headers: {
             "Content-Type": "application/json",
-             "accept" :"application/json"
+             "accept" :"application/json",
+             "Authorization" : await getAccessToken()
+
         },
 
     })
     if(response.status == 404){
-        return [""]
+        return []
     }
-    let list = response.json()
-    console.log(list)
+    let list = await response.json()
+    return list;
+}
 
+export async function searchItemsByProperties(propertiesObject){
+    let queryParams = new URLSearchParams(propertiesObject).toString()
+    console.log(queryParams)
+    const response = await fetch(route + "?" + queryParams,
+        {method: "Get",
+            headers: {
+                "Content-Type": "application/json",
+                 "accept" :"application/json",
+                 "Authorization" : await getAccessToken()
+
+            },
+        }
+    )
+    if(response.status == 404){
+        return []
+    }
+    let list = await response.json()
     return list;
 }
 
@@ -94,6 +153,9 @@ export async function UploadImage(image){
     try{
     const response = await fetch(route +"/image",{
         method: 'POST',
+        headers : {
+            "Authorization" : await getAccessToken()
+        },
         body:image})
         if(response.ok){
             return {successful : true, url: response.json()}
@@ -109,6 +171,8 @@ export async function UploadImage(image){
     }
 }
 
+
+
 export async function queryLabelImage(image){
     const data = new FormData()
     if(image) {
@@ -120,6 +184,9 @@ export async function queryLabelImage(image){
     try{
         const response = await fetch("api/ai",{
             method: "POST",
+            headers : {
+                "Authorization" : await getAccessToken()
+            },
             body: data
         })
         if(response.ok){            

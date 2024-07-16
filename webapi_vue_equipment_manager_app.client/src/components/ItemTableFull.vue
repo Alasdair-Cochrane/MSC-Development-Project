@@ -81,6 +81,7 @@ const onRowEditSave = () => {}
 </script>
 
 <template>
+    <div class="wrapper">
     <DataTable :value="items" 
     tableStyle="min-width: 50rem" 
     v-model:selection="selectedItems"
@@ -255,8 +256,9 @@ const onRowEditSave = () => {}
 <Dialog v-model:visible="addNew" modal header="Add New Item">
     <AddItem></AddItem>
 </Dialog>
+</div>
 </template>
-<style>
+<style scoped>
 .header-bar{
     display: flex;
     justify-content: space-between
@@ -269,5 +271,6 @@ const onRowEditSave = () => {}
 .p-datatable.p-datatable-sm .p-datatable-tbody  tr {
     height: 10px !important;
 }
-
+.wrapper{
+}
 </style>

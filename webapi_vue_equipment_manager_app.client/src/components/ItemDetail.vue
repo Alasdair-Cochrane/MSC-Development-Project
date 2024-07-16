@@ -1,16 +1,20 @@
 <script setup>
-import {ref} from 'vue'
+import {onMounted, ref} from 'vue'
 import {Item} from '@/Models/Item'
 import {EquipmentModel} from '@/Models/EquipmentModel'
+import { updateItem } from '@/Services/ItemService';
 
 
-const selectedItem = ref(new Item(new EquipmentModel()))
 const editMode = ref(false)
 const emit = defineEmits(['editTrue'])
+const props = defineProps(['selectedItem'])
+const changedItem = defineModel()
 
 const toggleEdit = () => {
     editMode.value = !editMode.value
     emit('editTrue')}
+
+
 
 const upload = () => {}
 
@@ -23,68 +27,68 @@ const upload = () => {}
         <div class="field">
             <label class="fieldName">Serial Number</label>
             <label class="fieldValue" v-show="!editMode">{{ selectedItem.serialNumber }}</label>
-            <InputText v-show="editMode"></InputText>
+            <InputText v-show="editMode" v-model=changedItem.serialNumber></InputText>
         </div>
         <div class="field">
             <label class="fieldName">Local Identifier</label>
             <label class="fieldValue" v-show="!editMode">{{ selectedItem.localName }}</label>
-            <InputText v-show="editMode"></InputText>
+            <InputText v-show="editMode" v-model=changedItem.localName></InputText>
         </div>
         <div class="field">
             <label class="fieldName">Barcode</label>
             <label class="fieldValue" v-show="!editMode">{{ selectedItem.barcode }}</label>
-            <InputText v-show="editMode"></InputText>
+            <InputText v-show="editMode" v-model=changedItem.barcode></InputText>
 
         </div>
         <div class="field">
             <label class="fieldName">Owner</label>
             <label class="fieldValue" v-show="!editMode">{{ selectedItem.unitName }}</label>
-            <InputText v-show="editMode"></InputText>
+            <InputText v-show="editMode" v-model=changedItem.unitName></InputText>
         </div>
     </div>
     <div>
     <div class="detail-box">
         <div class="field">
             <label class="fieldName">Model Name</label>
-            <label class="fieldValue">{{ selectedItem.model?.modelName }}</label>
-            <InputText v-show="editMode"></InputText>
+            <label class="fieldValue" v-show="!editMode">{{ selectedItem.model?.modelName }}</label>
+            <InputText v-show="editMode" v-model="changedItem.model.modelName"></InputText>
         </div>
         <div class="field">
             <label class="fieldName">Model Number</label>
             <label class="fieldValue" v-show="!editMode">{{ selectedItem.model?.modelNumber }}</label>
-            <InputText v-show="editMode"></InputText>
+            <InputText v-show="editMode" v-model="changedItem.model.modelNumber"></InputText>
         </div>
         <div class="field">
             <label class="fieldName">Manufacturer</label>
             <label class="fieldValue" v-show="!editMode">{{ selectedItem.model?.manufacturer }}</label>
-            <InputText v-show="editMode"></InputText>
+            <InputText v-show="editMode" v-model="changedItem.model.manufacturer"></InputText>
         </div>
         <div class="field">
             <label class="fieldName">Category</label>
             <label class="fieldValue" v-show="!editMode">{{ selectedItem.model?.category }}</label>
-            <InputText v-show="editMode"></InputText>
+            <InputText v-show="editMode" v-model=changedItem.model.category></InputText>
         </div>
        </div>
         <div class="numerical">
             <div class="field">
                 <label class="fieldName">Weight</label>
                 <label class="fieldValue" v-show="!editMode">{{ selectedItem.model?.weight }}</label>
-                <InputText v-show="editMode"></InputText>
+                <InputText v-show="editMode" v-model="changedItem.model.weight"></InputText>
             </div>
             <div class="field">
                 <label class="fieldName">Height</label>
                 <label class="fieldValue" v-show="!editMode">{{ selectedItem.model?.height }}</label>
-                <InputText v-show="editMode"></InputText>
+                <InputText v-show="editMode" v-model="changedItem.model.height"></InputText>
             </div>
             <div class="field">
                 <label class="fieldName">Length</label>
                 <label class="fieldValue" v-show="!editMode">{{ selectedItem.model?.length }}</label>
-                <InputText v-show="editMode"></InputText>
+                <InputText v-show="editMode" v-model="changedItem.model.length"></InputText>
             </div>
             <div class="field">
-                <label class="fieldName">Depth</label>
-                <label class="fieldValue" v-show="!editMode">{{ selectedItem.model?.depth }}</label>
-                <InputText v-show="editMode"></InputText>
+                <label class="fieldName">Width</label>
+                <label class="fieldValue" v-show="!editMode">{{ selectedItem.model?.width }}</label>
+                <InputText v-show="editMode" v-model="changedItem.model.width"></InputText>
             </div>
         </div>
     </div>
@@ -93,34 +97,34 @@ const upload = () => {}
         <div class="field">
             <label class="fieldName">Date of Reciept</label>
             <label class="fieldValue" v-show="!editMode">{{ selectedItem.date_of_reciept }}</label>
-            <InputText v-show="editMode"></InputText>
+            <InputText v-show="editMode" v-model="changedItem.date_of_reciept"></InputText>
         </div>
         <div class="field">
             <label class="fieldName">Date of Commissioning</label>
             <label class="fieldValue" v-show="!editMode">{{ selectedItem.date_of_commissioning }}</label>
-            <InputText v-show="editMode"></InputText>
+            <InputText v-show="editMode" v-model="changedItem.date_of_commissioning"></InputText>
         </div>
         <div class="field">
             <label class="fieldName">Purchase Order</label>
             <label class="fieldValue" v-show="!editMode">{{ selectedItem.purchaseOrder }}</label>
-            <InputText v-show="editMode"></InputText>
+            <InputText v-show="editMode" v-model="changedItem.purchaseOrder"></InputText>
         </div>
         <div class="field">
             <label class="fieldName">Condition on Reciept</label>
             <label class="fieldValue" v-show="!editMode">{{ selectedItem.condition_on_reciept }}</label>
-            <InputText v-show="editMode"></InputText>
+            <InputText v-show="editMode" v-model="changedItem.condition_on_reciept"></InputText>
         </div>
         <div class="field">
             <label class="fieldName">Current Status</label>
             <label class="fieldValue" v-show="!editMode">{{ selectedItem.currentStatus }}</label>
-            <InputText v-show="editMode"></InputText>
+            <InputText v-show="editMode" v-model="changedItem.currentStatus"></InputText>
         </div>
     </div>
 </div>
     <div class="panel-2">
         <div class="edit-bttns">
             <Button label="Edit" v-if="!editMode" @click="toggleEdit"></Button>
-            <Button label="Save Changes" v-if="editMode"></Button>
+            <Button label="Save Changes" v-if="editMode" @click="updateItem(changedItem)"></Button>
             <Button label="Cancel" v-if="editMode" @click="toggleEdit"></Button>
         </div>
         <img id="image"/>
@@ -211,7 +215,7 @@ const upload = () => {}
     flex: 1 0 50%;
 }
 .fieldName{
-
+    font-weight: bold;
 }
 
 .numerical{

@@ -14,4 +14,5 @@ import ItemTableFull from '@/components/ItemTableFull.vue'
     padding: 1rem;
     height: auto;
 }
+
 </style>

@@ -67,27 +67,27 @@ return{
                 <div class="btn-container">
                     <RouterLink class="btn-box">
                         <label class="btn-label">Add Item</label> 
-                        <img src=/src/assets/plus-icon.svg/>            
+                        <i class="pi pi-plus"/>            
                     </RouterLink>
                 </div>
                 <div class="btn-container">
                     <RouterLink class="btn-box">
-                        <label class="btn-label">Add Item</label> 
-                        <img src=/src/assets/plus-icon.svg/>            
+                        <label class="btn-label">Search</label> 
+                        <i class="pi pi-search"/>            
                     </RouterLink>
                 </div>
             </div>
             <div class="btn-row">
                 <div class="btn-container">
                     <RouterLink class="btn-box">
-                        <label class="btn-label">Add Item</label> 
-                        <img src=/src/assets/plus-icon.svg/>            
+                        <label class="btn-label">Manage</label> 
+                        <i class="pi pi-table"/>            
                     </RouterLink>
                 </div>
                 <div class="btn-container">
                     <RouterLink class="btn-box">
-                        <label class="btn-label">Add Item</label> 
-                        <img src=/src/assets/plus-icon.svg/>            
+                        <label class="btn-label">Scan</label> 
+                        <i class="pi pi-camera"/>            
                     </RouterLink>
                 </div>
                 
@@ -99,31 +99,16 @@ return{
             <div class="btn-row">
                 <div class="btn-container">
                     <RouterLink class="btn-box">
-                        <label class="btn-label">Add Item</label> 
-                        <img src=/src/assets/plus-icon.svg/>            
+                        <label class="btn-label">Users</label> 
+                        <i class="pi pi-users"/>            
                     </RouterLink>
                 </div>
                 <div class="btn-container">
                     <RouterLink class="btn-box">
-                        <label class="btn-label">Add Item</label> 
-                        <img src=/src/assets/plus-icon.svg/>            
+                        <label class="btn-label">Locations</label> 
+                        <i class="pi pi-building"/>            
                     </RouterLink>
                 </div>
-            </div>
-            <div class="btn-row">
-                <div class="btn-container">
-                    <RouterLink class="btn-box">
-                        <label class="btn-label">Add Item</label> 
-                        <img src=/src/assets/plus-icon.svg/>            
-                    </RouterLink>
-                </div>
-                <div class="btn-container">
-                    <RouterLink class="btn-box">
-                        <label class="btn-label">Add Item</label> 
-                        <img src=/src/assets/plus-icon.svg/>            
-                    </RouterLink>
-                </div>
-                
             </div>
         </div>
 
@@ -138,14 +123,14 @@ return{
                         <Column field="status" header="Status"></Column>
                         <Column field="quantity" header="#"></Column>
                     </DataTable>
-                    <DataTable class="">
+                    <!-- <DataTable class="">
                         <Column field="type" header="Type"></Column>
                         <Column field="quantity" header="#"></Column>
-                    </DataTable>
+                    </DataTable> -->
                 </div>
                     <div class="right col-12 md:col-6" v-if="mobileScreen">
                         <Chart type="doughnut" :data="chartData" :options="chartOptions"></Chart>
-                        <Chart type="doughnut" :data="chartData" :options="chartOptions"></Chart>
+                        <!-- <Chart type="doughnut" :data="chartData" :options="chartOptions"></Chart> -->
                     </div>   
             </div>
             <div class="panel activity">
@@ -186,9 +171,9 @@ return{
         flex-direction: row;
             max-height: 300px;
     }
-    /* .p-chart{
-    height: auto;
-    } */
+    .p-chart{
+    display: none
+    }
 }
 
 
@@ -199,10 +184,8 @@ return{
     flex: 1;
     max-height: 50%;
     margin-block: 0.5rem;
-
-    
-     
 }
+
 .right{
     flex: 1;
         height: auto; 
@@ -265,9 +248,14 @@ return{
         background-color: var(--p-surface-0);
 }
 
-.btn-box img{
+.btn-box i{
     height: 100%;
     z-index: 98;
+    justify-self: center;
+    align-self: center;
+    align-content: center;
+    font-size: 4.5rem;
+    color: black;
 }
 
 .btn-group{
@@ -275,7 +263,6 @@ return{
         height: fit-content;  
         flex-direction: column;
         flex-wrap: wrap;    
-
     }
 
 .btn-row{

@@ -1,13 +1,7 @@
 ﻿using BrunoZell.ModelBinding;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
-using Microsoft.IdentityModel.Tokens;
-using System.Diagnostics;
 
-using System.Text.Json;
-using System.Web.Http.Results;
 using WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs;
 using WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs.Mappings;
 using WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs.Queries;
@@ -20,6 +14,8 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
+
     public class ItemsController : ControllerBase
     {
         private readonly IItemService _itemSerivce;

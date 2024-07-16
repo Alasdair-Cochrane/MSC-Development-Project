@@ -54,6 +54,16 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Se
             }
             return updated.ToDTO();
         }
+
+        public async Task<IEnumerable<int>> GetChildrenById(int id)
+        {
+            return await _repository.GetChildrenIDsOfUnit(id);
+        }
+        public async Task<IEnumerable<int>> GetParentsById(int id)
+        {
+            return await _repository.GetParentIDsofUnit(id);
+        }
+
     }
 
     public interface IUnitService
@@ -63,6 +73,9 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Se
             public Task DeleteAsync(int id);
             public Task<UnitDTO?> GetAsync(int id);
             public Task<IEnumerable<UnitDTO>> GetAllAsync();
-        
+            
+            public Task<IEnumerable<int>> GetChildrenById(int id);
+        public Task<IEnumerable<int>> GetParentsById(int id);
+
     }
 }

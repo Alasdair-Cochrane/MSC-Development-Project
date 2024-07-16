@@ -17,25 +17,31 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Error_Handling
 
         public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
         {
-            if (exception is not DataInsertionException)
+            if (exception is not DataInsertionException || exception is not ImageUploadException || exception is not UnitException)
             {
-                await httpContext.Response.WriteAsJsonAsync("something happened");
                 _logger.LogError(exception.Message);
                 return false;
-            }
-            DataInsertionException ex = exception as DataInsertionException;
+            }           
 
-            httpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-            await httpContext.Response.WriteAsJsonAsync(new ProblemDetails
+            else
             {
-                Title = "Error occured when Adding element to Database",
-                Detail = ex.Message ?? "Data Insertion Exception",
-                Type = ex.GetType().Name,
-                Status = (int) HttpStatusCode.BadRequest,
-            }, cancellationToken);
-            _logger.LogError(ex.Message, ex.StackTrace);
-            return true;
+                httpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                await httpContext.Response.WriteAsJsonAsync(new ProblemDetails
+                {
+                    Title = exception.GetType().Name,
+                    Detail = exception.Message ,
+                    Status = (int)HttpStatusCode.BadRequest,
+                }, cancellationToken);
+                _logger.LogError(exception.Message, exception.StackTrace);
+                return true;
+            }
+            
+            
         }
+
+
+
+       
     }
 
 }

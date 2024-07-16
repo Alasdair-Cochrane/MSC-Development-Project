@@ -1,4 +1,5 @@
-﻿using WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.Abstract_Classes;
+﻿using Microsoft.VisualStudio.TestPlatform.CommunicationUtilities;
+using WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.Abstract_Classes;
 
 namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Error_Handling
 {
@@ -19,6 +20,17 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Error_Handling
         }
 
     }
-    public class ImageUploadException(string message, Exception innerException) :Exception(message, innerException) { }
+    public class ImageUploadException : Exception {
+    
+        public ImageUploadException(string message) : base(message) { }
+        public ImageUploadException(string message, Exception innerException) :base(message,innerException) { }
+    }
+
+    public class UnitException : Exception { 
+    
+        public UnitException(string message) : base(message) { }
+        public UnitException(string message, Exception innerException):  base(message, innerException) { }
+    
+    }
 
 }
