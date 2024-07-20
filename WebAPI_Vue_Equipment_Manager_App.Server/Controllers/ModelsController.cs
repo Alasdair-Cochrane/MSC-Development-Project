@@ -8,7 +8,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize]
+  //  [Authorize]
 
     public class ModelsController : ControllerBase
     {

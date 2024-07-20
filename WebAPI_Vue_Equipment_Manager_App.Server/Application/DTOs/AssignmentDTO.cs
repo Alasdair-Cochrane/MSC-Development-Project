@@ -5,11 +5,11 @@
         public required int UserId { get; set; }
         public required int RoleId { get; set; }
         public required int UnitId { get; set; }
-        public required string UnitName { get; set; }
-        public required string RoleName { get; set; }
-        public required string FirstName { get; set; }
-        public required string LastName { get; set;}
-        public required string Email { get; set; }
+        public string? UnitName { get; set; }
+        public string? RoleName { get; set; }
+        public string? FirstName { get; set; }
+        public string? LastName { get; set;}
+        public string? Email { get; set; }
 
     }
 

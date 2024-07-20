@@ -1,28 +1,48 @@
 <script setup>
-import {ref} from 'vue';
+import { getRootUnits } from '@/Services/UnitService';
+import {onMounted, ref} from 'vue';
+import AddUnit from './AddUnit.vue';
 
 const email = ref(null)
 const password = ref(null)
 const fName = ref()
 const lName = ref()
 
+
 const successfull = ref(false)
 const unsuccessfull = ref(false)
+const errors = ref()
+
 const loading = ref(false)
+const organisations = ref([])
+
+const showCreateOrganisations = ref(false)
+const selectedOrganisation = ref()
+
+function  createNewOrganisation(org) {
+    selectedOrganisation.value = org;
+    organisations.value.push(org);
+    showCreateOrganisations.value = false;
+}
 
 
-const errors = ref([])
+onMounted(async () => {
+    organisations.value = await getRootUnits()}
+)
 
 async function register(){
     loading.value = true;
+
     let user = {
         email : email.value,
         password : password.value,
         firstName : fName.value,
-        lastName : lName.value
+        lastName : lName.value,
+        organisation : selectedOrganisation.value
     }
 
-    var response = await fetch('api/user/register',
+
+    var response = await fetch('api/users/register',
         {
             method: "POST",
             headers: {
@@ -38,7 +58,7 @@ async function register(){
         let result = await response.json()
         unsuccessfull.value = true;
         errors.value = result.errors;
-        console.log(result.errors)
+        console.log(result)
     }
     loading.value = false;
 }
@@ -64,11 +84,19 @@ async function register(){
             <Password id="password-register" v-model="password" toggleMask :invalid="accessFailed"/>
             <label for="password-register">Password</label>
         </FloatLabel>
+        <div id="organisation">
+            <Select placeholder="Organisation" :options="organisations" optionLabel="name" v-model="selectedOrganisation" showClear></Select>
+            <Button id="new-org-bttn" label="New" icon="pi pi-plus" @click="showCreateOrganisations = true" severity="warn"></Button>
+            <Dialog v-model:visible=showCreateOrganisations header="Organisation">
+                <AddUnit :delay=true @cancelled="showCreateOrganisations = false" @created="createNewOrganisation" modal></AddUnit>
+            </Dialog>
+        </div>
+
         <Button label="Register" @click="register"></Button>
         
     </div>
-    <div v-show="successfull">
-        <label>Registration Successfull!</label>
+    <div v-show="successfull" id="registration-sucess">
+        <label >Registration Successfull!</label>
     </div>
     <div class="bottom-links">
             <Button label="Back to Login" icon="pi pi-arrow-circle-left" severity="secondary" @click="$emit('login')"></Button>
@@ -111,4 +139,23 @@ async function register(){
 .p-inputtext{
     min-width: 234px;
 }
+
+#organisation{
+    display: flex;
+    flex: 1;
+    gap : 10px;
+}
+#registration-sucess{
+    padding: 2rem;
+    background-color: rgb(149, 237, 142);
+    border-radius: 5%;
+    margin: 1rem;
+    
+}
+#registration-sucess label{
+   color: white;
+   font-weight: bold;
+    
+}
+
 </style>

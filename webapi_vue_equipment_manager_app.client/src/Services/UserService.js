@@ -44,7 +44,7 @@ export async function getAccessToken(){
         headers: {
             "Content-Type": "application/json"
         },
-        body: JSON.stringify({refreshToken : t.token.refreshToken}),
+        body: JSON.stringify({"refreshToken" : t.token.refreshToken}),
     })
     if(response.ok){
         let t = await response.json()

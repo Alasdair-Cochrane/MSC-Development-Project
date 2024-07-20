@@ -28,6 +28,3 @@ export function getSearchFields(){
          "Category" : "Category" }
 }
 
-export function mapIncoming(){
-
-}

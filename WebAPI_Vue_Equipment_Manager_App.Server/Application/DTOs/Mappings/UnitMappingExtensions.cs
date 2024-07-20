@@ -4,7 +4,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs.Mappings
 {
     public static class UnitMappingExtensions
     {
-        public static UnitDTO ToDTO (this Unit unit)
+        public static UnitDTO ToDTO (this Unit unit, IEnumerable<AssignmentDTO>? assignments = null)
         {
             var dto = new UnitDTO
             {
@@ -14,6 +14,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs.Mappings
                 Room = unit.Room,
                 Address = unit.Address,
                 ParentId = unit.ParentId,
+                AssigedUsers = assignments?.ToList()
             };
             return dto;
         }
@@ -22,7 +23,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs.Mappings
         {
             var entity = new Unit
             {
-                Id = unit.Id,
+                Id = unit.Id ?? 0,
                 Name = unit.Name,
                 Building = unit.Building,
                 Room = unit.Room,

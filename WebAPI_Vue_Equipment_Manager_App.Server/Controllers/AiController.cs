@@ -7,7 +7,6 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
 {
     [ApiController]
     [Microsoft.AspNetCore.Mvc.Route("api/[controller]")]
-    [ServiceFilter(typeof(LoggingActionFilter))]
     [Authorize]
     public class AiController : ControllerBase
     {

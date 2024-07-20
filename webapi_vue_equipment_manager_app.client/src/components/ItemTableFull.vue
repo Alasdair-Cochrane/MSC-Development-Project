@@ -43,11 +43,8 @@ const clearFilters = () => {
 onMounted( async () => {
     items.value = await getAllItems().catch(() => loading.value = false)
     loading.value = false
-    shownColumns.value = columns.value
+    shownColumns.value = columns.value;   
 })
-
-
-
 
 const columns = ref([
     {label: "Serial Number" , show: true},
@@ -57,12 +54,12 @@ const columns = ref([
     {label: "Model Name" , show: true},
     {label: "Manufacturer" , show: true},
     {label: "Category" , show: true},
-    {label: "Weight" , show: true},
-    {label: "Length" , show: true},
-    {label: "Width " , show: true},
-    {label: "Height" , show: true},
-    {label: "Reciept Date" , show: true},
-    {label: "Commission Date" , show: true},
+    {label: "Weight" , show: false},
+    {label: "Length" , show: false},
+    {label: "Width " , show: false},
+    {label: "Height" , show: false},
+    {label: "Reciept Date" , show: false},
+    {label: "Commission Date" , show: false},
     {label: "Owner" , show: true},
     {label: "Status" , show: true},
 ])
@@ -117,8 +114,7 @@ const onRowEditSave = () => {}
 
     <template #empty> No Items Found. </template>
     <template #loading> Loading data. Please wait. </template>
-<!-- CHECKBOX COLUMN -->
-    <Column selectionMode="multiple" headerStyle="width:3rem"></Column>
+
 
 <!-- SERIAL NUMBER -->
     <Column field="serialNumber" header="Serial Number" sortable v-if="columns[0].show">
@@ -248,8 +244,8 @@ const onRowEditSave = () => {}
             <MultiSelect v-model="filterModel.value" :options="store.Statuses" placeholder="select"></MultiSelect>
         </template>
     </Column>
-<!-- EDITOR -->
-<Column :rowEditor="true" style="width: fit-content;flex:1; min-width: 4rem" bodyStyle="text-align:center"></Column>
+<!-- EDITOR
+<Column :rowEditor="true" style="width: fit-content;flex:1; min-width: 4rem" bodyStyle="text-align:center"></Column> -->
 
 </DataTable>
 

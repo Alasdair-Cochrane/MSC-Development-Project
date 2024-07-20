@@ -4,6 +4,7 @@ import  AddItemView  from '@/views/AddItemView.vue'
 import SearchItemView from '@/views/SearchItemView.vue'
 import ManageItemsView from '@/views/ManageItemsView.vue'
 import LoginView from '@/views/LoginView.vue'
+import UnitsView from '@/views/UnitsView.vue'
 
 
 
@@ -36,6 +37,11 @@ const router = createRouter({
             name: 'login',
             component: LoginView
         },
+        {
+            path: '/units',
+            name: 'units',
+            component: UnitsView
+        }
 
     ]
 })

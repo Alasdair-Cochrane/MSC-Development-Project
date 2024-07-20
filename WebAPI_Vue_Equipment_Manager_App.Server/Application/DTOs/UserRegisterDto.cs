@@ -9,6 +9,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs
         [EmailAddress]
         public required string Email { get; set; }
         public required string Password { get; set; }
+        public UnitDTO? Organisation { get; set; }
 
     }
 

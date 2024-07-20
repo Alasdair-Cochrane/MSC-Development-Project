@@ -6,11 +6,11 @@ using System.Net;
 
 namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Error_Handling
 {
-    public class DataInsertionExceptionHandler : IExceptionHandler
+    public class ExceptionHandler : IExceptionHandler
     {
-        private readonly ILogger<DataInsertionExceptionHandler> _logger;
+        private readonly ILogger<ExceptionHandler> _logger;
 
-        public DataInsertionExceptionHandler(ILogger<DataInsertionExceptionHandler> logger)
+        public ExceptionHandler(ILogger<ExceptionHandler> logger)
         {
             _logger = logger;
         }
@@ -23,6 +23,18 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Error_Handling
                 return false;
             }           
 
+            else if(exception is UnauthorisedOperationException)
+            {
+                httpContext.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                await httpContext.Response.WriteAsJsonAsync(new ProblemDetails
+                {
+                    Title = exception.GetType().Name,
+                    Detail = exception.Message,
+                    Status = (int)HttpStatusCode.Unauthorized,
+                }, cancellationToken);
+                _logger.LogError(exception.Message, exception.StackTrace);
+                return true;
+            }
             else
             {
                 httpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;

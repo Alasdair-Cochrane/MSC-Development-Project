@@ -47,7 +47,7 @@ async function login(){
         </FloatLabel>
         <Button label="Login" @click="login" :loading="loading"></Button>
         <div class="bottom-links">
-            <Button label="Forgot Password" severity="secondary" @click="$emit('passwordForgot')"></Button>
+            <!-- <Button label="Forgot Password" severity="secondary" @click="$emit('passwordForgot')"></Button> -->
             <Button label="Register" severity="secondary" @click="$emit('register')"></Button>
         </div>
     </div>

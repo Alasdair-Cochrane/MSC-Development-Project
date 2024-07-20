@@ -9,6 +9,9 @@ using System.Text;
 using WebAPI_Vue_Equipment_Manager_App.Server.Startup;
 using WebAPI_Vue_Equipment_Manager_App.Server.Application.Error_Handling;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
+using Google.Protobuf.WellKnownTypes;
+using Microsoft.OpenApi.Models;
+using System.Xml.Linq;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,14 +21,42 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
+//https://www.infoworld.com/article/2334527/implement-authorization-for-swagger-in-aspnet-core.html
+//To allow authorisation access when debuggin in the Swagger UI
+builder.Services.AddSwaggerGen(options =>
+    {
+        options.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+        {
+            
+        In = ParameterLocation.Header,
+        Description = "Please enter a valid token",
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+                BearerFormat = "JWT",
+        Scheme = "Bearer"
+    });
+        options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type=ReferenceType.SecurityScheme,
+                    Id="Bearer"
+                }
+            },
+            new string[]{}
+        }});
+    });
+
 builder.Services.AddAuthorization();
 builder.Services.AddProblemDetails();
 
-builder.Services.AddExceptionHandler<DataInsertionExceptionHandler>();
+builder.Services.AddExceptionHandler<ExceptionHandler>();
 builder.Logging.AddConsole();
 builder.Services.AddHttpLogging(o => { });
-builder.Services.AddScoped<LoggingActionFilter>();
 
 //Configure Authentication/Authorisation
 
@@ -64,10 +95,9 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.MapSwagger().RequireAuthorization();
 }
 
-//https://weblog.west-wind.com/posts/2020/Mar/13/Back-to-Basics-Rewriting-a-URL-in-ASPNET-Core
-//need to rewrite login requests because of proxy routing 
 
 app.UseHttpsRedirection();
 

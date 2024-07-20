@@ -32,11 +32,12 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data
             builder.Entity<MaintenanceCategory>().HasIndex(e => e.Name).IsUnique();
             builder.Entity<EquipmentModelCategory>().HasIndex(e => e.Name).IsUnique();
             builder.Entity<ItemStatusCategory>().HasIndex(e => e.Name).IsUnique();
+            builder.Entity<Unit>().HasIndex(e => e.Name).IsUnique();
 
-
-
-            //builder.Entity<Unit>().HasData(
-            // new Unit { Id = 1, Name = "Admin" });
+            builder.Entity<Unit>().
+                HasOne<Unit>().
+                WithMany().
+                HasForeignKey(x => x.ParentId);
 
             builder.Entity<UserRole>().HasData(
                 new UserRole { Id = 1, Name = "Administrator", NormalizedName = "ADMIN" },
@@ -44,6 +45,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data
                 new UserRole { Id = 3, Name = "PublicUser", NormalizedName = "PUBLIC" },
                 new UserRole { Id = 4, Name = "TemporaryUser", NormalizedName = "TEMP" }
                 ); ;
+
 
 
             builder.Entity<EquipmentModelCategory>().HasData(

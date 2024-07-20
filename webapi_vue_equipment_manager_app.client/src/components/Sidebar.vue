@@ -50,9 +50,9 @@ const logOut = () => userLogout()
                 <i class="pi pi-users menu-icon" />
                 <span class="menu-text">Manage Users</span>
             </RouterLink>
-            <RouterLink class="menu-button">
+            <RouterLink class="menu-button" to="/units">
                 <i class="pi pi-building menu-icon" />
-                <span class="menu-text">Manage Locations</span>
+                <span class="menu-text">Manage Units</span>
             </RouterLink>
          </div>
          <div>

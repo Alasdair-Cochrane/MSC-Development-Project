@@ -32,5 +32,11 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Error_Handling
         public UnitException(string message, Exception innerException):  base(message, innerException) { }
     
     }
+    public class UnauthorisedOperationException : Exception
+    {
 
+        public UnauthorisedOperationException(string message) : base(message) { }
+        public UnauthorisedOperationException(string message, Exception innerException) : base(message, innerException) { }
+
+    }
 }

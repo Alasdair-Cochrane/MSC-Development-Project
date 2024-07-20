@@ -47,8 +47,8 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Se
                 //throw an exception
                 throw new DataInsertionException("failed to find or create model entry when adding item", entity);
             }
-            int unitId = await _unitRepository.FindByName(item.UnitName);
-            if(unitId == -1)
+            var unit = await _unitRepository.FindByName(item.UnitName);
+            if(unit == null)
             {
                 string entity = JsonSerializer.Serialize(item);
 
@@ -56,7 +56,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Se
             }
             Item newItem = item.ToEntity(statusCategoryID);
             newItem.ModelId = model.Id;
-            newItem.UnitId = unitId;
+            newItem.UnitId = unit.Id;
             var added = await _ItemRepository.AddAsync(newItem);
             if(added == null)
             {

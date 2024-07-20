@@ -7,7 +7,7 @@ using WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities;
 
 namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
 {
-    public class UserRepository
+    public class UserRepository : IUserRepository
     {
         private readonly MainDbContext _context;
         private readonly IUnitRepository _unitRepository;
@@ -18,40 +18,9 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
             _unitRepository = unitRepository;
         }
 
-        public async Task<bool> CheckUserHasRoleInUnit(int userId, int roleId, int unitId)
-        {
-            var assignment = await _context.Assignments.AllAsync(x =>
-            x.UserId == userId && 
-            x.UnitId == unitId && 
-            x.RoleId == roleId);
-            return assignment;
-        }
 
-        //checks whether a user is an admin of the unit or of any of the unit's parents
-        public async Task<bool> CheckUserIsAdminInParentOfUnit(int userId, int unitId)
-        {
-            var adminRoleUnits = await GetUnitIdsWithUserRole(userId, 1);
 
-            if(adminRoleUnits.IsNullOrEmpty()) { return false; }
-
-            var children = await _unitRepository.GetParentIDsofUnit(unitId);
-
-            return children.Any(x => adminRoleUnits.Contains(x));
-
-        }
-
-        
-        //Returns those units where the specified user has been assigned the specified role
-        public async Task<IEnumerable<int>> GetUnitIdsWithUserRole(int userId, int roleId)
-        {
-            var units = await _context.Assignments.
-                Where(x => x.UserId == userId && x.RoleId == roleId).
-                Select(x => x.UnitId).
-                ToListAsync();
-            return units;
-        }
-
-        public async Task<IEnumerable<AssignmentDTO>> GetUserAssingmentsbyId(int userId)
+        public async Task<IEnumerable<AssignmentDTO>> GetUserAssingmentsDTObyIdAsync(int userId)
         {
             var assignments = await _context.Assignments.Where(
                 x => x.UserId == userId).
@@ -70,7 +39,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
         }
 
 
-        public async Task<IEnumerable<AssignmentDTO>> GetUserAssingmentsbyEmail(string email)
+        public async Task<IEnumerable<AssignmentDTO>> GetUserAssingmentsDTObyEmailAsync(string email)
         {
             var userId = await _context.Users.Where(x => x.Email == email).
                 Select(x => x.Id).
@@ -92,20 +61,58 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
             return assignments;
         }
 
-        public async Task<IEnumerable<UserDetailsDTO>> GetUsersInUnit(int unitId)
+        public async Task<IEnumerable<UserAssignment>> GetUserAssignmentsbyEmailAsync(string email)
         {
-            var users = await _context.Assignments.Where(x => x.UnitId == unitId).
-                Select(x => new UserDetailsDTO
-                {
-                    Id = x.UserId,
-                    FirstName = x.User.FirstName,
-                    LastName = x.User.LastName,
-                    Email = x.User.Email ?? "",
-                    Role = x.Role.Name,
-                }).ToListAsync();
+            var userId = await _context.Users.Where(x => x.Email == email).
+                Select(x => x.Id).
+                FirstOrDefaultAsync();
 
-            return users;
+            var assignments = await _context.Assignments.Where(
+                x => x.UserId == userId).ToListAsync();
+            return assignments;
         }
+
+        public async Task<UserAssignment> CreateAssignment(int unitId, int roleId, int userId)
+        {
+            var assignment = _context.Assignments.Add(new UserAssignment
+            {
+                UserId = userId,
+                RoleId = roleId,
+                UnitId = unitId,
+            }).Entity;
+            await _context.SaveChangesAsync();
+            return assignment;
+        }
+
+        public async Task<UserAssignment> Update(int unitId, int roleId, int userId)
+        {
+            var assignment = _context.Assignments.Update(new UserAssignment
+            {
+                UserId = userId,
+                RoleId = roleId,
+                UnitId = unitId,
+            }).Entity;
+            await _context.SaveChangesAsync();
+            return assignment;
+        }
+
+        public async Task Delete(int unitId, int roleId, int userId)
+        {
+            _context.Assignments.Remove(new UserAssignment
+            {
+                UserId = userId,
+                RoleId = roleId,
+                UnitId = unitId,
+            });
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<int> GetUserIdByEmail(string email)
+        {
+            int id = await _context.Users.Where(x => x.Email == email).Select(x => x.Id).FirstOrDefaultAsync();
+            return id;
+        }
+
 
 
 

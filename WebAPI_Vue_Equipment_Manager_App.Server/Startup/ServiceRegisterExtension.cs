@@ -17,6 +17,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Startup
             services.AddScoped<IUnitRepository, UnitRepository>();
             services.AddScoped<IMaintenanceRepository, MaintenanceRepository>();
             services.AddScoped<IItemQueryBuilder, ItemQueryBuilder>();
+            services.AddScoped<IUserRepository, UserRepository>();
             
         }
         public static void RegisterServices(this IServiceCollection services)
@@ -24,6 +25,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Startup
             services.AddScoped<IEquipmentModelService, EquipmentModelsService>();
             services.AddScoped<IItemService, ItemService>();
             services.AddScoped<IUnitService, UnitService>();
+            services.AddScoped<IUserService, UserService>();
             services.AddScoped<IMaintenanceService, MaintenanceService>();
             services.AddScoped<IImageService, ServerImageService>();
             services.AddScoped<IDocumentService, DocumentService>();

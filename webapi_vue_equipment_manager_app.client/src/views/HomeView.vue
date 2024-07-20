@@ -105,7 +105,7 @@ return{
                 </div>
                 <div class="btn-container">
                     <RouterLink class="btn-box">
-                        <label class="btn-label">Locations</label> 
+                        <label class="btn-label">Units</label> 
                         <i class="pi pi-building"/>            
                     </RouterLink>
                 </div>
