@@ -36,7 +36,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data
 
             builder.Entity<Unit>().
                 HasOne<Unit>().
-                WithMany().
+                WithMany(x => x.Children).
                 HasForeignKey(x => x.ParentId);
 
             builder.Entity<UserRole>().HasData(

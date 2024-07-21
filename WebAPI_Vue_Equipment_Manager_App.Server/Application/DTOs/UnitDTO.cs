@@ -12,7 +12,9 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs
         public string? Address { get; set; }
         public int? ParentId { get; set; }
 
-        public List<AssignmentDTO>? AssigedUsers { get; set; }
+        public IEnumerable<AssignmentDTO>? AssigedUsers { get; set; }
+        public IEnumerable<UnitDTO>? Children { get; set; }
+
     }
 }
 

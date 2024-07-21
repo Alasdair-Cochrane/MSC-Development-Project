@@ -7,6 +7,9 @@ const email = ref(null)
 const password = ref(null)
 const fName = ref()
 const lName = ref()
+const returnedFirstName = ref()
+const returnedLastName = ref()
+const returnedOrganisationName = ref()
 
 
 const successfull = ref(false)
@@ -53,6 +56,11 @@ async function register(){
     if(response.ok){
         successfull.value = true;
         unsuccessfull.value = false;
+        let detail = await response.json()
+        console.log(detail)
+        returnedFirstName.value = detail.firstName;
+        returnedLastName.value = detail.lastName;
+        returnedOrganisationName.value = detail.unit;
     }
     else{
         let result = await response.json()
@@ -97,6 +105,10 @@ async function register(){
     </div>
     <div v-show="successfull" id="registration-sucess">
         <label >Registration Successfull!</label>
+        <div id="user-details">
+            <label>{{ returnedFirstName }} {{ returnedLastName }}</label>
+            <label>{{ returnedOrganisationName }}</label>
+        </div>
     </div>
     <div class="bottom-links">
             <Button label="Back to Login" icon="pi pi-arrow-circle-left" severity="secondary" @click="$emit('login')"></Button>
@@ -150,12 +162,19 @@ async function register(){
     background-color: rgb(149, 237, 142);
     border-radius: 5%;
     margin: 1rem;
-    
+    gap: 2rem;    
 }
 #registration-sucess label{
    color: white;
    font-weight: bold;
     
 }
+
+#user-details{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 
 </style>

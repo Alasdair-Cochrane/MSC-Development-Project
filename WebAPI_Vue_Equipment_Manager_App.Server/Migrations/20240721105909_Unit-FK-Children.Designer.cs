@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using WebAPI_Vue_Equipment_Manager_App.Server.Data;
@@ -11,9 +12,11 @@ using WebAPI_Vue_Equipment_Manager_App.Server.Data;
 namespace WebAPI_Vue_Equipment_Manager_App.Server.Migrations
 {
     [DbContext(typeof(MainDbContext))]
-    partial class MainDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240721105909_Unit-FK-Children")]
+    partial class UnitFKChildren
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -455,12 +458,17 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
 
+                    b.Property<int?>("UnitId")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
 
                     b.HasIndex("Name")
                         .IsUnique();
 
                     b.HasIndex("ParentId");
+
+                    b.HasIndex("UnitId");
 
                     b.ToTable("Units");
                 });
@@ -782,8 +790,12 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Migrations
             modelBuilder.Entity("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.Unit", b =>
                 {
                     b.HasOne("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.Unit", null)
-                        .WithMany("Children")
+                        .WithMany()
                         .HasForeignKey("ParentId");
+
+                    b.HasOne("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.Unit", null)
+                        .WithMany("Children")
+                        .HasForeignKey("UnitId");
                 });
 
             modelBuilder.Entity("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.UserAssignment", b =>

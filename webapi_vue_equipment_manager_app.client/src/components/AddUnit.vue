@@ -2,7 +2,7 @@
 import { Unit } from '@/Models/Unit';
 import { addUnit } from '@/Services/UnitService';
 import { store } from '@/Store/Store';
-import {ref} from 'vue'
+import {onMounted, ref} from 'vue'
 
     const newUnit = ref(new Unit())
     const currentUnits = ref(store.Units)
@@ -14,12 +14,22 @@ import {ref} from 'vue'
     const props = defineProps({delay:{
         type : Boolean,
         default: false
-    }})
+        },
+        small:{
+            type:Boolean,
+            default: true,
+        },
+        parent:{
+            type : Unit,
+            default : null
+        }})
     const emit = defineEmits(["created", "cancelled"])
+
+onMounted(() => selectedParent.value = props.parent)
+
 
 const buildAddress = () =>
    {
-    console.log(street.value)
     let string = ""
     if(street.value) {
         string = string + street.value + ",";
@@ -60,6 +70,7 @@ async function addSimilarUnit(){
     if(response.successful){
         newUnit.value.name = null
         console.log("added successfully")
+        emit("created", newUnit.value)
         return true
     }
     else{
@@ -83,7 +94,7 @@ async function addNew(){
 
 </script>
 <template>
-<div class="wrapper">
+<div class="container">
     <div class="fields">
         <div class="input-field">
             <label for="name">Name *</label>
@@ -118,14 +129,12 @@ async function addNew(){
     <div class="bttns">
         <div class="submit-btns" >
             <Button icon="pi pi-save" label="Save" class="s-btn" @click="addNew"></Button>
-            <Button icon="pi pi-plus" label="Save & New" class="s-btn" @click="addSimilarUnit" v-if="!delay"></Button>
-            <Button icon="pi pi-eraser" label="Clear" severity="danger" class="s-btn" @click="clear" v-if="!delay"></Button>
-            <Button v-if="delay" label="Cancel" @click="$emit('cancelled')" severity="danger" class="s-btn"></Button>
+            <Button icon="pi pi-plus" label="Save & New" class="s-btn" @click="addSimilarUnit" v-if="!small"></Button>
+            <Button icon="pi pi-eraser" label="Clear" severity="danger" class="s-btn" @click="clear" v-if="!small"></Button>
+            <Button v-if="small" label="Cancel" @click="$emit('cancelled')" severity="danger" class="s-btn"></Button>
 
         </div>
     </div>
-
-
 </div>
 </template>
 <style scoped>

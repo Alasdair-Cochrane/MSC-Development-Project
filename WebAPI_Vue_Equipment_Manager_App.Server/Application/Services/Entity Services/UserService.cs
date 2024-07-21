@@ -13,87 +13,88 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services
 
     public class UserService : IUserService
     {
-        private readonly IUserRepository _userRepository;
+        private readonly IAssignmentRepository _assignmentRepository;
         private readonly IUnitRepository _unitRepository;
         private readonly UserManager<User> _userManager;
         private User? _currentUser;
 
-        private IEnumerable<Unit>? _usersUnits;
-
-        public UserService(IUserRepository userRepository, IUnitRepository unitRepository, UserManager<User> manager)
+        public UserService(IAssignmentRepository assignmentRepository, IUnitRepository unitRepository, UserManager<User> manager)
         {
-            _userRepository = userRepository;
+            _assignmentRepository = assignmentRepository;
             _unitRepository = unitRepository;
             _userManager = manager;
         }
 
 
 
-        //getting all units is a potentially expensive operation (involves multiple recursive operations) so it is best to do it once and cache the results per request
-        public async Task<IEnumerable<Unit>> GetRelevantUnits(int userId)
+        public async Task<IEnumerable<UnitDTO>> GetRelevantUnits(int userId)
         {
-            if (_usersUnits.IsNullOrEmpty())
+            var roots = await _unitRepository.GetAllAssignedRootsAsync(userId);
+            List<UnitDTO> unitDTOs = new List<UnitDTO>();
+            foreach(var root in roots)
             {
-                _usersUnits = await _unitRepository.GetAllRelevantUnitsToUser(userId);
-                return _usersUnits;
+                unitDTOs.Add(await _unitRepository.GetDTOWithChildrenAsync(root.Id));
             }
-            else
-            {
-                return _usersUnits = null!;
-            }
+            return unitDTOs;
         }
 
-        public async Task<IEnumerable<AssignmentDTO>> GetUserAssignmentsbyEmailAsync(string email)
+        public async Task<IEnumerable<AssignmentDTO>> GetUserAssignmentsDTObyEmailAsync(string email)
         {
-            var assignments = await _userRepository.GetUserAssingmentsDTObyEmailAsync(email);
+            var assignments = await _assignmentRepository.GetUserAssingmentsDTObyEmailAsync(email);
             return assignments;
         }
 
-        public async Task<UserAssignment> AssignUser(int creatorId, int userID, int roleId, int unitId)
+        public async Task<IEnumerable<AssignmentDTO>> GetAssignmentsDTObyUserIdAsync(int userId)
+        {
+            var assignments = await _assignmentRepository.GetUserAssingmentsDTObyIdAsync(userId);
+            return assignments;
+        }
+
+        public async Task<UserAssignment> AssignUser(int creatorId, int userId, int roleId, int unitId)
         {
             //check that the user requesting is an admin of the unit or any of the units parents
             if (!await _unitRepository.CheckUserIsAdminInParentOfUnit(creatorId, unitId))
             {
-                throw new UnauthorisedOperationException($"User : {userID} is not authorised to assign users for unit: {unitId}");
+                throw new UnauthorisedOperationException($"User : {userId} is not authorised to assign users for unit: {unitId}");
             }
 
             //it is unneccessary to assign a user as admin to a unit that are already an admin of or of its parent
             if (roleId == 1)
             {
-                if (await _unitRepository.CheckUserIsAdminInParentOfUnit(userID, unitId))
+                if (await _unitRepository.CheckUserIsAdminInParentOfUnit(userId, unitId))
                 {
-                    throw new UnauthorisedOperationException($"User : {userID} is already admin for unit: {unitId} or one of its units parents");
+                    throw new UnauthorisedOperationException($"User : {userId} is already admin for unit: {unitId} or one of its units parents");
                 }
             }
 
-            var assignment = await _userRepository.CreateAssignment(unitId, roleId, unitId);
+            var assignment = await _assignmentRepository.CreateAssignment(unitId, roleId, userId);
 
             return assignment;
         }
 
         public async Task<UserAssignment> AssignUserPublicOnCreate(int userId, int unitId)
         {
-            return await _userRepository.CreateAssignment(unitId, 3, userId);
+            return await _assignmentRepository.CreateAssignment(unitId, 3, userId);
         }
 
-        public async Task<UserAssignment> UpdateAssignment(int updatorId, int userId, int roleId, int unitId)
+        public async Task<UserAssignment> UpdateAssignment(int updatorId, UserAssignment assignment)
         {
-            if (!await _unitRepository.CheckUserIsAdminInParentOfUnit(updatorId, unitId))
+            if (!await _unitRepository.CheckUserIsAdminInParentOfUnit(updatorId, assignment.UnitId))
             {
-                throw new UnauthorisedOperationException($"User : {userId} is not authorised to assign users for unit: {unitId}");
+                throw new UnauthorisedOperationException($"User : {assignment.UserId} is not authorised to assign users for unit: {assignment.UnitId}");
             }
-            var assignment = await _userRepository.Update(userId, roleId, unitId);
+            var updatedAssignment = await _assignmentRepository.Update(assignment);
 
             return assignment;
         }
 
-        public async Task DeleteAssignment(int deletorId, int userId, int roleId, int unitId)
+        public async Task DeleteAssignmentAsync(int deletorId, UserAssignment assignment)
         {
-            if (!await _unitRepository.CheckUserIsAdminInParentOfUnit(deletorId, unitId))
+            if (!await _unitRepository.CheckUserIsAdminInParentOfUnit(deletorId, assignment.UnitId))
             {
-                throw new UnauthorisedOperationException($"User : {userId} is not authorised to delete assignments for unit: {unitId}");
+                throw new UnauthorisedOperationException($"User : {assignment.UserId} is not authorised to delete assignments for unit: {assignment.UnitId}");
             }
-            await _userRepository.Delete(userId, roleId, unitId);
+            await _assignmentRepository.Delete(assignment);
         }
 
         public async Task<User> GetCurrentUserAsync(HttpContext context)
@@ -111,9 +112,9 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services
 
         public async Task<UserDetailsDTO> GetUserDetailsAsync(User user)
         {
-            var assignments = await _userRepository.GetUserAssingmentsDTObyIdAsync(user.Id);
+            var assignments = await _assignmentRepository.GetUserAssingmentsDTObyIdAsync(user.Id);
             var unitsDTO = new List<UnitDTO>();
-            var units = await _unitRepository.GetAllRelevantUnitsToUser(user.Id);
+            var units = await _unitRepository.GetAllRelevantUnitsToUserAsync(user.Id);
 
             foreach ( var unit in units.ToList() )
             {
@@ -132,17 +133,19 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services
             };
             return dto;
         }
+
     }
     public interface IUserService
     {
         Task<UserAssignment> AssignUser(int creatorId, int userID, int roleId, int unitId);
         Task<UserAssignment> AssignUserPublicOnCreate(int userId, int unitId);
-        Task DeleteAssignment(int deletorId, int userId, int roleId, int unitId);
+        Task DeleteAssignmentAsync(int deletorId, UserAssignment assignment);
+        Task<IEnumerable<AssignmentDTO>> GetAssignmentsDTObyUserIdAsync(int id);
         Task<User> GetCurrentUserAsync(HttpContext context);
-        Task<IEnumerable<Unit>> GetRelevantUnits(int userId);
-        Task<IEnumerable<AssignmentDTO>> GetUserAssignmentsbyEmailAsync(string email);
+        Task<IEnumerable<UnitDTO>> GetRelevantUnits(int userId);
+        Task<IEnumerable<AssignmentDTO>> GetUserAssignmentsDTObyEmailAsync(string email);
         Task<UserDetailsDTO> GetUserDetailsAsync(User user);
-        Task<UserAssignment> UpdateAssignment(int updatorId, int userId, int roleId, int unitId);
+        Task<UserAssignment> UpdateAssignment(int updatorId, UserAssignment assignment);
     }
 
 

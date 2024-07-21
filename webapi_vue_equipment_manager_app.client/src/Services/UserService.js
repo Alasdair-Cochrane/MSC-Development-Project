@@ -53,6 +53,7 @@ export async function getAccessToken(){
     }
     else{
         console.log("Refresh Error : " + response.statusText)
+        toggleLogOut()
     }
 }
 

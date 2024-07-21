@@ -77,6 +77,17 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
             return items;
         }
 
+        public async Task<IEnumerable<Item>> GetAllByUnitIdAsync(IEnumerable<int> unitIds)
+        {
+            var items = await _context.Items.
+                AsNoTracking().
+                Where(x => unitIds.Contains(x.UnitId)).
+                Include(x => x.EquipmentModel).
+                Include(x => x.StatusCategory).
+                ToListAsync();
+            return items;
+        }
+
         public async Task<bool> SetImageUrlAsync(int id, string url)
         {
             int updates = await _context.Items.Where(x => x.Id == id).

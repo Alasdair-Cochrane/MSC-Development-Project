@@ -24,13 +24,29 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll() {
+        public async Task<IActionResult> GetAll([FromQuery] bool adminOnly = true, bool flat = true) {
 
             var user = await _userService.GetCurrentUserAsync(HttpContext);
-            
-            var list = await _userService.GetRelevantUnits(user.Id);
-            return Ok(list);
+            IEnumerable<UnitDTO> units;
+
+            if (flat)
+            {
+                units = await _unitService.GetAllAsync(user.Id);
+            }
+            else
+            {
+                if (adminOnly)
+                {
+                    units = await _unitService.GetAdminRoleUnits(user.Id);
+                }
+                else
+                {
+                    units = await _userService.GetRelevantUnits(user.Id);
+                }
+            }
+            return Ok(units);
         }
+
         [HttpGet ("organisations")]
         [AllowAnonymous]
         public async Task<IActionResult> GetRootUnits()

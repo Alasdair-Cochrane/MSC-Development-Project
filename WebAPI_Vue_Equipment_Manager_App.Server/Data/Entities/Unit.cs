@@ -20,7 +20,8 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities
         //[ForeignKey(nameof(ParentId))]
         //public Unit? Parent { get; set; }
 
-        // public ICollection<Unit> Children { get; set; }
+        public ICollection<Unit> Children { get; set; } = null!;
+        //public ICollection<UserAssignment> Assignments { get; set; } = null!;
 
         //https://stackoverflow.com/questions/9317582/correct-way-to-override-equals-and-gethashcode
 

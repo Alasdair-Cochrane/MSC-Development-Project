@@ -18,6 +18,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Startup
             services.AddScoped<IMaintenanceRepository, MaintenanceRepository>();
             services.AddScoped<IItemQueryBuilder, ItemQueryBuilder>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IAssignmentRepository, AssignmentRepository>();
             
         }
         public static void RegisterServices(this IServiceCollection services)

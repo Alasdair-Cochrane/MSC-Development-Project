@@ -73,7 +73,6 @@ export async function updateItem(item){
 
 export async function getAllItems() {
     let list = []
-    console.log(await getAccessToken())
     await fetch(route,
         {
            method : "GET",
@@ -84,7 +83,6 @@ export async function getAllItems() {
             }
         }).then((response) => response.json()).then((data)=>
         list.push(...data))
-    console.log(list)
     return list;
 }
 

@@ -1,7 +1,9 @@
 import { GetAllModels } from '@/Services/EquipmentModelService';
 import {reactive, ref, computed} from 'vue'
-
+import { getAccessToken } from '@/Services/UserService';
+import { GetOrgStructure } from '@/Services/UnitService';
 //Reactive Local store using computed getter/setter
+
 const l = ref(localStorage.getItem("loggedIn") === "true")
 export const loggedIn = computed({ 
     get:() => {return l.value}, 
@@ -31,8 +33,31 @@ const GetUnits = async () => {
         return units
     }
 }
+
+var structure;
+const GetStructure = async () =>
+    {if(!structure){
+        structure = await GetOrgStructure()
+        return structure
+    }
+    else{
+        return structure
+    }
+}
+export const UpdateStructure = async () =>
+    {structure = await GetOrgStructure();
+        return structure;}
+
 export async function UpdateUnits(){
-    const response = await fetch('/api/units')
+    const response = await fetch('/api/units',
+        {
+            method: "GET",
+            headers:{
+                "Authorization" : await getAccessToken()
+            }
+        }
+        
+    )
     units = await response.json();
 }
 //GET SET FOR LIST OF CATEGORIES
@@ -60,6 +85,7 @@ export const store = reactive({
     ModelCategories: ["Centrifuge", "Pipette"],
     Statuses: ['Active'],
     Models: [],
+    OrgStructure: await GetStructure(),
 })
 
 

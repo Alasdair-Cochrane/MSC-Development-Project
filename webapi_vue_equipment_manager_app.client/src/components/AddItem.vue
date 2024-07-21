@@ -167,7 +167,8 @@ function modelNumberSelected(event){
             <label for="owner">Owner</label>
             <!-- <label class="validation-warning" v-if="!isNotEmpty(item.unitName) ">{{ requiredMessage }}</label> -->
             <Select id="owner" size="small" v-model="item.unitName" showClear 
-            :options="store.Units" :invalid="!isNotEmpty(item.unitName)"/>
+            :options="store.Units" :invalid="!isNotEmpty(item.unitName)"
+            optionLabel="name"/>
         </div>
         </div>
         

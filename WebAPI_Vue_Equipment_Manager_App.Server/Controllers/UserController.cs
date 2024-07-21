@@ -4,7 +4,9 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs;
+using WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs.Mappings;
 using WebAPI_Vue_Equipment_Manager_App.Server.Application.Error_Handling;
 using WebAPI_Vue_Equipment_Manager_App.Server.Application.Services;
 using WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Services;
@@ -29,17 +31,17 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
             _unitService = unitService;
         }
 
-        [HttpPost ("register")]
+        [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] UserRegisterDTO newUser)
         {
             var user = new User {
                 FirstName = newUser.FirstName,
                 LastName = newUser.LastName,
                 Email = newUser.Email,
-                UserName = newUser.Email,            
+                UserName = newUser.Email,
             };
-            
-           var result = await _userManager.CreateAsync(user, newUser.Password);
+
+            var result = await _userManager.CreateAsync(user, newUser.Password);
 
             if (!result.Succeeded)
             {
@@ -47,7 +49,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
             }
 
             //if the user has not chosen or created a assoicated Unit then just return
-            if(newUser.Organisation == null)
+            if (newUser.Organisation == null)
             {
                 return Ok();
             }
@@ -85,7 +87,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
 
                 return Ok(new { FirstName = user.FirstName, LastName = user.LastName, Unit = newUser.Organisation.Name ?? "" });
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 await _userManager.DeleteAsync(user);
                 throw;
@@ -109,6 +111,33 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
             return Ok(dto);
         }
 
+        ////Gets all the users who are assigned to units of which the current user is assigned or is admin of by parent unit
+        //[HttpGet("assignments")]
+        //[Authorize]
+        //public async Task<IActionResult> GetAllAssignedUsers()
+        //{
+        //    IEnumerable<AssignmentDTO> assignments;
+        //    var user = await _userManager.GetUserAsync(User);
+        //    if (user == null)
+        //    {
+        //        throw new UnauthorisedOperationException("Current User could not be found from request context\"");
+        //    }
+        //    //get all the units that the user has been assigned to
+        //    var units = await _userService.GetRelevantUnits(user.Id);
+        //    if (units.IsNullOrEmpty())
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    List<UnitDTO> dtos = new List<UnitDTO>();
+
+        //    foreach (Unit u in units)
+        //    {
+        //        dtos.Add(u.ToDTO(await _unitService.GetUserAssignments(u.Id)));
+        //    }
+        //    return Ok(dtos);
+        //}
+
         [HttpPost("assignments")]
         public async Task<IActionResult> AssignUser(AssignmentDTO assignment)
         {
@@ -120,6 +149,18 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
             var created = await _userService.AssignUser(user.Id, assignment.UserId, assignment.RoleId, assignment.UnitId);
 
             return Ok();
+        }
+
+        [HttpDelete("assignments")]
+        public async Task<IActionResult> DeleteAssignment(AssignmentDTO assignment)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                throw new UnauthorisedOperationException("Current User could not be found from request context");
+            }
+            await _userService.DeleteAssignmentAsync(user.Id, assignment.ToEntity());
+            return NoContent();
         }
 
        
