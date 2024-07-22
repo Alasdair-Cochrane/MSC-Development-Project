@@ -1,6 +1,6 @@
 import { GetAllModels } from '@/Services/EquipmentModelService';
 import {reactive, ref, computed} from 'vue'
-import { getAccessToken } from '@/Services/UserService';
+import { getAccessToken, GetUsers } from '@/Services/UserService';
 import { GetOrgStructure } from '@/Services/UnitService';
 //Reactive Local store using computed getter/setter
 
@@ -60,6 +60,20 @@ export async function UpdateUnits(){
     )
     units = await response.json();
 }
+
+//GET SET FOR LIST OF PUBLIC USERS
+var users;
+const GetPublicUsers = async () =>
+{
+    if(!users){
+        users = await GetUsers();
+        return users
+    }
+    else{
+        return users;
+    }
+}
+
 //GET SET FOR LIST OF CATEGORIES
 export async function UpdateCategories(){
     
@@ -76,16 +90,61 @@ export async function UpdateModels(){
     store.Models = await GetAllModels()
 }
 
-export const UploadUrls = ref({
-    ImageUpload: ''
-})
+//GET SET FOR LIST OF USER ROLES
+var roles;
+const GetRoles = async () =>
+{
+    if(roles){
+        return roles;
+    }
+    else{
+        try{
+        let response = await fetch('api/users/roles', {
+            method :"GET",
+            headers : {
+                "Authorization" : await getAccessToken()
+            }
+        })
+        return await response.json()
+    }
+    catch(ex){
+        console.log("Could not retrieve user roles : " + ex.message)
+    }
+    }
+}
+
+//GET FOR USER DETAILS
+var user;
+const GetUserDetails = async () => {
+    if(user){
+        return user;
+    }
+    else{
+        try{
+        let response = await fetch('api/users/user', {
+            method :"GET",
+            headers : {
+                "Authorization" : await getAccessToken()
+            }
+        })
+        return await response.json()
+    }
+    catch(ex){
+        console.log("Could not retrieve user details : " + ex.message)
+    }
+    }
+}
+
 
 export const store = reactive({
     Units : await GetUnits(),
+    UserDetails : await GetUserDetails(),
     ModelCategories: ["Centrifuge", "Pipette"],
     Statuses: ['Active'],
     Models: [],
     OrgStructure: await GetStructure(),
+    PublicUsers: await GetPublicUsers(),
+    Roles: await GetRoles(),
 })
 
 

@@ -23,6 +23,16 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
             return id;
         }
 
+        public async Task<IEnumerable<RoleDTO>> GetRoles()
+        {
+            var roles = await _context.Roles.
+                Select(x => new RoleDTO
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                }).ToListAsync();
+            return roles;
+        }
 
 
 

@@ -18,7 +18,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Repository_Interfa
         Task<IEnumerable<int>> GetUnitIdsWithUserRole(int userId, int roleId);
         public Task<IEnumerable<Unit>> GetAllRootUnitsAsync();
         Task<Unit?> GetRootUnitAsync(int unitId);
-        Task<IEnumerable<User>> GetAllAssignedUsersAsync(int unitId);
+        Task<IEnumerable<User>> GetAllAssignedUsersAsync(int unitId, int userId);
         Task<IEnumerable<AssignmentDTO>> GetUserAssignmentsForUnitAsync(int unitId);
         Task<Unit?> GetOrgStructure(int unitId);
         Task<IEnumerable<UnitDTO>> GetAllAdminRoleUnits(int userId);

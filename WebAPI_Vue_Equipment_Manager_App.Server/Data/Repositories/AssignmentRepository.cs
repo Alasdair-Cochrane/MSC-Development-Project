@@ -68,23 +68,40 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
             return assignments;
         }
 
-        public async Task<UserAssignment> CreateAssignment(int unitId, int roleId, int userId)
+        public async Task<AssignmentDTO?> CreateAssignment(UserAssignment assignment)
         {
-            var assignment = _context.Assignments.Add(new UserAssignment
-            {
-                UserId = userId,
-                RoleId = roleId,
-                UnitId = unitId,
-            }).Entity;
+            var result = _context.Assignments.Add(assignment).Entity;
             await _context.SaveChangesAsync();
-            return assignment;
+            var dto = await  _context.Assignments.Where(x => x.UnitId == assignment.UnitId && x.UserId == assignment.UserId && x.RoleId == assignment.RoleId).
+                Select(x=> new AssignmentDTO
+                {
+                    RoleId = x.RoleId,
+                    UnitId = x.UnitId,
+                    UserId = x.UserId,
+                    FirstName = x.User.FirstName,
+                    LastName = x.User.LastName,
+                    RoleName= x.Role.Name,
+                    UnitName = x.Unit.Name,
+                }).FirstOrDefaultAsync();
+            return dto;
         }
 
-        public async Task<UserAssignment> Update(UserAssignment assignement)
+        public async Task<AssignmentDTO?> Update(UserAssignment assignement)
         {
             var assignment = _context.Assignments.Update(assignement).Entity;
             await _context.SaveChangesAsync();
-            return assignment;
+            var dto = await _context.Assignments.Where(x => x.UnitId == assignment.UnitId && x.UserId == assignment.UserId && x.RoleId == assignment.RoleId).
+                Select(x => new AssignmentDTO
+                {
+                    RoleId = x.RoleId,
+                    UnitId = x.UnitId,
+                    UserId = x.UserId,
+                    FirstName = x.User.FirstName,
+                    LastName = x.User.LastName,
+                    RoleName = x.Role.Name,
+                    UnitName = x.Unit.Name,
+                }).FirstOrDefaultAsync();
+            return dto;
         }
 
         public async Task Delete(UserAssignment assignment)
@@ -113,7 +130,14 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
         }
 
 
-
+        public async Task<IEnumerable<int>> GetAssignedRootUnitIds(int userId)
+        {
+            var unitIDs = await _context.Assignments.
+                Where(x => x.UserId == userId).
+                Where(x => x.Unit.ParentId == null).
+                Select(x => x.UnitId).ToListAsync();
+            return unitIDs;
+        }
 
 
 

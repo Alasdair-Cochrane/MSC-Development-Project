@@ -101,66 +101,65 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
         [Authorize]
         public async Task<IActionResult> OnLogIn()
         {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-            {
-                throw new UnauthorisedOperationException("Current User could not be found from request context\"");
-            }
+            User user = await _userService.GetCurrentUserAsync(HttpContext);
+
             var dto = await _userService.GetUserDetailsAsync(user);
 
             return Ok(dto);
         }
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> GetAllPublicUsers()
+        {
+            User user = await _userService.GetCurrentUserAsync(HttpContext);
 
-        ////Gets all the users who are assigned to units of which the current user is assigned or is admin of by parent unit
-        //[HttpGet("assignments")]
-        //[Authorize]
-        //public async Task<IActionResult> GetAllAssignedUsers()
-        //{
-        //    IEnumerable<AssignmentDTO> assignments;
-        //    var user = await _userManager.GetUserAsync(User);
-        //    if (user == null)
-        //    {
-        //        throw new UnauthorisedOperationException("Current User could not be found from request context\"");
-        //    }
-        //    //get all the units that the user has been assigned to
-        //    var units = await _userService.GetRelevantUnits(user.Id);
-        //    if (units.IsNullOrEmpty())
-        //    {
-        //        return NotFound();
-        //    }
+            var users = await _userService.GetAllPublicUsers(user.Id);
+            if(users.IsNullOrEmpty())
+            {
+                return NotFound();
+            }
+            return Ok(users);
 
-        //    List<UnitDTO> dtos = new List<UnitDTO>();
+        }
 
-        //    foreach (Unit u in units)
-        //    {
-        //        dtos.Add(u.ToDTO(await _unitService.GetUserAssignments(u.Id)));
-        //    }
-        //    return Ok(dtos);
-        //}
+        [HttpGet("roles")]
+        [Authorize]
+        public async Task<IActionResult> GetAllRoles()
+        {
+            var roles = await _userService.GetAllRoles();
+            if (roles.IsNullOrEmpty())
+            {
+                return NotFound();
+            }
+            return Ok(roles);
+        }
 
         [HttpPost("assignments")]
-        public async Task<IActionResult> AssignUser(AssignmentDTO assignment)
+        public async Task<IActionResult> AssignUser([FromBody]AssignmentDTO assignment)
         {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-            {
-                throw new UnauthorisedOperationException("Current User could not be found from request context");
-            }
-            var created = await _userService.AssignUser(user.Id, assignment.UserId, assignment.RoleId, assignment.UnitId);
+            User user = await _userService.GetCurrentUserAsync(HttpContext);
 
-            return Ok();
+            var created = await _userService.AssignUserAsync(user.Id, assignment.ToEntity());
+
+            return Ok(created);
         }
 
         [HttpDelete("assignments")]
-        public async Task<IActionResult> DeleteAssignment(AssignmentDTO assignment)
+        public async Task<IActionResult> DeleteAssignment([FromBody] AssignmentDTO assignment)
         {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-            {
-                throw new UnauthorisedOperationException("Current User could not be found from request context");
-            }
+            User user = await _userService.GetCurrentUserAsync(HttpContext);
+
             await _userService.DeleteAssignmentAsync(user.Id, assignment.ToEntity());
-            return NoContent();
+            return Ok();
+        }
+
+        [HttpPut("assignments")]
+        public async Task<IActionResult> EditAssignment([FromBody] AssignmentDTO assignment)
+        {
+            User user = await _userService.GetCurrentUserAsync(HttpContext);
+
+            var edited = await _userService.UpdateAssignment(user.Id, assignment.ToEntity());
+            return Ok(edited);
         }
 
        

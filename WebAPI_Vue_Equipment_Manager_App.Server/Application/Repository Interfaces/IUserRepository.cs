@@ -5,7 +5,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
 {
     public interface IUserRepository
     {
-
+        Task<IEnumerable<RoleDTO>> GetRoles();
         Task<int> GetUserIdByEmail(string email);
 
     }

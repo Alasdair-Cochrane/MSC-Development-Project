@@ -233,26 +233,12 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
             return unitIds;
         }
 
-        public async Task<bool> CheckUserIsAssigned(int userId, int unitId)
-        {
-            bool result = await _context.Assignments.AnyAsync(x => x.UserId == userId && x.UnitId == unitId);
-            return result;
-        }
-
-        public async Task<IEnumerable<int>> GetUserRolesInUnit(int userId, int unitId)
-        {
-            var roles = await _context.Assignments.Where(x => x.UserId == userId).
-                Select(x => x.RoleId).ToListAsync();
-            return roles;
-        }
-
-        public async Task<IEnumerable<User>> GetAllAssignedUsersAsync(int unitId)
+        public async Task<IEnumerable<User>> GetAllAssignedUsersAsync(int unitId , int userId)
         {
             var users = await _context.Assignments.
                 AsSplitQuery().
                 Where(x => x.UnitId == unitId).
-                Include(x => x.User).
-                ThenInclude(x => x.Assignments).
+                Where(x => x.UserId != userId).
                 Select(x => x.User).
                 ToListAsync();
             return users;

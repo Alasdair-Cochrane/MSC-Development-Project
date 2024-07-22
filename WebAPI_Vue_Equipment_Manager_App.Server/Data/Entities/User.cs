@@ -10,5 +10,19 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities
         public string LastName { get; set; } = null!;
 
         public ICollection<UserAssignment>? Assignments { get; set; }
+
+        public override int GetHashCode()
+        {
+            return Id.GetHashCode();
+        }
+        public override bool Equals(object? obj)
+        {
+            var otherUnit = obj as Unit;
+            if (otherUnit == null) return false;
+            return this.Id == otherUnit.Id;
+
+        }
     }
+
+
 }

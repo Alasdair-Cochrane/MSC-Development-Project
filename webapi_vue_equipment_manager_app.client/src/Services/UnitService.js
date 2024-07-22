@@ -56,12 +56,14 @@ export function toTreeNode(unit){
         key: unit.id,
         label: unit.name,
         data: {
+            id : unit.id,
+            name : unit.name,
             room : unit.room,
             type: 'unit',
             building : unit.building,
             address : unit.address,
             parentId :unit.parentId,
-            users : unit.assignedUsers
+            assignedUsers : unit.assigedUsers
         }        
         }
     node.children = unit.children.map(child => {return toTreeNode(child)})
@@ -70,7 +72,7 @@ export function toTreeNode(unit){
 
 export async function GetOrgStructure(){
     try{
-    let response = await fetch(route + "?adminOnly=false&flat=false", {
+    let response = await fetch(route + "?adminOnly=true&flat=false", {
         method: "GET",
         headers: {
             "Authorization" : await getAccessToken()

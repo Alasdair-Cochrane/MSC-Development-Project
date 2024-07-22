@@ -1,4 +1,5 @@
 import { toggleLogIn, toggleLogOut } from "@/Store/Store";
+import { renderSlot } from "vue";
 
 export async function userLogin(login){
     try{
@@ -17,14 +18,16 @@ export async function userLogin(login){
         return {successfull : true}
     }
     else{
-        let result = await response.json()
-        if(result.detail === "Failed"){
-            result.detail = "Invalid Username or Password"
+        let result = {successfull : false, errors : ""}
+        if(response.status === 401 ){
+            result.errors = "Invalid Username or Password"
+        }
+        else{
+            result.errors = response.statusText
         }
         console.log(result)
-        console.log("login Error : " + result.detail)
-        return {successfull : false, errors: result.detail,}
-
+        console.log("login Error : " + response.statusText)
+        return result
     }
     }
     catch(ex){
@@ -60,4 +63,103 @@ export async function getAccessToken(){
 export async function userLogout(){
     toggleLogOut()
     localStorage.removeItem("accessToken")
+}
+
+export async function GetUsers(){
+    try{
+    let response = await fetch('api/Users',
+        {
+            method: "GET",
+            headers: {
+               "Authorization":  await getAccessToken()
+            }
+        }
+    )
+    if(response.ok){
+        let users = await response.json()
+        return users;
+    }
+    else{
+        console.log("Coulld not get public users. Response : " + response.statusText)
+    }
+    }
+    catch(ex){
+        console.log("Could not get public users. Exception : " + ex.message) 
+    }
+}
+
+export async function AssignUser(usId, roId, unId) {
+    let assignment = JSON.stringify({userId: usId, roleId: roId, unitiD: unId})
+    console.log(assignment)
+    try{
+    let response = await fetch('api/Users/assignments', {
+        method: "Post",
+        headers: {
+            "Authorization" : await getAccessToken(),
+            "Content-Type": "application/json"
+
+            
+        },
+        body: assignment
+    })
+    if(response.ok){
+        let result = await response.json()
+        console.log(result)
+        return {successfull: true , assignment: result}
+    }
+    console.log(response.json())
+    return {successfull: false, errors: response.statusText}
+    }
+    catch(ex){
+        console.log(ex.message)
+        return {successfull: false, errors: ex.message}
+    }
+}
+
+export async function DeleteAssignment(assignment){
+    let deleted = JSON.stringify(assignment)
+    try{
+        let response = await fetch('api/users/assignments',{
+            method : "DELETE",
+            headers:{
+                Authorization : await getAccessToken(),
+                "Content-Type": "application/json"
+
+            },
+            body: deleted
+        })
+        if(response.ok){
+            return {successfull:true}
+        }
+        else{
+            return {successfull : false, errors: response.statusText}
+        }
+    }
+    catch(ex){
+        return {successfull : false, errors: ex.message}
+    }
+}
+
+export async function EditAssignment(assignment){
+    let edited = JSON.stringify(assignment)
+    try{
+        let response = await fetch('api/users/assignments',{
+            method : "PUT",
+            headers:{
+                Authorization : await getAccessToken(),
+                "Content-Type": "application/json"
+            },
+            body: edited
+        })
+        if(response.ok){
+            return {successfull:true, updated: await response.json()}
+        }
+        else{
+            console.log(await response.json())
+            return {successfull : false, errors: response.statusText}
+        }
+    }
+    catch(ex){
+        return {successfull : false, errors: ex.message}
+    }
 }

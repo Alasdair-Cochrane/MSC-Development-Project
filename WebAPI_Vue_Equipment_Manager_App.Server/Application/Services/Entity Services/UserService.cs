@@ -16,16 +16,35 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services
         private readonly IAssignmentRepository _assignmentRepository;
         private readonly IUnitRepository _unitRepository;
         private readonly UserManager<User> _userManager;
+        private readonly IUserRepository _userRepository;
         private User? _currentUser;
 
-        public UserService(IAssignmentRepository assignmentRepository, IUnitRepository unitRepository, UserManager<User> manager)
+        public UserService(IAssignmentRepository assignmentRepository, 
+            IUnitRepository unitRepository, 
+            UserManager<User> manager,
+            IUserRepository userRepository)
         {
             _assignmentRepository = assignmentRepository;
             _unitRepository = unitRepository;
             _userManager = manager;
+            _userRepository = userRepository;
         }
 
+        public async Task<IEnumerable<UserDetailsDTO>> GetAllPublicUsers(int userId)
+        {
+            //get all the root level units that the user belongs to
+            var rootUnits = await _assignmentRepository.GetAssignedRootUnitIds(userId);
 
+            //get all the users who are assigned to those root units
+            HashSet<User> users = new HashSet<User>();
+            foreach(var unit in rootUnits)
+            {
+                users.UnionWith(await _unitRepository.GetAllAssignedUsersAsync(unit, userId ));
+            }
+            IEnumerable<UserDetailsDTO> dtos = users.Select(x => x.ToDto());
+
+            return dtos;
+        }
 
         public async Task<IEnumerable<UnitDTO>> GetRelevantUnits(int userId)
         {
@@ -50,42 +69,46 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services
             return assignments;
         }
 
-        public async Task<UserAssignment> AssignUser(int creatorId, int userId, int roleId, int unitId)
+        public async Task<AssignmentDTO> AssignUserAsync(int creatorId, UserAssignment newAssignment)
         {
             //check that the user requesting is an admin of the unit or any of the units parents
-            if (!await _unitRepository.CheckUserIsAdminInParentOfUnit(creatorId, unitId))
+            if (!await _unitRepository.CheckUserIsAdminInParentOfUnit(creatorId, newAssignment.UnitId))
             {
-                throw new UnauthorisedOperationException($"User : {userId} is not authorised to assign users for unit: {unitId}");
+                throw new UnauthorisedOperationException($"User : {newAssignment.UserId} is not authorised to assign users for unit: {newAssignment.UnitId}");
             }
 
             //it is unneccessary to assign a user as admin to a unit that are already an admin of or of its parent
-            if (roleId == 1)
+            if (newAssignment.RoleId == 1)
             {
-                if (await _unitRepository.CheckUserIsAdminInParentOfUnit(userId, unitId))
+                if (await _unitRepository.CheckUserIsAdminInParentOfUnit(newAssignment.UserId, newAssignment.UnitId))
                 {
-                    throw new UnauthorisedOperationException($"User : {userId} is already admin for unit: {unitId} or one of its units parents");
+                    throw new UnauthorisedOperationException($"User : {newAssignment.UserId} is already admin for unit: {newAssignment.UnitId} or one of its units parents");
                 }
             }
 
-            var assignment = await _assignmentRepository.CreateAssignment(unitId, roleId, userId);
+            var assignment = await _assignmentRepository.CreateAssignment(newAssignment);
 
             return assignment;
         }
 
-        public async Task<UserAssignment> AssignUserPublicOnCreate(int userId, int unitId)
+        public async Task<AssignmentDTO> AssignUserPublicOnCreate(int userId, int unitId)
         {
-            return await _assignmentRepository.CreateAssignment(unitId, 3, userId);
+            return await _assignmentRepository.CreateAssignment(new UserAssignment { UnitId = unitId, RoleId = 3, UserId = userId });
         }
 
-        public async Task<UserAssignment> UpdateAssignment(int updatorId, UserAssignment assignment)
+        public async Task<AssignmentDTO> UpdateAssignment(int updatorId, UserAssignment assignment)
         {
             if (!await _unitRepository.CheckUserIsAdminInParentOfUnit(updatorId, assignment.UnitId))
             {
                 throw new UnauthorisedOperationException($"User : {assignment.UserId} is not authorised to assign users for unit: {assignment.UnitId}");
             }
             var updatedAssignment = await _assignmentRepository.Update(assignment);
+            if(updatedAssignment == null) {
+                {
+                    throw new DataInsertionException("Updated Assignment returned null");
+                } }
 
-            return assignment;
+            return updatedAssignment;
         }
 
         public async Task DeleteAssignmentAsync(int deletorId, UserAssignment assignment)
@@ -134,18 +157,26 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services
             return dto;
         }
 
+        public async Task<IEnumerable<RoleDTO>> GetAllRoles()
+        {
+            return await _userRepository.GetRoles();
+        }
+
     }
     public interface IUserService
     {
-        Task<UserAssignment> AssignUser(int creatorId, int userID, int roleId, int unitId);
-        Task<UserAssignment> AssignUserPublicOnCreate(int userId, int unitId);
+        Task<AssignmentDTO> AssignUserAsync(int creatorId, UserAssignment assignment);
+        Task<AssignmentDTO> AssignUserPublicOnCreate(int userId, int unitId);
         Task DeleteAssignmentAsync(int deletorId, UserAssignment assignment);
+        Task<IEnumerable<UserDetailsDTO>> GetAllPublicUsers(int userId);
         Task<IEnumerable<AssignmentDTO>> GetAssignmentsDTObyUserIdAsync(int id);
         Task<User> GetCurrentUserAsync(HttpContext context);
         Task<IEnumerable<UnitDTO>> GetRelevantUnits(int userId);
         Task<IEnumerable<AssignmentDTO>> GetUserAssignmentsDTObyEmailAsync(string email);
         Task<UserDetailsDTO> GetUserDetailsAsync(User user);
-        Task<UserAssignment> UpdateAssignment(int updatorId, UserAssignment assignment);
+        Task<AssignmentDTO> UpdateAssignment(int updatorId, UserAssignment assignment);
+        public Task<IEnumerable<RoleDTO>> GetAllRoles();
+
     }
 
 

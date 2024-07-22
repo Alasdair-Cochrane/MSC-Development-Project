@@ -29,9 +29,13 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Se
                 {
                     throw new UnitException("Database insertion failed");
                 }
-
+                //if the user is already an admin of a parent unit do not reassign them
+                if(await _unitRepository.CheckUserIsAdminInParentOfUnit(userId, added.Id))
+                {
+                    return added.ToDTO();
+                }
                 //assign the requestor as admin of the unit they created
-                await _assignmentRepository.CreateAssignment(added.Id, 1, userId);
+                await _assignmentRepository.CreateAssignment(new UserAssignment { UnitId = added.Id, RoleId = 1, UserId = userId });
 
                 return added.ToDTO();
             }
