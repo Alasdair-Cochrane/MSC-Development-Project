@@ -10,9 +10,6 @@ const toggleLogin = () => {showLogin.value = true; showPasswordRest.value = fals
 const toggleForgot = () => {showLogin.value = false; showPasswordRest.value = true; showRegister.value = false}
 const toggleRegister = () => {showLogin.value = false; showPasswordRest.value = false; showRegister.value = true}
 
-
-
-
 </script>
 <template>
 <div class="wrapper">

@@ -19,7 +19,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs
         public int? Current_Status_ID { get; set; }
         public required string CurrentStatus { get; set; }
 
-        public required string UnitName { get; set; }
+        public required int UnitId { get; set; }
 
         public required string ModelNumber { get; set; }
         public required string ModelName { get; set; }

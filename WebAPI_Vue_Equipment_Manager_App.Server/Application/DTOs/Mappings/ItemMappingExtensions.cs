@@ -109,7 +109,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs.Mappings
                 Condition_on_reciept = post.Condition_on_reciept,
                 Current_Status_ID = post.Current_Status_ID,
                 Model = model,
-                UnitName = post.UnitName,
+                UnitId = post.UnitId,
                 CurrentStatus = post.CurrentStatus,
                 ImageUrl = post.ImageURL,
                 
@@ -117,6 +117,35 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs.Mappings
             return item;
 
 
+        }
+        public static ItemExportDTO ToExportDTO(this Item item)
+        {
+
+            ItemExportDTO dto = new ItemExportDTO
+            {
+                Id = item.Id,
+                SerialNumber = item.SerialNumber,
+                LocalName = item.LocalName ?? "",
+                Barcode = item.Barcode ?? "",
+                Status = item.StatusCategory.Name,
+
+                ModelName = item.EquipmentModel.ModelName,
+                ModelNumber = item.EquipmentModel.ModelNumber,
+                Manufacturer = item.EquipmentModel.Manufacturer,
+                Category = item.EquipmentModel.Category.Name,
+
+                UnitId = item.UnitId,
+                UnitName = item.Unit.Name,
+                Building = item.Unit.Building,
+                Room = item.Unit.Room,
+                Address = item.Unit.Address,
+                IsPublic = item.Unit.IsPublic,
+
+                Date_of_reciept = item.Date_Of_Reciept,
+                Date_of_commissioning = item.Date_Of_Commissioning,
+                Condition_on_reciept = item.Condition_On_Reciept,
+            };
+            return dto;
         }
     }
 }

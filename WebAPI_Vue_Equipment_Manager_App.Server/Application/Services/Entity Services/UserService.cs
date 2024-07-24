@@ -52,15 +52,9 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services
             List<UnitDTO> unitDTOs = new List<UnitDTO>();
             foreach(var root in roots)
             {
-                unitDTOs.Add(await _unitRepository.GetDTOWithChildrenAsync(root.Id));
+                unitDTOs.Add(await _unitRepository.GetDTOWithChildrenAsync(root));
             }
             return unitDTOs;
-        }
-
-        public async Task<IEnumerable<AssignmentDTO>> GetUserAssignmentsDTObyEmailAsync(string email)
-        {
-            var assignments = await _assignmentRepository.GetUserAssingmentsDTObyEmailAsync(email);
-            return assignments;
         }
 
         public async Task<IEnumerable<AssignmentDTO>> GetAssignmentsDTObyUserIdAsync(int userId)
@@ -162,6 +156,11 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services
             return await _userRepository.GetRoles();
         }
 
+        public async Task<bool> CheckUserIsPrivateOrAdminIncParent(int userId, int unitId)
+        {
+                return await _unitRepository.CheckUserHasRoleInParentOfUnit(userId, new int[] {1,2} , unitId);
+        }
+
     }
     public interface IUserService
     {
@@ -172,11 +171,10 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services
         Task<IEnumerable<AssignmentDTO>> GetAssignmentsDTObyUserIdAsync(int id);
         Task<User> GetCurrentUserAsync(HttpContext context);
         Task<IEnumerable<UnitDTO>> GetRelevantUnits(int userId);
-        Task<IEnumerable<AssignmentDTO>> GetUserAssignmentsDTObyEmailAsync(string email);
         Task<UserDetailsDTO> GetUserDetailsAsync(User user);
         Task<AssignmentDTO> UpdateAssignment(int updatorId, UserAssignment assignment);
         public Task<IEnumerable<RoleDTO>> GetAllRoles();
-
+        Task<bool> CheckUserIsPrivateOrAdminIncParent(int userId, int unitId);
     }
 
 

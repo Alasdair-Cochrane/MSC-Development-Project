@@ -68,7 +68,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
         public async Task<IEnumerable<Unit>> GetChildrenofUnit(int parentId)
         {
             var query =
-                "With Recursive children As (Select \"Id\", \"Name\", \"Building\", \"Room\", \"Address\", \"ParentId\" From \"Units\" Where \"Id\" = {0} Union Select y.\"Id\", y.\"Name\", y.\"Building\", y.\"Room\", y.\"Address\", y.\"ParentId\" From \"Units\" y Inner Join children c On c.\"Id\" = y.\"ParentId\") Select * From children";
+                "With Recursive children As (Select \"Id\", \"Name\", \"Building\", \"Room\", \"Address\", \"ParentId\" , \"IsPublic\" From \"Units\"   Where \"Id\" = {0} Union Select y.\"Id\", y.\"Name\", y.\"Building\", y.\"Room\", y.\"Address\", y.\"ParentId\" , y.\"IsPublic\" From \"Units\"  y Inner Join children c On c.\"Id\" = y.\"ParentId\") Select * From children";
 
             var children = await _context.Units.FromSqlRaw(query, parentId).Include(x => x.Children).
                 ToListAsync();
@@ -78,7 +78,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
         public async Task<IEnumerable<Unit>> GetParentsofUnit(int childId)
         {
             var query =
-               "With Recursive parents As (Select \"Id\", \"Name\", \"Building\", \"Room\", \"Address\", \"ParentId\" From \"Units\" Where \"Id\" = {0} Union Select y.\"Id\", y.\"Name\", y.\"Building\", y.\"Room\", y.\"Address\", y.\"ParentId\" From \"Units\" y Inner Join parents p On y.\"Id\" = p.\"ParentId\") Select * From parents";
+               "With Recursive parents As (Select \"Id\", \"Name\", \"Building\", \"Room\", \"Address\", \"ParentId\" , \"IsPublic\" From \"Units\" Where \"Id\" = {0} Union Select y.\"Id\", y.\"Name\", y.\"Building\", y.\"Room\", y.\"Address\", y.\"ParentId\" , y.\"IsPublic\"  From \"Units\" y Inner Join parents p On y.\"Id\" = p.\"ParentId\") Select * From parents";
 
             var parents = await _context.Units.FromSqlRaw(query, childId).ToListAsync();
             return parents;
@@ -86,24 +86,17 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
 
         public async Task<Unit?> GetRootUnitAsync(int unitId)
         {
-            var query = "With Recursive root As (Select \"Id\", \"Name\", \"Building\", \"Room\", \"Address\", \"ParentId\" From \"Units\" Where \"Id\" = {0} Union Select y.\"Id\", y.\"Name\", y.\"Building\", y.\"Room\", y.\"Address\", y.\"ParentId\" From \"Units\" y Inner Join parents p On y.\"Id\" = p.\"ParentId\") Select * From parents Where \"ParentId\" Is null";
+            var query = "With Recursive root As (Select \"Id\", \"Name\", \"Building\", \"Room\", \"Address\", \"ParentId\" , \"IsPublic\"  From \"Units\" Where \"Id\" = {0} Union Select y.\"Id\", y.\"Name\", y.\"Building\", y.\"Room\", y.\"Address\", y.\"ParentId\" , y.\"IsPublic\"  From \"Units\" y Inner Join parents p On y.\"Id\" = p.\"ParentId\") Select * From parents Where \"ParentId\" Is null";
             var root = await _context.Units.FromSqlRaw(query, unitId).Include(x => x.Children).FirstOrDefaultAsync();
             return root;
         }
 
-        public async Task<Unit?> GetOrgStructure(int unitId)
-        {
-            var query = "With Recursive root As (Select \"Id\", \"Name\", \"Building\", \"Room\", \"Address\", \"ParentId\" From \"Units\" Where \"Id\" = {0} Union Select y.\"Id\", y.\"Name\", y.\"Building\", y.\"Room\", y.\"Address\", y.\"ParentId\" From \"Units\" y Inner Join parents p On y.\"Id\" = p.\"ParentId\") Select * From parents Where \"ParentId\" Is null";
-            var root = await _context.Units.FromSqlRaw(query, unitId).
-                Include(x => x.Children).
-                FirstOrDefaultAsync();
-            return root;
-        }
 
-        public async Task<IEnumerable<Unit>> GetAllRootUnitsAsync()
+
+        public async Task<IEnumerable<Unit>> GetAllPublicUnitsAsync()
         {
             var units = await _context.Units.
-                Where(x => x.ParentId == null).
+                Where(x=> x.IsPublic).
                 ToListAsync();
             return units;
         }
@@ -122,7 +115,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
 
         }
 
-        //Gets all the units within the organisation that the user has been assigned to
+        //Gets all the units within the organisation that the user has been direcly assigned to and their children (If admin or private role)
         public async Task<IEnumerable<Unit>> GetAllRelevantUnitsToUserAsync(int userId)
         {
             List<UserAssignment> assignedUnits = await _context.Assignments.
@@ -133,7 +126,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
 
             HashSet<Unit> units = new HashSet<Unit>(assignedUnits.Select(x => x.Unit).ToList());
 
-            foreach (var unit in assignedUnits.Where(x => x.RoleId == 1).Select(x => x.Unit).ToList())
+            foreach (var unit in assignedUnits.Where(x => x.RoleId == 1 || x.RoleId == 2).Select(x => x.Unit).ToList())
             {
                 units.UnionWith(await GetChildrenofUnit(unit.Id));
             }
@@ -152,52 +145,46 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
             return roots;
         }
 
-        public async Task<UnitDTO> GetDTOWithChildrenAsync(int UnitId)
-        {
-            Unit? unit = await _context.Units.Include(x => x.Children).
-                Where(x => x.Id == UnitId).
-                FirstOrDefaultAsync();
-            if (unit == null)
-            {
-                throw new UnitException($"Could not find unit with id {UnitId}");
-            }
+        //https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.task.whenall?view=net-8.0
+        public async Task<UnitDTO> GetDTOWithChildrenAsync(Unit unit)
+        {            
             var dto = unit.ToDTO();
             dto.AssigedUsers = await GetUserAssignmentsForUnitAsync(unit.Id);
-            if(unit.Children == null)
-            {
-                return dto;
+
+           //if the Children property has not been assigned - check that the unit actually does not have children
+
+            if (unit.Children == null)
+            {   var u = _context.Units.Include(x => x.Children).Where(x => x.Id == unit.Id).FirstOrDefault();
+                if (u == null || u.Children.IsNullOrEmpty())
+                {
+                    return dto;
+                }
+                unit = u;
             }
+
             List<UnitDTO> children = new List<UnitDTO>();
 
-            foreach(var child in unit.Children)
+            foreach (var child in unit.Children)
             {
-                children.Add(await GetDTOWithChildrenAsync(child.Id));
+                children.Add(await GetDTOWithChildrenAsync(child));
             }
             dto.Children = children;
             return dto;
+
         }
-
-
-        public async Task<UnitDTO> GetOrgStructureAsync(int anyUnitId)
-        {
-            Unit? root = await GetRootUnitAsync(anyUnitId);
-            if(root == null)
-            {
-                throw new UnitException($"Could not find root organisation for unit {anyUnitId}");
-            }
-            var dto = await GetDTOWithChildrenAsync(root.Id);
-            return dto;
-        }
-
 
         //Gets all units where the user has admin priviledges
         public async Task<IEnumerable<UnitDTO>> GetAllAdminRoleUnits(int userId)
         {
-            List<int> adminUnits = await _context.Assignments.
+            List<Unit> adminUnits = await _context.Assignments.
                  AsNoTracking().
+                 TagWith("GET ALL ADMIN ROLE UNITS - USER REPO").
                  Where(x => x.UserId == userId).
                  Where(x => x.RoleId == 1).
-                 Select(x => x.UnitId).
+                 Include(x => x.Unit).
+                 ThenInclude(x => x.Children).
+                 ThenInclude(x => x.Children).
+                 Select(x => x.Unit).
                 ToListAsync();
 
             List<UnitDTO> units = new List<UnitDTO>();
@@ -214,6 +201,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
         public async Task<IEnumerable<int>> GetUnitIdsWithUserRole(int userId, int roleId)
         {
             var units = await _context.Assignments.
+                TagWith("GET UNIT IDs WITH USER ROLE - USER REPO").
                 Where(x => x.UserId == userId && x.RoleId == roleId).
                 Select(x => x.UnitId).
                 ToListAsync();
@@ -236,26 +224,40 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
         public async Task<IEnumerable<User>> GetAllAssignedUsersAsync(int unitId , int userId)
         {
             var users = await _context.Assignments.
-                AsSplitQuery().
+                TagWith("GET ALL ASSIGNED USERS - USER REPO").
                 Where(x => x.UnitId == unitId).
                 Where(x => x.UserId != userId).
                 Select(x => x.User).
                 ToListAsync();
             return users;
         }
-        public async Task<bool> CheckUserHasRoleInUnit(int userId, int roleId, int unitId)
+        public async Task<bool> CheckUserHasRoleInUnit(int userId, IEnumerable<int> roleIds, int unitId)
         {
-            var assignment = await _context.Assignments.AllAsync(x =>
-            x.UserId == userId &&
-            x.UnitId == unitId &&
-            x.RoleId == roleId);
-            return assignment;
+            var result = await _context.Assignments.
+             AnyAsync(x =>
+             x.UserId == userId &&
+             x.UnitId == unitId &&
+             roleIds.Contains(x.RoleId));
+            return result;
         }
+
+        public async Task<bool> CheckUserHasRoleInParentOfUnit(int userId, IEnumerable<int> roleIds, int unitId)
+        {
+            var parents = await GetParentIDsofUnit(unitId);
+
+            var result = await _context.Assignments.
+            AnyAsync(x =>
+            x.UserId == userId &&
+            parents.Contains(unitId) &&
+            roleIds.Contains(x.RoleId));
+            return result;
+        }
+
         public async Task<IEnumerable<AssignmentDTO>> GetUserAssignmentsForUnitAsync(int unitId)
         {
             var assignments = await _context.Assignments.
                 Where(x => x.UnitId == unitId).
-                AsSplitQuery().
+                TagWith("GET USERS ASSIGNMENTS FOR UNIT USER REPO 253").
                 AsNoTracking().
                 Include(x => x.User).
                 Include(x => x.Unit).
@@ -272,6 +274,13 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
                     RoleName = x.Role.Name,
                 }).ToListAsync();
             return assignments;
+        }
+
+        public async override Task<Unit?> GetAsync(int id)
+        {
+            return await _context.Units.Include(x => x.Children).
+                Where(x => x.Id == id).
+                FirstAsync();
         }
     }
 }

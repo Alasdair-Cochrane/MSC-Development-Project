@@ -31,7 +31,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs
 
         [JsonPropertyOrder(3)]
 
-        public required string UnitName { get; set; }
+        public  string? UnitName { get; set; } 
     }
 
 

@@ -1,12 +1,12 @@
-<script>
+<script setup>
 import { RouterLink } from 'vue-router';
 import {ref, onMounted} from 'vue'
 import { IsMobile } from '@/Services/DeviceService';
+import ExportItems from '@/components/ExportItems.vue';
 
-export default{
-    setup(){
 
-        onMounted(() => {
+
+onMounted(() => {
     mobileScreen.value = !IsMobile();     
     chartData.value = setChartData();
     chartOptions.value = setChartOptions();
@@ -16,6 +16,8 @@ const chartData = ref();
 const chartOptions = ref();
 
 const mobileScreen = ref(true)
+
+const showExport = ref(false)
 
 //https://primevue.org/chart/
 const setChartData = () => {
@@ -45,14 +47,6 @@ const setChartOptions = () => {
         maintainAspectRatio: false,
     };
 };
-return{
-    chartData,
-    chartOptions,
-    mobileScreen
-}
-    }
-}
-
 
 </script>
 
@@ -65,30 +59,30 @@ return{
         <div class="btn-group col-12">
             <div class="btn-row">
                 <div class="btn-container">
-                    <RouterLink class="btn-box">
+                    <div class="btn-box">
                         <label class="btn-label">Add Item</label> 
                         <i class="pi pi-plus"/>            
-                    </RouterLink>
+                    </div>
                 </div>
                 <div class="btn-container">
-                    <RouterLink class="btn-box">
+                    <div class="btn-box">
                         <label class="btn-label">Search</label> 
                         <i class="pi pi-search"/>            
-                    </RouterLink>
+                    </div>
                 </div>
             </div>
             <div class="btn-row">
                 <div class="btn-container">
-                    <RouterLink class="btn-box">
+                    <div class="btn-box">
                         <label class="btn-label">Manage</label> 
                         <i class="pi pi-table"/>            
-                    </RouterLink>
+                    </div>
                 </div>
                 <div class="btn-container">
-                    <RouterLink class="btn-box">
+                    <div class="btn-box">
                         <label class="btn-label">Scan</label> 
                         <i class="pi pi-camera"/>            
-                    </RouterLink>
+                    </div>
                 </div>
                 
             </div>
@@ -98,16 +92,16 @@ return{
         <div class="btn-group col-12">
             <div class="btn-row">
                 <div class="btn-container">
-                    <RouterLink class="btn-box">
-                        <label class="btn-label">Users</label> 
-                        <i class="pi pi-users"/>            
-                    </RouterLink>
+                    <div class="btn-box" @click="showExport= true">
+                        <label class="btn-label">Export</label> 
+                        <i class="pi pi-file-excel" />            
+                    </div>
                 </div>
                 <div class="btn-container">
-                    <RouterLink class="btn-box">
+                    <div class="btn-box">
                         <label class="btn-label">Units</label> 
                         <i class="pi pi-building"/>            
-                    </RouterLink>
+                    </div>
                 </div>
             </div>
         </div>
@@ -140,7 +134,11 @@ return{
 
     </div>
    
-   
+   <div>
+    <Dialog v-model:visible="showExport">
+        <ExportItems></ExportItems>
+    </Dialog>
+   </div>
 </div>
 </template>
 

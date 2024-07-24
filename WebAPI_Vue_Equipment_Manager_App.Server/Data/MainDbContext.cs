@@ -32,24 +32,22 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data
             builder.Entity<MaintenanceCategory>().HasIndex(e => e.Name).IsUnique();
             builder.Entity<EquipmentModelCategory>().HasIndex(e => e.Name).IsUnique();
             builder.Entity<ItemStatusCategory>().HasIndex(e => e.Name).IsUnique();
-            builder.Entity<Unit>().HasIndex(e => e.Name).IsUnique();
 
             builder.Entity<Unit>().
                 HasOne<Unit>().
                 WithMany(x => x.Children).
                 HasForeignKey(x => x.ParentId);
 
+            builder.Entity<Unit>().
+                Property(x => x.IsPublic).
+                HasDefaultValue(false);
+          
+
             builder.Entity<UserRole>().HasData(
                 new UserRole { Id = 1, Name = "Administrator", NormalizedName = "ADMIN" },
-                new UserRole { Id = 2, Name = "PrivateUser", NormalizedName = "PRIVATE" },
-                new UserRole { Id = 3, Name = "PublicUser", NormalizedName = "PUBLIC" },
-                new UserRole { Id = 4, Name = "TemporaryUser", NormalizedName = "TEMP" }
+                new UserRole { Id = 2, Name = "Private User", NormalizedName = "PRIVATE" },
+                new UserRole { Id = 3, Name = "Public User", NormalizedName = "PUBLIC" }
                 ); ;
-
-
-
-            builder.Entity<EquipmentModelCategory>().HasData(
-                new EquipmentModelCategory { Id = -1,Name = "Centrifuge" });
         }
 
     }

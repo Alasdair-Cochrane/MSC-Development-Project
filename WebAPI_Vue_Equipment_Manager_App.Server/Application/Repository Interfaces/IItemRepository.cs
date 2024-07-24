@@ -1,4 +1,5 @@
-﻿using WebAPI_Vue_Equipment_Manager_App.Server.Application.Interfaces;
+﻿using WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs;
+using WebAPI_Vue_Equipment_Manager_App.Server.Application.Interfaces;
 using WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities;
 
 namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Repository_Interfaces
@@ -10,5 +11,6 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Repository_Interfa
         public Task<string?> GetImageUrl(int id);
         public Task<ItemDocument> AddDocument(ItemDocument item);
         Task<IEnumerable<Item>> GetAllByUnitIdAsync(IEnumerable<int> unitIds);
+        Task<IEnumerable<ItemExportDTO>> GetExportData(IEnumerable<int> unitIds);
     }
 }

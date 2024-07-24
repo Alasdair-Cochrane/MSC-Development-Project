@@ -1,7 +1,7 @@
 <script setup>
 import { Unit } from '@/Models/Unit';
 import { addUnit } from '@/Services/UnitService';
-import { store } from '@/Store/Store';
+import { store, UpdateUnits } from '@/Store/Store';
 import {onMounted, ref} from 'vue'
 
     const newUnit = ref(new Unit())
@@ -11,6 +11,11 @@ import {onMounted, ref} from 'vue'
     const postcode = ref()
     const selectedParent = ref()
     const noName = ref(false)
+    const loading = ref(false)
+    const successfullyAdded = ref(false)
+    const errorOccured = ref(false)
+
+
     const props = defineProps({delay:{
         type : Boolean,
         default: false
@@ -22,10 +27,14 @@ import {onMounted, ref} from 'vue'
         parent:{
             type : Unit,
             default : null
-        }})
-    const emit = defineEmits(["created", "cancelled"])
+        }
+        })
+    const emit = defineEmits(['confirmed', "cancelled"])
 
-onMounted(() => selectedParent.value = props.parent)
+onMounted(() => {
+    selectedParent.value = props.parent
+}
+)
 
 
 const buildAddress = () =>
@@ -45,11 +54,18 @@ const buildAddress = () =>
    }
 
 async function addSimilarUnit(){
+    successfullyAdded.value = false
+    errorOccured.value = false;
+    noName.value = false;
+    loading.value = true;
+
     if(!newUnit.value.name){
         noName.value = true
         console.log("Name field required")
+        loading.value = false;
         return;
     }
+    
     noName.value = false;
     
     newUnit.value.address = buildAddress()
@@ -62,24 +78,31 @@ async function addSimilarUnit(){
     }
 
     if(props.delay){
-        emit("created", newUnit.value)
+        emit('confirmed', newUnit.value)
+        loading.value = false;
         return
     }
 
     var response = await addUnit(newUnit.value)
     if(response.successful){
         newUnit.value.name = null
-        console.log("added successfully")
-        emit("created", newUnit.value)
+        emit('confirmed', newUnit.value)
+        loading.value = false;
+        successfullyAdded.value = true
+        currentUnits.value = await UpdateUnits()
         return true
     }
     else{
         console.log(response.error + " " + response?.message)
+        loading.value = false;
+        errorOccured.value = true;
         return false
     }
 }
 
 function clear(){
+    successfullyAdded.value = false;
+    errorOccured.value = false;
     newUnit.value = new Unit()
     street.value = null
     city.value = null
@@ -89,6 +112,7 @@ function clear(){
 async function addNew(){
     if(await addSimilarUnit()){
         clear()
+        successfullyAdded.value= true;
     }
 }
 
@@ -123,18 +147,23 @@ async function addNew(){
         </div>
         <div class="input-field" v-if="!delay" >
             <label for="parent">Parent Unit</label>
-            <Select id="parent" :options="currentUnits" optionLabel="name" v-model="selectedParent" placeholder="Select Unit"/>
+            <Select id="parent" :options="currentUnits" optionLabel="name" v-model="selectedParent" placeholder="Select Unit" />
+        </div>
+        <div id="public-check">
+            <Checkbox id="public" v-model="newUnit.isPublic" :binary="true"></Checkbox>
+            <label for="public">Make Public</label>
         </div>
     </div>
     <div class="bttns">
         <div class="submit-btns" >
-            <Button icon="pi pi-save" label="Save" class="s-btn" @click="addNew"></Button>
-            <Button icon="pi pi-plus" label="Save & New" class="s-btn" @click="addSimilarUnit" v-if="!small"></Button>
-            <Button icon="pi pi-eraser" label="Clear" severity="danger" class="s-btn" @click="clear" v-if="!small"></Button>
-            <Button v-if="small" label="Cancel" @click="$emit('cancelled')" severity="danger" class="s-btn"></Button>
-
+            <Button icon="pi pi-save" label="Save" class="s-btn" @click="addNew" :loading="loading"></Button>
+            <Button icon="pi pi-plus" label="Save & New" class="s-btn" @click="addSimilarUnit" v-if="!small" :loading="loading "></Button>
+            <Button icon="pi pi-eraser" label="Clear" severity="danger" class="s-btn" @click="clear" v-if="!small" v-show="!loading "></Button>
+            <Button v-if="small" label="Cancel" @click="$emit('cancelled')" severity="danger" class="s-btn" v-show="!loading"></Button>
         </div>
     </div>
+    <label v-show="!delay && successfullyAdded">Successfully Added</label>
+    <label v-show="!delay && errorOccured">Failed to Add : </label>
 </div>
 </template>
 <style scoped>
@@ -186,6 +215,14 @@ small{
 
 .p-select{
     min-width: 180px;
+}
+
+#public-check{
+    display: flex;
+    justify-content: space-around;
+    margin: 1rem;
+    gap: 0.5rem;
+    align-items: center;
 }
 </style>
 

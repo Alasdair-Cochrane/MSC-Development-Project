@@ -114,18 +114,21 @@ const deleteRole = async () => {
                         </template>
                     </Column>
                 </DataTable>
-                <div >
-                    <Button label="New Member" icon="pi pi-plus" @click="showAssignUser = true"></Button>
-                    <AssignUser v-if="showAssignUser" :Users=users :UnitId="UnitId" @confirmed="newUser" @cancelled="showAssignUser = false"></AssignUser>
-                </div>
-                <Dialog v-model:visible="showDelete">
-                    <div id="deleteConfirmation" v-show="!deletionSuccesfull">
-                        <label>Confirm Deletion</label>
-                        <Button label="Yes" @click="deleteRole" :loading="operationLoading"></Button>
-                        <Button label="Cancel" @click="toBeDeleted=null; showDelete = false"></Button>
+
+                <Button label="New Member" icon="pi pi-plus" @click="showAssignUser = true" v-if="!showAssignUser"></Button>
+
+                <AssignUser v-if="showAssignUser" :Users=users :UnitId="UnitId" @confirmed="newUser" @cancelled="showAssignUser = false"></AssignUser>
+
+                <Dialog v-model:visible="showDelete" modal>
+                    <div class="deletion" v-show="!deletionSuccesfull">
+                        <strong>Confirm Deletion?</strong>
+                        <div>
+                             <Button label="Confirm" @click="deleteRole" :loading="operationLoading"></Button>
+                            <Button label="Cancel" @click="toBeDeleted=null; showDelete = false" severity="danger"></Button>
+                        </div>
                         <span v-show="errorOccured"> Failed to Delete : {{ errorMessage }}</span>
                     </div>
-                    <div v-show="deletionSuccesfull">
+                    <div v-show="deletionSuccesfull" class="deletion">
                         <label>Deletetion Successfull</label>
                         <Button label="Close" @click="deletionSuccesfull = false; showDelete = false"></Button>
                     </div>
@@ -147,6 +150,26 @@ const deleteRole = async () => {
     justify-content: space-between;
     flex: 1;
     gap: 5px;
+}
+.container{
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    align-items: center
+}
+
+.deletion{
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    align-items: center;
+}
+.deletion strong{
+    font-weight: bold;
+}
+.deletion div{
+    display: flex;
+    gap: 2rem;
 }
 
 </style>

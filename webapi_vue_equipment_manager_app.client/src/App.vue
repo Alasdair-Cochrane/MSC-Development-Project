@@ -1,10 +1,19 @@
 <script setup>
     import {RouterLink, RouterView} from 'vue-router'
     import SideBar from './components/SideBar.vue'
-import { loggedIn } from './Store/Store';
+import { loggedIn, PopulateStartingData } from './Store/Store';
 import LoginView from './views/LoginView.vue';
-import {ref} from 'vue'
+import {onMounted, ref} from 'vue'
+import { CheckRefreshToken, getAccessToken } from './Services/UserService';
 
+const loading = ref(false)
+
+onMounted(async () => {
+    loading.value= true;
+    CheckRefreshToken()
+    PopulateStartingData()
+    loading.value = false
+})
 
 </script>
 

@@ -31,9 +31,9 @@ export async function addUnit(unit){
 
 }
 
-export async function getRootUnits(){
+export async function getPublicUnits(){
     try{
-        const response = await fetch(route + "/organisations", 
+        const response = await fetch(route + "/public", 
            { method: "Get"}
         )
         if(response.ok){
@@ -41,12 +41,12 @@ export async function getRootUnits(){
             console.log(units)
             return units
         }
-        console.log("No root organisations found " + response.statusText)
+        console.log("No public organisations found " + response.statusText)
         console.log(response)
         return []
     }
     catch(ex){
-        console.log("No root organisations found " + ex.message)
+        console.log("No public organisations found " + ex.message)
         return []
     }
 }
@@ -63,10 +63,13 @@ export function toTreeNode(unit){
             building : unit.building,
             address : unit.address,
             parentId :unit.parentId,
-            assignedUsers : unit.assigedUsers
+            assignedUsers : unit.assigedUsers,
+            isPublic : unit.isPublic
         }        
         }
-    node.children = unit.children.map(child => {return toTreeNode(child)})
+    if(unit.children){
+        node.children = unit.children.map(child => {return toTreeNode(child)})
+    }
     return node;
 }
 
@@ -80,7 +83,7 @@ export async function GetOrgStructure(){
     });
     if(response.ok){
         let structure = await response.json()
-        let tree = toTreeNode(structure[0])
+        let tree = structure.map(unit => toTreeNode(unit))
         return tree;
     }
     else{
@@ -89,5 +92,55 @@ export async function GetOrgStructure(){
     }}
     catch(ex){
         console.log(ex.message)
+    }
+}
+
+export async function EditUnit(unit){
+    let edited = JSON.stringify(unit)
+    try{
+        let response = await fetch(route, {
+            method: "PUT",
+            headers : {
+                "Authorization" : await getAccessToken(),
+                "Content-Type": "application/json"
+
+            },
+            body: edited
+        })
+        if(response.ok){
+            edited = await response.json()
+            return {successful : true, unit: edited}
+        }
+        else{
+            console.log(response)
+            return {successful : false, errors: response.json()}
+        }
+    }
+    catch(ex){
+        console.log(ex)
+        return {successful : false, errors : ex.message}
+    }
+}
+
+export async function DeleteUnit(unit){
+    try{
+        console.log(route + `/${unit.id}`)
+    let response = await fetch(route + `/${unit.id}`,{
+        method:"DELETE",
+        headers : {
+            "Authorization" : await getAccessToken(),
+            "Content-Type": "application/json"
+
+        },
+    })
+    if(response.ok){
+        return {successful: true}
+    }
+    else{
+        return {successful: false, error : response.statusText, message: await response.json()}
+    }
+    }
+    catch (ex){
+        return {successful: false, error: ex.message}
     }
 }

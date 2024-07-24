@@ -47,11 +47,11 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
             return Ok(units);
         }
 
-        [HttpGet ("organisations")]
+        [HttpGet ("public")]
         [AllowAnonymous]
-        public async Task<IActionResult> GetRootUnits()
+        public async Task<IActionResult> GetPublicUnits()
         {
-            var units = await _unitService.GetRootUnitsAsync();
+            var units = await _unitService.GetPublicUnitsAsync();
             if (units.IsNullOrEmpty())
             {
                 return NotFound();
@@ -83,7 +83,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> Update(UnitDTO unit)
+        public async Task<IActionResult> Update([FromBody] UnitDTO unit)
         {
             var user = await _userService.GetCurrentUserAsync(HttpContext);
 

@@ -35,8 +35,8 @@ const GetUnits = async () => {
 }
 
 var structure;
-const GetStructure = async () =>
-    {if(!structure){
+export async function GetStructure(){
+    if(!structure){
         structure = await GetOrgStructure()
         return structure
     }
@@ -45,8 +45,10 @@ const GetStructure = async () =>
     }
 }
 export const UpdateStructure = async () =>
-    {structure = await GetOrgStructure();
+    {   UpdateUnits()
+        structure = await GetOrgStructure();
         return structure;}
+
 
 export async function UpdateUnits(){
     const response = await fetch('/api/units',
@@ -55,10 +57,10 @@ export async function UpdateUnits(){
             headers:{
                 "Authorization" : await getAccessToken()
             }
-        }
-        
+        }        
     )
     units = await response.json();
+    return units
 }
 
 //GET SET FOR LIST OF PUBLIC USERS
@@ -135,6 +137,9 @@ const GetUserDetails = async () => {
     }
 }
 
+export async function PopulateStartingData() {
+    await Promise.all([GetUnits(), GetUserDetails(),GetStructure(),GetPublicUsers(),GetRoles()])
+}
 
 export const store = reactive({
     Units : await GetUnits(),

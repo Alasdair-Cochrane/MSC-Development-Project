@@ -1,13 +1,14 @@
 ﻿using BrunoZell.ModelBinding;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
+using Microsoft.IdentityModel.Tokens;
 using WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs;
 using WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs.Mappings;
 using WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs.Queries;
 using WebAPI_Vue_Equipment_Manager_App.Server.Application.Error_Handling;
 using WebAPI_Vue_Equipment_Manager_App.Server.Application.Services;
 using WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Services;
+using WebAPI_Vue_Equipment_Manager_App.Server.Migrations;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
@@ -21,12 +22,14 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
         private readonly IItemService _itemSerivce;
         private readonly ILogger<ItemsController> _logger;
         private readonly IImageService _imageService;
+        private readonly IUserService _userService;
 
-        public ItemsController(IItemService itemSerivce, ILogger<ItemsController> logger, IImageService imageService)
+        public ItemsController(IItemService itemSerivce, ILogger<ItemsController> logger, IImageService imageService, IUserService userService)
         {
             _itemSerivce = itemSerivce;
             _logger = logger;
             _imageService = imageService;
+            _userService = userService;
         }
 
         //[HttpGet]
@@ -50,7 +53,9 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
         [HttpGet]
         public async Task<IActionResult> Search([FromQuery]ItemQuery query)
         {
-            var results =  await _itemSerivce.Search(query);
+            var user = await _userService.GetCurrentUserAsync(HttpContext);
+
+            var results =  await _itemSerivce.Search(query, user.Id);
             if(results != null)
             {
                 return Ok(results);
@@ -62,6 +67,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
         [HttpPost]
         public async Task<IActionResult> Insert([FromForm]ItemPostDTO item, IFormFile? image)
         {
+            var user = await _userService.GetCurrentUserAsync(HttpContext);
             
             if(image != null)
             {
@@ -70,9 +76,8 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
             else
             {
             }
-
             if (!ModelState.IsValid) return BadRequest();
-            var added = await _itemSerivce.AddAsync(item.ToItemDTOFromPost());
+            var added = await _itemSerivce.AddAsync(item.ToItemDTOFromPost(), user.Id);
             if (added != null)
             {
                 return CreatedAtAction(nameof(Get), new { id = added.Id }, added);
@@ -83,7 +88,9 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
         [HttpPut]
         public async Task<IActionResult> Update(ItemDTO item)
         {
-            var updated = await _itemSerivce.UpdateAsync(item);
+            var user = await _userService.GetCurrentUserAsync(HttpContext);
+
+            var updated = await _itemSerivce.UpdateAsync(item, user.Id);
             if (updated != null)
             {
                 return Ok(updated);
@@ -92,9 +99,10 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete([FromBody] ItemDTO item)
         {
-            await _itemSerivce.DeleteByIdAsync(id);
+            var user = await _userService.GetCurrentUserAsync(HttpContext);
+            await _itemSerivce.DeleteAsync(item, user.Id);
             return Ok();
         }
 
@@ -138,6 +146,16 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
             if(image == null) return NotFound();
             
              return File(image, Image.Jpeg);
+        }
+
+        [HttpGet("csv")]
+        public async Task<IActionResult> GetCsvExport([FromQuery]IEnumerable<int>? unitIds)
+        {
+            var user = await _userService.GetCurrentUserAsync(HttpContext);
+
+            var csvStream = await _itemSerivce.GetExport(user.Id, unitIds);
+
+            return File(csvStream, "application/octet-stream", "Equipment.csv");
         }
 
     }

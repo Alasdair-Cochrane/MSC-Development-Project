@@ -1,7 +1,7 @@
 import { EquipmentModel } from "./EquipmentModel";
 
 export class Item {
-    constructor(model, iD, serialNumber, localName, barcode, DOR, DOC, Condition, image, status, unit, purchaseOrder) {
+    constructor(model, iD, serialNumber, localName, barcode, DOR, DOC, Condition, image, status, unit, purchaseOrder, unitID) {
         this.id = iD;
         this.serialNumber = serialNumber;
         this.localName = localName,
@@ -13,7 +13,8 @@ export class Item {
         this.model = model;
         this.currentStatus = status;
         this.unitName = unit;
-        this.purchaseOrder = purchaseOrder
+        this.purchaseOrder = purchaseOrder;
+        this.unitID = unitID
     }
 }
 

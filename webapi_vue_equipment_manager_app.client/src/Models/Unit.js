@@ -6,5 +6,6 @@
         this.building = building,
         this.address = address
         this.parentId = parentId
+        this.isPublic = false
     }
  }

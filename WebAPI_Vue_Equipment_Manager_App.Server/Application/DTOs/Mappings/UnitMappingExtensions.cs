@@ -14,7 +14,8 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs.Mappings
                 Room = unit.Room,
                 Address = unit.Address,
                 ParentId = unit.ParentId,
-                AssigedUsers = assignments?.ToList()
+                AssigedUsers = assignments?.ToList(),
+                IsPublic = unit.IsPublic
             };
             return dto;
         }
@@ -29,6 +30,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs.Mappings
                 Room = unit.Room,
                 Address = unit.Address,
                 ParentId = unit.ParentId,
+                IsPublic = unit.IsPublic 
             };
             return entity;
         }

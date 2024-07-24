@@ -11,6 +11,7 @@ const selectedItems = ref()
 const loading = ref(true)
 const editedRows = ref([])
 const addNew = ref(false)
+const dt = ref()
 
 const filters = ref({
         global: {value:null, matchMode: FilterMatchMode.CONTAINS},
@@ -74,7 +75,9 @@ const onToggle = (val) =>
 
 const onRowEditSave = () => {}
 
-
+const exportCSV = () => {
+    dt.value.exportCSV()
+    }
 </script>
 
 <template>
@@ -88,11 +91,17 @@ const onRowEditSave = () => {}
     v-model:filters="filters" 
     filterDisplay="menu"
     :loading="loading"
-    :size="'small'"
-    :globalFilterFields="['serialNumber','localName','barcode','modelNumber','modelName','category','status']"
+    :size="'small'" 
+    :globalFilterFields="['serialNumber','localName','barcode','modelNumber','modelName',]"
     editMode="row"
     v-model:editingRows="editedRows"
     @row-edit-save="onRowEditSave"
+    paginator
+    :rows="25" 
+    :rowsPerPageOptions="[25, 50, 75, 100]"
+    scrollable
+    scroll-height="80vh"
+    ref="dt"
     >
     
 <!-- HEADER -->
@@ -107,6 +116,7 @@ const onRowEditSave = () => {}
                         <InputText v-model="filters['global'].value" placeholder="Search" />
                     </IconField>
                 </div>
+                <Button label="Export" icon="pi pi-external-link" @click="exportCSV($event)"></Button>
                 <MultiSelect :modelValue="shownColumns" :options="columns" optionLabel="label" placeholder="Show Columns"
                 @update:modelValue="onToggle" display="chip" :maxSelectedLabels=2></MultiSelect>
             </div>
@@ -236,7 +246,8 @@ const onRowEditSave = () => {}
     </Column>
 
 <!-- STATUS -->
-    <Column field="currentStatus" header="Status" sortable :showFilterMatchModes="false" filterField="status"  v-if="columns[14].show">
+    <Column field="currentStatus" header="Status" sortable 
+    :showFilterMatchModes="false" filterField="status"  v-if="columns[14].show" >
         <template #body="{data}">
             {{ data.currentStatus }}
         </template>
@@ -260,13 +271,6 @@ const onRowEditSave = () => {}
     justify-content: space-between
 }
 
-.p-datatable.p-datatable-sm .p-datatable-tbody  tr  td {
-    padding: 0 0 0 0.5rem !important;
 
-}
-.p-datatable.p-datatable-sm .p-datatable-tbody  tr {
-    height: 10px !important;
-}
-.wrapper{
-}
+
 </style>

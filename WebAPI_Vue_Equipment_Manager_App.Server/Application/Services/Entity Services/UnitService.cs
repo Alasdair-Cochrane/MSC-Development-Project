@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore.Update;
+using Microsoft.IdentityModel.Tokens;
 using WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs;
 using WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs.Mappings;
 using WebAPI_Vue_Equipment_Manager_App.Server.Application.Error_Handling;
@@ -45,10 +46,10 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Se
             }
 
         }
-        public async Task<IEnumerable<UnitDTO>> GetRootUnitsAsync()
+        public async Task<IEnumerable<UnitDTO>> GetPublicUnitsAsync()
         {
             var units = await _unitRepository.
-                GetAllRootUnitsAsync();
+                GetAllPublicUnitsAsync();
             var dtos = units.Select(x => x.ToDTO()).ToList();
             return dtos;
         }
@@ -59,7 +60,32 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Se
             {
                 throw new UnauthorisedOperationException($"User : {userId} is not authorised to update unit: {id}");
             }
+            Unit? unit = await _unitRepository.GetAsync(id);
+            if(unit == null)
+            {
+                return;
+            }
+            //if it has no children then just delete
+            if( unit.Children.IsNullOrEmpty())
+            {
+                await _unitRepository.DeleteAsync(id);
+                return;
+            }
+            //if it has children and a parent - then assign its children to its parent
+            //EF CORE will track the changes to the children and save when savechanges in DeleteAsync is called
+            if(unit.ParentId != null || unit.ParentId != 0)
+            {
+                foreach(var child in unit.Children)
+                {
+                    child.ParentId = unit.ParentId;
+                }
+                await _unitRepository.DeleteAsync(id);
+                return;
+            }
+            //if it has no parent but it has children - For the moment just return 
+
             await _unitRepository.DeleteAsync(id);
+            return;
         }
 
         public async Task<IEnumerable<UnitDTO>> GetAllAsync(int userId)
@@ -134,7 +160,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Se
         Task<IEnumerable<Unit>> GetChildrenById(int id);
         Task<IEnumerable<Unit>> GetParentsById(int id);
         Task<UnitDTO?> UpdateAsync(UnitDTO updatedEntry, int userId);
-        public Task<IEnumerable<UnitDTO>> GetRootUnitsAsync();
+        public Task<IEnumerable<UnitDTO>> GetPublicUnitsAsync();
         Task<UnitDTO?> FindByName(string name);
         Task<IEnumerable<AssignmentDTO>> GetUserAssignments(int unitId);
         Task<IEnumerable<UnitDTO>> GetAdminRoleUnits(int userId);

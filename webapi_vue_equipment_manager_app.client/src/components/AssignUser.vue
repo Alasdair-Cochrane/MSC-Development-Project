@@ -44,20 +44,29 @@ const confirm = async () =>{
 </script>
 <template>
     <div class="container">
-        <div>
-        <Select v-model="selectedUser"  dropdown :options="usersOptions" option-label="email" placeholder="Select User">
+        <div id="selection-input">
+        <Select v-model="selectedUser" filter dropdown :options="usersOptions" option-label="email" placeholder="Select User">
             <template #option="slotProps">
                 <span>{{slotProps.option.firstName}} {{slotProps.option.lastName}}   {{ slotProps.option.email }}</span>
             </template>
         </Select>
         <Select v-model="selectedRole" :options="store.Roles" optionLabel="name" placeholder="Select Role"></Select>
         </div>
-        <div>
+        <div id="user-selection-btns">
             <Button label="Confirm" @click="confirm"></Button>
-            <Button label="Cancel" @click="$emit('cancelled')"></Button>
+            <Button label="Cancel" @click="$emit('cancelled')" severity="danger"></Button>
         </div>
         <small v-show="errorOccured">Assignment Failed : {{ errorMessage }}</small>
     </div>
 </template>
 <style scoped>
+#selection-input{
+    display: flex;
+    gap:2rem;
+    flex-wrap: wrap;
+}
+#user-selection-btns{
+    display: flex;
+    gap:2rem;
+}
 </style>

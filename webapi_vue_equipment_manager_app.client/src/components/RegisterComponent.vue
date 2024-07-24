@@ -1,5 +1,5 @@
 <script setup>
-import { getRootUnits } from '@/Services/UnitService';
+import { getPublicUnits } from '@/Services/UnitService';
 import {onMounted, ref} from 'vue';
 import AddUnit from './AddUnit.vue';
 
@@ -30,7 +30,7 @@ function  createNewOrganisation(org) {
 
 
 onMounted(async () => {
-    organisations.value = await getRootUnits()}
+    organisations.value = await getPublicUnits()}
 )
 
 async function register(){

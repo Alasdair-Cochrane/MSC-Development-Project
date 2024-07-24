@@ -40,8 +40,7 @@ export async function getAccessToken(){
     let t = JSON.parse(tString)
     if(Date.now() < t.timestamp + (t.token.expiresIn * 1000)){
         return `Bearer ${t.token.accessToken}`;
-    }
-    
+    }    
     const response = await fetch("api/refresh", {
         method: "POST",
         headers: {
@@ -56,7 +55,28 @@ export async function getAccessToken(){
     }
     else{
         console.log("Refresh Error : " + response.statusText)
-        toggleLogOut()
+        userLogout();
+    }
+}
+
+export async function CheckRefreshToken(){
+    let tString = localStorage.getItem("accessToken")
+    let t = JSON.parse(tString)
+    const response = await fetch("api/refresh", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({"refreshToken" : t.token.refreshToken}),
+    })
+    if(response.ok){
+        let t = await response.json()
+        localStorage.setItem("accessToken", JSON.stringify({ token : t, timestamp : Date.now() }))
+        return `Bearer ${t.accessToken}`
+    }
+    else{
+        console.log("Refresh Error : " + response.statusText)
+        userLogout();
     }
 }
 
@@ -90,7 +110,6 @@ export async function GetUsers(){
 
 export async function AssignUser(usId, roId, unId) {
     let assignment = JSON.stringify({userId: usId, roleId: roId, unitiD: unId})
-    console.log(assignment)
     try{
     let response = await fetch('api/Users/assignments', {
         method: "Post",
@@ -104,7 +123,6 @@ export async function AssignUser(usId, roId, unId) {
     })
     if(response.ok){
         let result = await response.json()
-        console.log(result)
         return {successfull: true , assignment: result}
     }
     console.log(response.json())

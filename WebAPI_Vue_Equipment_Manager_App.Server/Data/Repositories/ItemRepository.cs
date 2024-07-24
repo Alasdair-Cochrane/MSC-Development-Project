@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs;
+using WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs.Mappings;
 using WebAPI_Vue_Equipment_Manager_App.Server.Application.Repository_Interfaces;
 using WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities;
 
@@ -112,6 +114,41 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
             var doc = await _context.ItemDocuments.AddAsync(document);
             await SaveAsync();
             return doc.Entity;
+        }
+
+        public async Task<IEnumerable<ItemExportDTO>> GetExportData(IEnumerable<int> unitIds)
+        {
+            var items = await _context.Items.
+                Where(x => unitIds.Contains(x.UnitId)).
+
+                Select(item => new ItemExportDTO
+                {
+                    Id = item.Id,
+                    SerialNumber = item.SerialNumber,
+                    LocalName = item.LocalName ?? "",
+                    Barcode = item.Barcode ?? "",
+                    Status = item.StatusCategory.Name,
+
+                    ModelName = item.EquipmentModel.ModelName,
+                    ModelNumber = item.EquipmentModel.ModelNumber,
+                    Manufacturer = item.EquipmentModel.Manufacturer,
+                    Category = item.EquipmentModel.Category.Name,
+
+                    UnitId = item.UnitId,
+                    UnitName = item.Unit.Name,
+                    Building = item.Unit.Building,
+                    Room = item.Unit.Room,
+                    Address = item.Unit.Address,
+                    IsPublic = item.Unit.IsPublic,
+
+                    Date_of_reciept = item.Date_Of_Reciept,
+                    Date_of_commissioning = item.Date_Of_Commissioning,
+                    Condition_on_reciept = item.Condition_On_Reciept,
+                }).
+                ToListAsync();
+            return items;
+
+
         }
 
     }

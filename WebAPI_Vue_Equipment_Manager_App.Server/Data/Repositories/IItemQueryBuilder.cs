@@ -5,6 +5,6 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
 {
     public interface IItemQueryBuilder
     {
-        Task<IEnumerable<Item>?> QueryItems(ItemQuery queryObject);
+        Task<IEnumerable<Item>?> QueryItems(ItemQuery queryObject, int userId);
     }
 }

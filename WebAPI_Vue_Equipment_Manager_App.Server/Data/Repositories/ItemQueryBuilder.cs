@@ -2,6 +2,7 @@
 using Microsoft.IdentityModel.Tokens;
 using WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs.Queries;
 using WebAPI_Vue_Equipment_Manager_App.Server.Application.Error_Handling;
+using WebAPI_Vue_Equipment_Manager_App.Server.Application.Repository_Interfaces;
 using WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities;
 using WebAPI_Vue_Equipment_Manager_App.Server.Data.Filters;
 
@@ -11,15 +12,23 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
     {
 
         private readonly MainDbContext _context;
+        private readonly IUnitRepository _unitRepository;
 
-        public ItemQueryBuilder(MainDbContext mainDbContext)
+        public ItemQueryBuilder(MainDbContext mainDbContext, IUnitRepository unitRepository)
         {
             _context = mainDbContext;
+            _unitRepository = unitRepository;
         }
-
-        public async Task<IEnumerable<Item>?> QueryItems(ItemQuery queryObject)
+        public async Task<IEnumerable<Item>?> QueryItems(ItemQuery queryObject, int userId)
         {
+            //get all the unit ids for which the user is assigned as private or admin (or their child units)
+            var units = await _unitRepository.GetAllRelevantUnitsToUserAsync(userId);
+            var unitIds = units.Select(x => x.Id).ToList(); 
+
             IQueryable<Item> query = _context.Items.AsQueryable();
+
+            //apply the filter on only those items belonging to the assigned units
+            query = query.Where(x => unitIds.Any(y => y == x.UnitId));
 
             if (!String.IsNullOrEmpty(queryObject.SerialNumber))
             {

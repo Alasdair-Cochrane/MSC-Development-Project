@@ -19,6 +19,7 @@ const selectedImage = ref()
 const imageDisplay = ref()
 const showScanner = ref(false)
 const showCamera = ref(false)
+const selectedUnit = ref()
 
 
 
@@ -26,8 +27,6 @@ onMounted(() => {
     mobile.value = IsMobile();
     item.value.condition_on_reciept = condOptions[0]
 })
-
-const imageUploaded = ref()
 
 const  isNotEmpty = (modelField) =>{
     if(modelField === null || modelField === "" || modelField === undefined) {
@@ -37,13 +36,12 @@ const  isNotEmpty = (modelField) =>{
         return true;
     }
 }
-const requiredMessage = "Field Is Required"
 
 const validateSubmission = () =>
 {   
     if(
         isNotEmpty(item.value.serialNumber) &&
-        isNotEmpty(item.value.unitName) &&
+        isNotEmpty(item.value.unitID) &&
         isNotEmpty(item.value.model.modelNumber) &&
         isNotEmpty(item.value.model.modelName) &&
         isNotEmpty(item.value.model.category) &&
@@ -66,6 +64,8 @@ function clear(){
 async function save(){
     item.value.model.modelName = modelName.value;
     item.value.model.modelNumber = modelNumber.value;
+    item.value.unitID = selectedUnit.value.id
+    console.log(selectedUnit.value)
     if(!validateSubmission()) {
         toast.add({severity:'error', summary: 'Required Fields Empty', life: 2000 })
         console.log("item Invalid");
@@ -166,8 +166,8 @@ function modelNumberSelected(event){
                 <div class="input-field">
             <label for="owner">Owner</label>
             <!-- <label class="validation-warning" v-if="!isNotEmpty(item.unitName) ">{{ requiredMessage }}</label> -->
-            <Select id="owner" size="small" v-model="item.unitName" showClear 
-            :options="store.Units" :invalid="!isNotEmpty(item.unitName)"
+            <Select id="owner" size="small" v-model="selectedUnit" showClear 
+            :options="store.Units" :invalid="!isNotEmpty(item.unitID)"
             optionLabel="name"/>
         </div>
         </div>

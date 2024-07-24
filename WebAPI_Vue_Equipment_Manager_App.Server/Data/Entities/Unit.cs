@@ -17,6 +17,8 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities
         [MaxLength(500)]
         public string? Address { get; set; }
         public int? ParentId { get; set; }
+
+        public required bool IsPublic {  get; set; }
         //[ForeignKey(nameof(ParentId))]
         //public Unit? Parent { get; set; }
 
