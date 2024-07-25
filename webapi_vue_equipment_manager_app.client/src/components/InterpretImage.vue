@@ -49,15 +49,15 @@ async function imageSubmitted(image){
         console.log(response)
         awaitingResponse.value = false;
         if(response.isValidLabel){
-            serial.value = response.item.serialNumber
-            modelNumber.value = response.item.modelNumber,
-            modelName.value = response.item.modelName,
-            manufacturer.value = response.item.manufacturer,
-            weight.value = response.item.weight,
-            height.value = response.item.height,
-            length.value = response.item.length,
-            width.value = response.item.width,
-            category.value = response.item.category
+            serial.value = response.newItem.serialNumber
+            modelNumber.value = response.newItem.modelNumber,
+            modelName.value = response.newItem.modelName,
+            manufacturer.value = response.newItem.manufacturer,
+            weight.value = response.newItem.weight,
+            height.value = response.newItem.height,
+            length.value = response.newItem.length,
+            width.value = response.newItem.width,
+            category.value = response.newItem.category
             errors.value = response.errors
         }
         else{

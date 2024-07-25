@@ -72,20 +72,23 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Se
                 return;
             }
             //if it has children and a parent - then assign its children to its parent
+            //Make sure that the user is assigned the admin of the children
             //EF CORE will track the changes to the children and save when savechanges in DeleteAsync is called
-            if(unit.ParentId != null || unit.ParentId != 0)
-            {
+                var tasks = new List<Task>();
                 foreach(var child in unit.Children)
                 {
-                    child.ParentId = unit.ParentId;
+                    if(unit.ParentId != null || unit.ParentId != 0)
+                    {
+                        child.ParentId = unit.ParentId;
+
+                    }
+                    tasks.Add( _assignmentRepository.CreateAssignmentDelayedSaveAsync(new UserAssignment { UserId = userId, UnitId = child.Id, RoleId = 1 }));
                 }
+
+                await Task.WhenAll(tasks);
+
                 await _unitRepository.DeleteAsync(id);
                 return;
-            }
-            //if it has no parent but it has children - For the moment just return 
-
-            await _unitRepository.DeleteAsync(id);
-            return;
         }
 
         public async Task<IEnumerable<UnitDTO>> GetAllAsync(int userId)

@@ -85,6 +85,8 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services
             return assignment;
         }
 
+
+
         public async Task<AssignmentDTO> AssignUserPublicOnCreate(int userId, int unitId)
         {
             return await _assignmentRepository.CreateAssignment(new UserAssignment { UnitId = unitId, RoleId = 3, UserId = userId });
@@ -96,6 +98,13 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services
             {
                 throw new UnauthorisedOperationException($"User : {assignment.UserId} is not authorised to assign users for unit: {assignment.UnitId}");
             }
+            
+           if(!await _assignmentRepository.CheckUnitHasAdminAfterAssignmentUpdate(assignment))
+            {
+                throw new UnauthorisedOperationException($"Unit : {assignment.UnitId} will have no admin if user : {assignment.UserId} is reassigned");
+
+            }
+
             var updatedAssignment = await _assignmentRepository.Update(assignment);
             if(updatedAssignment == null) {
                 {
@@ -110,6 +119,11 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services
             if (!await _unitRepository.CheckUserIsAdminInParentOfUnit(deletorId, assignment.UnitId))
             {
                 throw new UnauthorisedOperationException($"User : {assignment.UserId} is not authorised to delete assignments for unit: {assignment.UnitId}");
+            }
+
+            if(! await _assignmentRepository.CheckUnitHasAdminAfterAdminDelete(assignment))
+            {
+                throw new UnauthorisedOperationException($"Unit : {assignment.UnitId} will have no admin if user : {assignment.UserId} is deleted");
             }
             await _assignmentRepository.Delete(assignment);
         }

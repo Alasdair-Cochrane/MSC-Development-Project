@@ -10,6 +10,9 @@ const emits = defineEmits(['confirmed', 'cancelled'])
 const errorOccured = ref(false)
 const errorMessage = ref()
 
+const noUser = ref(false)
+const noRole = ref(false)
+
 //exclude users already assigned to the unit from selection
 const setEligibleUsers = () =>
 {
@@ -28,10 +31,23 @@ const props = defineProps({
     }   })
 
 const confirm = async () =>{
+    if(!selectedUser.value){
+        noUser.value = true
+        return
+    }
+    if(!selectedRole.value){
+        noRole.value = true
+        return
+    }
+    noUser.value = false
+    noRole.value = false
+
     assignmentLoading.value = true
     var result = await AssignUser(selectedUser.value.id, selectedRole.value.id, props.UnitId)
     if(result.successfull){
         emits('confirmed', result.assignment)
+        selectedUser.value = null
+        selectedRole.value = null
     }
     else{
         errorOccured.value = true
@@ -45,12 +61,14 @@ const confirm = async () =>{
 <template>
     <div class="container">
         <div id="selection-input">
-        <Select v-model="selectedUser" filter dropdown :options="usersOptions" option-label="email" placeholder="Select User">
+        <Select v-model="selectedUser" filter dropdown 
+        :options="usersOptions" option-label="email" placeholder="Select User" :invalid="noUser">
             <template #option="slotProps">
                 <span>{{slotProps.option.firstName}} {{slotProps.option.lastName}}   {{ slotProps.option.email }}</span>
             </template>
         </Select>
-        <Select v-model="selectedRole" :options="store.Roles" optionLabel="name" placeholder="Select Role"></Select>
+        <Select v-model="selectedRole" 
+        :options="store.Roles" optionLabel="name" placeholder="Select Role" :invalid="noRole"></Select>
         </div>
         <div id="user-selection-btns">
             <Button label="Confirm" @click="confirm"></Button>

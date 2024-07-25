@@ -53,7 +53,7 @@ const editRole = async () => {
     }
     else{
         errorOccured.value = true
-        errorMessage.value = result.errors
+        errorMessage.value = result.message ?? result.errors
     }
     //
     toBeEdited.value = null
@@ -82,7 +82,8 @@ const deleteRole = async () => {
     }
     else{
         errorOccured.value = true
-        errorMessage.value = result.errors
+        console.log(result.message)
+        errorMessage.value = result.message ?? result.errors
     }
     operationLoading.value = false
 }

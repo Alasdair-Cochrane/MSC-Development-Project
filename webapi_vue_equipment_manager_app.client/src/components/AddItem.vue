@@ -3,7 +3,7 @@
     import { Item } from '@/Models/Item';
     import {EquipmentModel } from '@/Models/EquipmentModel'
     import { addItem} from '@/Services/ItemService'
-    import { store, UpdateModels } from "@/Store/Store";
+    import { store, UpdateCategories, UpdateModels } from "@/Store/Store";
     import { IsMobile } from "@/Services/DeviceService";
     import {useToast} from 'primevue/usetoast'
     import InterpretImage from "@/components/InterpretImage.vue";
@@ -14,13 +14,14 @@ const item = ref(new Item(new EquipmentModel()))
 var mobile = ref(false);
 const condOptions = ["New", "Used"]
 const toast = useToast();
-const emit = defineEmits('itemSaved')
+const emit = defineEmits(['itemSaved'])
 const selectedImage = ref()
 const imageDisplay = ref()
 const showScanner = ref(false)
 const showCamera = ref(false)
 const selectedUnit = ref()
 
+const showIsValid = ref(false)
 
 
 onMounted(() => {
@@ -39,6 +40,7 @@ const  isNotEmpty = (modelField) =>{
 
 const validateSubmission = () =>
 {   
+    showIsValid.value = true
     if(
         isNotEmpty(item.value.serialNumber) &&
         isNotEmpty(item.value.unitID) &&
@@ -47,6 +49,7 @@ const validateSubmission = () =>
         isNotEmpty(item.value.model.category) &&
         isNotEmpty(item.value.currentStatus)
     ) {
+        showIsValid.value = false
         return true;
     }
     else {
@@ -59,27 +62,46 @@ function clear(){
     item.value = new Item(new EquipmentModel())
     modelName.value = ""
     modelNumber.value = ""
+    selectedUnit.value = null
 }
 
 async function save(){
-    item.value.model.modelName = modelName.value;
-    item.value.model.modelNumber = modelNumber.value;
-    item.value.unitID = selectedUnit.value.id
-    console.log(selectedUnit.value)
+    console.log(modelName.value)
+    item.value.model.modelName = modelName?.value;
+    item.value.model.modelNumber = modelNumber?.value;
+    item.value.unitID = selectedUnit?.value.id
+
     if(!validateSubmission()) {
         toast.add({severity:'error', summary: 'Required Fields Empty', life: 2000 })
         console.log("item Invalid");
         return;
     }
+
+    //Format Dates
+    if(item.value.date_of_commissioning){
+        let cDate = new Date(item.value.date_of_commissioning)
+        cDate = cDate.toISOString()
+        item.value.date_of_commissioning = cDate
+    }
+    if(item.value.date_of_reciept){
+        let rDate = new Date(item.value.date_of_reciept)
+        rDate = rDate.toISOString()
+        item.value.date_of_reciept = rDate
+    }
+
     const response = await addItem(item.value, selectedImage.value);
+
     if(response.successful){
         toast.add({severity:'success', summary: 'Operation Successful', life: 2000 })
-        const newItem = response.item
+        const newItem = response.newItem
         item.value.serialNumber="";
         item.value.localName="";
         item.value.barcode="";
-        console.log("Save Successful " + newItem)
-        emit("itemSaved",newItem)
+        console.log("Save Successful " + JSON.stringify(newItem))
+        emit('itemSaved',newItem)
+
+        console.log(modelName.value)
+
         return true;
     }
     else{
@@ -96,9 +118,11 @@ async function addNew(){
     }
 }
 
-function assignImage(selectedImage){
-    selectedImage.value = selectedImage
-    imageDisplay.value.src = URL.createObjectURL(selectedImage)
+function assignImage(Image){
+    console.log(Image)
+    selectedImage.value = Image
+    imageDisplay.value.src = URL.createObjectURL(Image)
+    showCamera.value = false
 }
 
 function imageScanConfirmed(scannedItem){
@@ -113,41 +137,51 @@ const modelName = ref("")
 const modelNumber = ref("")
 
 async function searchModelName(event){
-    item.value.model.modelName = event.query
     if(store.Models.length === 0) {await UpdateModels()}
-    searchedModels.value = store.Models.filter(x => x.modelName.startsWith(event.query))
+    searchedModels.value = store.Models.filter(x => x.modelName.toLowerCase().includes(event.query.toLowerCase()))
 }
 async function searchModelNumber(event){
-    item.value.model.modelNumber = event.query
     if(store.Models.length === 0) {await UpdateModels()}
-    searchedModels.value = store.Models.filter(x => x.modelNumber.startsWith(event.query))
+    searchedModels.value = store.Models.filter(x => x.modelNumber.toLowerCase().includes(event.query.toLowerCase()))
+}
+
+const searchedCategories = ref()
+async function searchCategory(event){
+    item.value.model.category = event.query
+    if(store.ModelCategories.length === 0) {await UpdateCategories()}
+    searchedCategories.value = store.ModelCategories.filter(x => x.toLowerCase().includes(event.query.toLowerCase()))
 }
 
 function modelNameSelected(event){
     item.value.model = event.value
     modelNumber.value = item.value.model.modelNumber
+    modelName.value = item.value.model.modelName
+
 }
 
 function modelNumberSelected(event){
     item.value.model = event.value
     modelName.value = item.value.model.modelName
+    modelNumber.value = item.value.model.modelNumber
+    console.log(modelNumber.value)
 }
 </script>
 <template>
 <!--AI image scanner-->
-    <Dialog v-model:visible="showScanner" modal header="Scan" :closable=false :style="{ width: '400px' }" :breakpoints="{ '1199px': '75vw', '575px': '90vw' }">
+    <Dialog v-model:visible="showScanner" modal header="Image" :closable=false :style="{ width: '400px' }" :breakpoints="{ '1199px': '75vw', '575px': '90vw' }">
         <InterpretImage @cancelled="showScanner = false" @confirmed="imageScanConfirmed"></InterpretImage>
     </Dialog>
 
-<div class="grid-nogutter container">
-<div class="col-12 md:col-7">
-        <Button @click="showScanner = true" label="Scan" id="btn-scan" icon="pi pi-camera"></Button>
+<div class="container">
     <form >
+        <Button @click="showScanner = true" label="Scan From Image" id="btn-scan" icon="pi pi-camera"></Button>
         <div class="input-group">
             <div class="input-field">
                 <label for="serial">Serial Number</label>
-                <!-- <label class="validation-warning" v-if="!isNotEmpty(item.serialNumber) ">{{ requiredMessage }}</label> -->
-                <InputText id="serial" size="small" v-model="item.serialNumber" :invalid="!isNotEmpty(item.serialNumber)"/>
+                <small class="validation-warning" v-if="!isNotEmpty(item.serialNumber)">Required</small>
+                <InputText id="serial" size="small" v-model="item.serialNumber" 
+                    :invalid="showIsValid && !isNotEmpty(item.serialNumber)"/>
+
             </div>
             <div class="input-field">
                     <label for="serial">Barcode</label>
@@ -159,53 +193,66 @@ function modelNumberSelected(event){
         </div>   
             <div class="input-group">
                 <div class="input-field">
+            <label for="owner">Owner</label>
+            <small class="validation-warning" v-if="!isNotEmpty(selectedUnit) ">Required</small>
+            <Select id="owner" size="small" v-model="selectedUnit" showClear 
+            :options="store.Units" :invalid="showIsValid && !isNotEmpty(selectedUnit) "
+            optionLabel="name"/>
+        </div>
+                <div class="input-field">
                     <label for="serial">Local Name</label>
                     <InputText id="serial" size="small" v-model="item.localName"/>
                 </div>
                 
-                <div class="input-field">
-            <label for="owner">Owner</label>
-            <!-- <label class="validation-warning" v-if="!isNotEmpty(item.unitName) ">{{ requiredMessage }}</label> -->
-            <Select id="owner" size="small" v-model="selectedUnit" showClear 
-            :options="store.Units" :invalid="!isNotEmpty(item.unitID)"
-            optionLabel="name"/>
+       
         </div>
+        <div class="input-field">
+            <label for="status">Current Status</label>
+            <small class="validation-warning" v-if="!isNotEmpty(item.currentStatus) ">Required</small>
+            <InputText id="status" size="small" v-model="item.currentStatus" :invalid="showIsValid && !isNotEmpty(item.currentStatus)"/>
         </div>
         
         <div class="input-group">
+
         <div class="input-field">
             <label for="modelName">Model Name</label>
-            <!-- <label class="validation-warning" v-if="!isNotEmpty(modelName) ">{{ requiredMessage }}</label> -->
-            <AutoComplete v-model="modelName" :suggestions="searchedModels" optionLabel="modelName" @complete="searchModelName" @option-select="modelNameSelected" :invalid="!isNotEmpty(modelName)" />
+           <label class="validation-warning" v-if="!isNotEmpty(modelName) ">Required</label>
+            <AutoComplete v-model="modelName" :suggestions="searchedModels" 
+                optionLabel="modelName" @complete="searchModelName" 
+                    @option-select="modelNameSelected" :invalid=" showIsValid && !isNotEmpty(modelName)" />
         </div>
         <div class="input-field">
             <label for="modelNum">Model Number</label>
-            <!-- <label class="validation-warning" v-if="!isNotEmpty(modelNumber) ">{{ requiredMessage }}</label> -->
-            <AutoComplete v-model="modelNumber" :suggestions="searchedModels" optionLabel="modelNumber" @complete="searchModelNumber" @option-select="modelNumberSelected"  :invalid="!isNotEmpty(modelNumber)"/>
+            <small class="validation-warning" v-if="!isNotEmpty(modelNumber) ">Required</small>
+            <AutoComplete v-model="modelNumber" :suggestions="searchedModels" optionLabel="modelNumber" 
+            @complete="searchModelNumber" @option-select="modelNumberSelected"  :invalid="showIsValid && !isNotEmpty(modelNumber)"/>
 
         </div>
         </div>  
         <div class="input-group">
         <div class="input-field">
             <label for="Manufacturer">Manufacturer</label>
-            <!-- <label class="validation-warning" v-if="!isNotEmpty(item.model.manufacturer) ">{{ requiredMessage }}</label> -->
-            <InputText id="manufacturer" size="small" v-model="item.model.manufacturer"  :invalid="!isNotEmpty(item.model.manufacturer)"/>
+            <small class="validation-warning" v-if="!isNotEmpty(item.model.manufacturer) ">Required</small>
+            <InputText id="manufacturer" size="small" v-model="item.model.manufacturer"  :invalid="showIsValid && !isNotEmpty(item.model.manufacturer)"/>
         </div>
         <div class="input-field ">
             <label for="category">Category</label>
-            <!-- <label class="validation-warning" v-if="!isNotEmpty(item.model.category) ">{{ requiredMessage }}</label> -->
-            <InputText id="category" size="small" v-model="item.model.category" :invalid="!isNotEmpty(item.model.category)"/>
+            <small class="validation-warning" v-if="!isNotEmpty(item.model.category) ">Required</small> 
+            <AutoComplete id="category" v-model="item.model.category" :suggestions="searchedCategories" dropdown
+            @complete="searchCategory" 
+            @option-select="(e) => item.model.category = e.value"
+             :invalid="showIsValid && !isNotEmpty(item.model.category)" />
         </div>
-        </div>
-
-            <div class="input-field">
+        </div>      
+        <div class="input-field">
                 <label for="weight">Weight</label>
                 <InputGroup class="num-input">
                     <InputGroupAddon>kg</InputGroupAddon>
                     <InputNumber id="weight" size="small" v-model="item.model.weight" :minFractionDigits="2"/>             
                 </InputGroup>
-            </div>
+            </div>      
             <div class="input-group">
+                
             <div class="input-field">
                 <label for="length">Length</label>
                 <InputGroup class="num-input">
@@ -233,7 +280,7 @@ function modelNumberSelected(event){
         <div class="input-group">
             <div class="input-field">
                 <label for="recieptDate">Date of Reciept</label>
-                <DatePicker showIcon icon-display="input" v-model="item.date_of_reciept"/>
+                <DatePicker showIcon icon-display="input" v-model="item.date_of_reciept" date-format="dd/mm/yy"/>
             </div>
             <div class="input-field">
             <label for="condition">Condition on Reciept</label>
@@ -242,50 +289,60 @@ function modelNumberSelected(event){
         </div>
         <div class="input-field">
         <label for="commisionDate">Date of Commissioning</label>
-        <DatePicker showIcon icon-display="input" v-model="item.date_of_commissioning"/>
+        <DatePicker showIcon icon-display="input" v-model="item.date_of_commissioning" date-format="dd/mm/yy"/>
         </div>
-        <div class="input-field">
-            <label for="status">Current Status</label>
-            <!-- <label class="validation-warning" v-if="!isNotEmpty(item.currentStatus) ">{{ requiredMessage }}</label> -->
-            <InputText id="status" size="small" v-model="item.currentStatus" :invalid="!isNotEmpty(item.currentStatus)"/>
-        </div>
+        
         <div class="card image-upload">
-            <Dialog v-model:visible="showCamera" modal header="Scan Label" :closable=false :style="{ width: '400px' }" :breakpoints="{ '1199px': '75vw', '575px': '90vw' }">
+            <Button label="image" @click="showCamera = true" icon="pi pi-camera"></Button>
+            <Dialog v-model:visible="showCamera" modal header="Choose Image" :style="{ width: '450px' }" :breakpoints="{ '1199px': '75vw', '575px': '90vw' }">
                 <CaptureImage @imageConfirmed="assignImage" @cancelled="showCamera = false"/>
             </Dialog>
+            <div class="img-container" v-show="selectedImage"><img ref="imageDisplay" v-bind:src="imageDisplay" alt="item-image"/></div>
         </div>
         <div class="submit-btns mobile" >
             <Button icon="pi pi-save" label="Save" class="s-btn" @click="save"></Button>
             <Button icon="pi pi-plus" label="New" class="s-btn" @click="addNew"></Button>
             <Button icon="pi pi-eraser" label="Clear" severity="danger" class="s-btn" @click="clear"></Button>
         </div>
-    </form>
-    <Image ref="imageDisplay" v-bind:src="item.imageUrl" width="250" preview></Image>
-    </div>
-
-    <div  class="col-12 md:col-5 right">
-        
-        
-    </div>
-    
+    </form> 
 </div>
 
 </template>
 <style scoped>
+.container{
+    display: flex;
+    justify-content: center;
+    flex: 1;
+}
+input{
+    max-height: 35px;
+    height: 35px;
+
+}
+.p-inputnumber-input{
+    max-height: 35px;
+
+}
+.p-inputtext{
+    max-height: 35px;
+
+}
+.p-button-icon-only{
+    max-height: 35px;
+}
 
 .validation-warning{
     font-size: small;
     color: red !important;
 }
 
-
 .input-field{
-    display: grid;
-    grid-template-columns: 1fr;
-    grid-template-rows: 1fr, 1fr;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
     width: fit-content;
-    margin-right: 0.5rem;
     margin-top: 0.5rem;
+    min-width: 150px;
 
 }
 .input-field label{
@@ -296,32 +353,45 @@ function modelNumberSelected(event){
     /* border: black 2px solid; */
     display: flex;
     flex-wrap: wrap;
-    justify-content: flex-start;
     gap:1rem;
 }
 form{
     display: flex;
     flex-direction: column;
+    justify-content: center;
+    width: fit-content;
 }
 
+img{
+    max-width: 400px;
+    max-height: 400px;
+}
+.img-container{
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    border-radius: 10px;
+    padding: 5px;
+    margin: 1rem;
+}
 
 .num-input{
     max-width: 128px;
 }
 .submit-btns{
     display: flex;
-    justify-content: space-around;
+    justify-content: center;
     flex-wrap: wrap;
     position: sticky;
     top:0;
     padding: 0.5rem;
     gap:0.5rem;
     z-index: 98;
+    margin-top: 1rem;
 
 }
 .submit-btns Button{
-    height: 3rem;
+    max-height: 3rem;
     flex: 1;
+    max-width: 150px;
 }
 
 .container{
@@ -362,17 +432,17 @@ form{
     width: 50%;
 }
 .image-upload{
-    margin-block: 2rem;
     display:flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    flex: 1;
 }
-.image-upload label{
-    width:100%;
-}
+
 .image-upload .p-button{
-    flex:1;
-    max-width: 100px;
+    max-width: 200px;
+    width: 100px;
     font-size: smaller;
 }
 
@@ -380,7 +450,11 @@ Button {
     container-type: inline-size;
 }
 #btn-scan{
-    width: 80%;
+    max-width: 300px;
+    width: 300px;
+    min-width: 200px;
+    justify-self: center;
+    align-self: center;
 }
 
 .p-fileupload :deep(.p-fileupload-header){

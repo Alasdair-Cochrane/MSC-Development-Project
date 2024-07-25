@@ -2,6 +2,8 @@
 using WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs;
 using WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs.Mappings;
 using WebAPI_Vue_Equipment_Manager_App.Server.Application.Interfaces;
+using WebAPI_Vue_Equipment_Manager_App.Server.Application.Repository_Interfaces;
+using WebAPI_Vue_Equipment_Manager_App.Server.Data;
 using WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities;
 
 namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services
@@ -10,11 +12,13 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services
     {
         IEquipmentModelRepository _repository;
         ICategoryRepository<EquipmentModelCategory> _typeRepository;
+        IUnitRepository _unitRepository;
 
-        public EquipmentModelsService(IEquipmentModelRepository repo, ICategoryRepository<EquipmentModelCategory> types)
+        public EquipmentModelsService(IEquipmentModelRepository repo, ICategoryRepository<EquipmentModelCategory> types, IUnitRepository unitRepository)
         {
             _repository = repo;
             _typeRepository = types;
+            _unitRepository = unitRepository;
         }
 
         public async Task<EquipmentModelDTO?> AddAsync(EquipmentModelDTO model)
@@ -55,7 +59,20 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services
             if (newModel == null) return null;
             return newModel.ToDTO();
         }
+
+        public async Task<IEnumerable<string>> GetCategoriesAsync(int userId)
+        {
+            var units = await _unitRepository.GetAllRelevantUnitsToUserAsync(userId);
+            var uIds = units.Select(u => u.Id);
+
+            var userCategories = await _repository.GetUserCategoriesAsync(uIds);
+            HashSet<string> categories = new HashSet<string>(userCategories);
+            categories.UnionWith(SeedData.EquipmentModelCategories);
+            return categories.ToArray();
+        }
     }
+
+
 
     public interface IEquipmentModelService
     {
@@ -65,7 +82,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services
         public Task<EquipmentModelDTO?> AddAsync(EquipmentModelDTO entity);
         public Task<EquipmentModelDTO?> UpdateAsync(EquipmentModelDTO entity);
         public Task DeleteAsync(int id);
-
-    }
+    Task<IEnumerable<string>> GetCategoriesAsync(int userId);
+}
 
 }

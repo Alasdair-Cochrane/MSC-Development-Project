@@ -121,8 +121,9 @@ function submit(){
           <Button v-if="!imageCaptured" id="btn-cancel" @click="cancel" label="Cancel" severity="danger"></Button>
         </div>
         <div class="bttn-group">
-          <Button v-if="imageCaptured" id="btn-retake" @click="reTake" label="Re-Take"></Button>
           <Button v-if="imageCaptured" id="btn-submit" @click="submit" label="Submit"></Button>
+          <Button v-if="imageCaptured" id="btn-retake" @click="reTake" label="Re-Take" severity="warn"></Button>
+
         </div>
 
     </div>
@@ -132,10 +133,31 @@ function submit(){
 </div>
 </template>
 <style scoped>
-
+.container{
+  display: flex;
+  justify-content: center;
+  padding: 0;
+}
+.viewport{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+  width: 100%;
+}
 .bttn-group{
   display:  flex;
-  justify-content: space-between;
+  justify-content: space-around;
+  align-items: center;
+  flex: 1;
+  width: 100%;
+}
+.bttn-group input{
+  display:  flex;
+  justify-content: center;
+  max-width: 200px;
+  margin-inline: 0.5rem;
 }
 
 img{

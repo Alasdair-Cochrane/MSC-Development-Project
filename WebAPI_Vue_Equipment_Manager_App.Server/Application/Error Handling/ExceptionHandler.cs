@@ -35,6 +35,18 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Error_Handling
                 _logger.LogError(exception.Message, exception.StackTrace);
                 return true;
             }
+            else if(exception is ImageUploadException)
+            {
+                httpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                await httpContext.Response.WriteAsJsonAsync(new ProblemDetails
+                {
+                    Title = exception.GetType().Name,
+                    Detail = exception.Message,
+                    Status = (int)HttpStatusCode.InternalServerError,
+                }, cancellationToken);
+                _logger.LogError(exception.Message, exception.StackTrace);
+                return true;
+            }
             else
             {
                 httpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;

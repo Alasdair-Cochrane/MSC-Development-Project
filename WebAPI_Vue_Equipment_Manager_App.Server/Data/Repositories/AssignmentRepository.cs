@@ -54,6 +54,11 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
             return dto;
         }
 
+        public async Task CreateAssignmentDelayedSaveAsync(UserAssignment assignment)
+        {
+            await _context.Assignments.AddAsync(assignment);
+        }
+
         public async Task<AssignmentDTO?> Update(UserAssignment assignement)
         {
             var assignment = _context.Assignments.Update(assignement).Entity;
@@ -76,6 +81,43 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
         {
             _context.Assignments.Remove(assignment);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<bool> CheckUnitHasAdminAfterAdminDelete(UserAssignment assignment)
+        {
+            var result = true;
+
+            //If the Role being deleted is Admin
+            //but If the unit being deleted has no parent unit (which will already an admin)
+            //or if another user is already assigned as admin
+            //then it is safe to delete the admin assignment
+            if(assignment.RoleId == 1)
+            {
+                result = await _context.Assignments.
+                    Where(x => x.UnitId == assignment.UnitId).
+                    AnyAsync(x => (x.RoleId == 1 && x.UserId != assignment.UserId) 
+                    || x.Unit.ParentId != null);
+            }
+            return result;
+        }
+
+        public async Task<bool> CheckUnitHasAdminAfterAssignmentUpdate(UserAssignment assignment)
+        {
+            var result = true;
+            //if an admin is being assigned then it is safe
+            if( assignment.RoleId == 1)
+            {
+                return result;
+            }
+            //if the user is not already an admin it is safe
+            //if another user is still admin it is safe
+            result = await _context.Assignments.
+                Where(x => x.UnitId == assignment.UnitId).
+                AnyAsync(x => (x.RoleId != 1 && x.UserId == assignment.UserId) 
+                || (x.RoleId == 1 && x.UserId != assignment.UserId)
+                || x.Unit.ParentId != null);
+
+            return result;
         }
 
 

@@ -109,14 +109,18 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
         private async Task<string?> UploadImage(IFormFile file)
         {
             string extension = Path.GetExtension(file.FileName);
+            if(string.IsNullOrEmpty(extension))
+            {
+                extension = ".jpeg";
+            };
          
             string fileName = Guid.NewGuid().ToString() + extension;
 
             try
             {
                 await _imageService.Upload(file, fileName);
-                var uri = Url.Link("GetImage", new {url = fileName});
-                return uri;
+                var url = Url.Link("GetImage", new {url = fileName});
+                return url;
             }
             catch (Exception ex)
             {
@@ -138,7 +142,8 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
         }
 
         [HttpGet]
-        [Route("/image/{url}", Name="GetImage")]
+        [AllowAnonymous]
+        [Route("api/image/{url}", Name="GetImage")]
         public async Task<IActionResult> GetImageByUrl(string url)
         {
             var image = await _imageService.Retrieve(url);

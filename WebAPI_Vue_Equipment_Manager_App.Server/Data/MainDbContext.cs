@@ -47,7 +47,23 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data
                 new UserRole { Id = 1, Name = "Administrator", NormalizedName = "ADMIN" },
                 new UserRole { Id = 2, Name = "Private User", NormalizedName = "PRIVATE" },
                 new UserRole { Id = 3, Name = "Public User", NormalizedName = "PUBLIC" }
-                ); ;
+                );
+            builder.Entity<EquipmentModelCategory>().HasData(GetSeedCategories());
+
+           
+        }
+
+        private EquipmentModelCategory[] GetSeedCategories()
+        {
+            //From CHATGPT
+            var  labEquipmentDetailed = SeedData.EquipmentModelCategories;
+            int id = 1;
+            var categories = labEquipmentDetailed.Select(x => new EquipmentModelCategory
+            {
+                Name = x,
+                Id = id++,
+            });
+            return categories.ToArray();
         }
 
     }

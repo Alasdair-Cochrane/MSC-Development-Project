@@ -1,0 +1,107 @@
+<script setup>
+import { Item } from '@/Models/Item';
+
+const emit = defineEmits(['clicked'])
+const props = defineProps({
+    showButtons:{
+        type : Boolean,
+        default : true,
+    },
+    item:{
+        type : Item
+    },
+    clickable: {
+        type : Boolean,
+        default : false,
+    }
+})
+
+const cardClikced = () => {
+    if(props.clickable){
+        emit('clicked', props.item)
+    }
+}
+</script>
+<template>
+    <div :class="{ canClick : clickable }" @click="cardClikced" style="flex: 1;">
+    <div class="container "  >
+        <div id="thumbnail">
+            <img :src=item?.imageUrl height="80px" width="100%" v-if="item && item.imageUrl">
+        </div>
+        <div id="item-info">
+            <div>
+                <span>{{item?.serialNumber ?? " "}}</span>
+                <span>{{item?.model.modelNumber ?? " "}}</span>
+                <span>{{item?.model.category ?? " "}}</span>
+
+
+            </div>
+            <div>
+                <span>{{item?.localName ?? " "}}</span>
+                <span>{{item?.model.modelName ?? " "}}</span>
+                <span>{{item?.unitName ?? " "}}</span>
+
+
+            </div>
+        </div>
+        <div id="btns" v-if="showButtons">
+            <Button rounded icon="pi pi-search" @click="$emit('clicked', item)"></Button>
+            <Button rounded severity="danger" icon="pi pi-trash" @click="$emit('delete')"></Button>
+        </div>
+
+    </div>
+</div>
+</template>
+<style scoped>
+.container{
+
+    flex: 1;
+    height: 100%;
+    min-height: 80px;
+    max-width: 500px;
+    border: 1px black solid;
+    box-shadow: 0 2px 2px 0 rgba(28, 25, 25, 0.2);
+    border-radius: 25px;
+    display: grid;
+    grid-template-columns: 0.4fr 1fr 0.15fr;    
+    padding: 3px;
+}
+img{
+    border-radius: 10px;
+}
+#thumbnail{
+    display: flex;
+    align-items: center;
+    margin: 5px;
+    margin: 5px;
+    border-radius: 10px;    
+    min-width:80px;
+}
+#item-info{
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr; 
+    min-width: 150px;   
+}
+#item-info div{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    align-items: center;
+}
+
+#btns{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+}
+Button{
+    max-width: 30px;
+    max-height: 30px;
+}
+.canClick :hover{
+    background-color: var(--p-surface-100);
+
+}
+
+</style>

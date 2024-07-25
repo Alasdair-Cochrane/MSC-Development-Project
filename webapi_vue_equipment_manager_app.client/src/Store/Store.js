@@ -77,8 +77,29 @@ const GetPublicUsers = async () =>
 }
 
 //GET SET FOR LIST OF CATEGORIES
+var categories;
+
+async function GetCategories(){
+    if(!categories){
+        categories = await UpdateCategories()
+        return categories
+    }
+    return categories
+}
+
 export async function UpdateCategories(){
-    
+    try{
+    let response = await fetch('api/models/categories', {
+        method :"GET",
+        headers : {
+            "Authorization" : await getAccessToken()
+        }
+    })
+    return await response.json()
+    }
+    catch(ex){
+        console.log("Could not retrieve categories : " + ex.message)
+    }    
 }
 
 //GET SET FOR LIST OF STATUSES
@@ -138,13 +159,13 @@ const GetUserDetails = async () => {
 }
 
 export async function PopulateStartingData() {
-    await Promise.all([GetUnits(), GetUserDetails(),GetStructure(),GetPublicUsers(),GetRoles()])
+    await Promise.all([GetUnits(), GetUserDetails(),GetStructure(),GetPublicUsers(),GetRoles(), UpdateCategories()])
 }
 
 export const store = reactive({
     Units : await GetUnits(),
     UserDetails : await GetUserDetails(),
-    ModelCategories: ["Centrifuge", "Pipette"],
+    ModelCategories: await GetCategories(),
     Statuses: ['Active'],
     Models: [],
     OrgStructure: await GetStructure(),

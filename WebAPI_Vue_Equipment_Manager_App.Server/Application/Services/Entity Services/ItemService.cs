@@ -25,7 +25,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Se
         private readonly IItemQueryBuilder _itemQueryBuilder;
         private readonly IUserService _userService;
         public ItemService(IItemRepository itemRepository, ICategoryRepository<ItemStatusCategory> categories,
-            IMaintenanceService maintenanceService, IEquipmentModelRepository modelRepository, 
+            IMaintenanceService maintenanceService, IEquipmentModelRepository modelRepository,
             ICategoryRepository<EquipmentModelCategory> modelCategories, IUnitRepository unitRepository,
             IItemQueryBuilder itemQueryBuilder,
             IUserService userService)
@@ -42,23 +42,23 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Se
 
         public async Task<ItemDTO?> AddAsync(ItemDTO item, int userId)
         {
-           await CheckIsAuthorised(item, userId);
+            await CheckIsAuthorised(item, userId);
 
             int statusCategoryID = _statusRepository.FindOrCreateByName(item.CurrentStatus).Id;
             int modelCategoryID = _modelCategories.FindOrCreateByName(item.Model.Category).Id;
 
             EquipmentModel? model = await _modelRepository.FindOrCreate(item.Model.ToEntity(modelCategoryID));
-            if(model == null)
+            if (model == null)
             {
                 string entity = JsonSerializer.Serialize(item);
                 //throw an exception
                 throw new DataInsertionException("failed to find or create model entry when adding item", entity);
             }
-           
+
             Item newItem = item.ToEntity(statusCategoryID);
             newItem.ModelId = model.Id;
             var added = await _ItemRepository.AddAsync(newItem);
-            if(added == null)
+            if (added == null)
             {
                 string entity = JsonSerializer.Serialize(item);
 
@@ -67,11 +67,11 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Se
             return added.ToDTO();
         }
 
-        public async Task DeleteAsync(ItemDTO item, int userId )
+        public async Task DeleteAsync(ItemDTO item, int userId)
         {
             await CheckIsAuthorised(item, userId);
 
-            if(item.Id == null)
+            if (item.Id == null)
             {
                 return;
             }
@@ -81,15 +81,15 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Se
 
         public async Task<IEnumerable<ItemDTO>> GetAllAsync()
         {
-            var all = await  _ItemRepository.GetAllAsync();
-            return all.Select(x => x.ToDTO());         
+            var all = await _ItemRepository.GetAllAsync();
+            return all.Select(x => x.ToDTO());
         }
 
         public async Task<ItemDTO?> GetByIdAsync(int id)
         {
 
-            var found = await _ItemRepository.GetAsync(id); 
-            if(found == null)
+            var found = await _ItemRepository.GetAsync(id);
+            if (found == null)
             {
                 return null;
             }
@@ -102,7 +102,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Se
 
             int statusId = _statusRepository.FindOrCreateByName(item.CurrentStatus).Id;
             var updated = await _ItemRepository.UpdateAsync(item.ToEntity(statusId));
-            if(updated == null)
+            if (updated == null)
             {
                 return null;
             }
@@ -117,7 +117,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Se
 
         public async Task SetImageUrl(int itemId, string url)
         {
-           await  _ItemRepository.SetImageUrlAsync(itemId, url);
+            await _ItemRepository.SetImageUrlAsync(itemId, url);
         }
 
         public async Task<string?> GetImageUrl(int id)
@@ -136,11 +136,11 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Se
             {
                 return null;
             }
-            foreach(Item item in items!)
+            foreach (Item item in items!)
             {
                 result.Add(item.ToDTO());
             }
-            
+
             return result;
         }
 
@@ -153,11 +153,12 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Se
             IEnumerable<int> relevantUnitIds = relevantUnits.Select(x => x.Id);
 
             //check that the user is authorised to view the provided units
-            if(!unitIds.IsNullOrEmpty())
+            if (!unitIds.IsNullOrEmpty())
             {
-                foreach(int id in unitIds!)
+                foreach (int id in unitIds!)
                 {
-                    if (!relevantUnitIds.Contains(id)){
+                    if (!relevantUnitIds.Contains(id))
+                    {
                         throw new UnauthorisedOperationException($"User is not authorised to view items from Unit {id}");
                     }
                 }
@@ -170,9 +171,9 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Se
             using (var file = new StreamWriter(stream, leaveOpen: true))
             {
                 var csv = new CsvWriter(file, CultureInfo.InvariantCulture);
-                csv.WriteRecords(exportData);                
+                csv.WriteRecords(exportData);
             }
-              stream.Position = 0;
+            stream.Position = 0;
             return stream;
         }
 
@@ -189,9 +190,10 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Se
                 throw new UnauthorisedOperationException($"UserID [{userId}] is notunauthorised for this operation for Unit {item.UnitId.Value} ");
             }
         }
-
-        
     }
+    
+
+ 
 
     public interface IItemService
     {

@@ -149,7 +149,7 @@ const showChart = (node) =>{
                     </div>
                 </template>
             </Column>
-            <Column field="isPublic" header="Open" >
+            <Column field="isPublic" header="Open"  style="width: 150px;">
                 <template #body="slotProps">
                     <div class="inner-field">
                         <span v-show="slotProps.node.data !== toBeEdited && slotProps.node.data.isPublic">Public</span>

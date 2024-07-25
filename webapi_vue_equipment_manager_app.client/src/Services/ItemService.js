@@ -5,9 +5,6 @@ import { getAccessToken } from "./UserService";
 
 export async function addItem(item, image) {
 
-    item.date_of_commissioning = FormatDate(item.date_of_commissioning)
-    item.date_of_reciept = FormatDate(item.date_of_reciept)
-
     const formdata = new FormData();
     Object.keys(item).forEach(key => {if(item[key]) formdata.append(key,item[key])})
     Object.keys(item.model).forEach(key => {if(item.model[key]) formdata.append(key,item.model[key])})
@@ -27,7 +24,7 @@ export async function addItem(item, image) {
     })
     if(response.ok) {
         let added = await response.json();
-        return {successful : true , item: added}
+        return {successful : true , newItem: added}
     }
     else{
         const errorDetails = await response.json()

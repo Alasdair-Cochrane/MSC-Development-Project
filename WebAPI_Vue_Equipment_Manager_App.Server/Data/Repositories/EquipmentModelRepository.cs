@@ -73,6 +73,14 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
             return await AddAsync(model);
                    
         }
-       
+        public async Task<IEnumerable<string>> GetUserCategoriesAsync(IEnumerable<int> unitIds)
+        {
+            var categories = await _context.Items.
+                Where(x => unitIds.Contains(x.UnitId)).
+                Select(x => x.EquipmentModel.Category.Name).
+                ToListAsync();
+            return categories;
+        }
+
     }
 }

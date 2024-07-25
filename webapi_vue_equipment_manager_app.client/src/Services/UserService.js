@@ -125,8 +125,9 @@ export async function AssignUser(usId, roId, unId) {
         let result = await response.json()
         return {successfull: true , assignment: result}
     }
-    console.log(response.json())
-    return {successfull: false, errors: response.statusText}
+    let result = await response.json()
+    console.log(result.detail)
+    return {successfull: false, errors: response.statusText , message : result?.detail}
     }
     catch(ex){
         console.log(ex.message)
@@ -150,7 +151,9 @@ export async function DeleteAssignment(assignment){
             return {successfull:true}
         }
         else{
-            return {successfull : false, errors: response.statusText}
+            let result = await response.json()
+            console.log(result.detail)
+            return {successfull : false, errors: response.statusText, message : result?.detail}
         }
     }
     catch(ex){
@@ -173,8 +176,8 @@ export async function EditAssignment(assignment){
             return {successfull:true, updated: await response.json()}
         }
         else{
-            console.log(await response.json())
-            return {successfull : false, errors: response.statusText}
+            let result = await response.json()
+            return {successfull : false, errors: response.statusText, message : result?.detail}
         }
     }
     catch(ex){

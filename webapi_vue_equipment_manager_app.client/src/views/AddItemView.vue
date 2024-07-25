@@ -1,28 +1,21 @@
-<script>
+<script setup>
 import AddItem from '@/components/AddItem.vue';
-export default{
-    setup(){
+import ItemCard from '@/components/ItemCard.vue';
+import {ref} from 'vue'
 
-        return {
-            AddItem,
-        }
-    }
+const addedItemsList = ref([])
 
-}
 </script>
 
 <template>
 <div class="grid-nogutter page">
     <div class="col-12 sm:col-8">
-        <AddItem></AddItem>
+        <AddItem @itemSaved="(i) => addedItemsList.push(i)"></AddItem>
     </div>
     <div class="col-12 sm:col-4 right">
     <div class="added-list">
-        <div v-for="n in 1" class="item-content">
-            <label>serial</label>
-            <label>serial</label>
-            <label>serial</label>
-            <Button icon="pi pi-pencil"/>
+        <div v-for="i in addedItemsList" :key="i.id" class="item-content">
+            <ItemCard :item=i ></ItemCard>
         </div>
         
     </div>
@@ -47,10 +40,6 @@ export default{
 
     .item-content{
         display: flex;
-        justify-content: space-between;
-        background-color: var(--p-surface-50);
-        padding-left: 0.2rem;
-        align-items: center
     }
     .added-list{
         display: flex;
