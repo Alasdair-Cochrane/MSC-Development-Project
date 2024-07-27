@@ -4,16 +4,16 @@ using WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.Abstract_Classes;
 
 namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities
 {
-    [PrimaryKey(nameof(MaintenanceId), nameof(ItemDocumentId))]
+    [PrimaryKey(nameof(MaintenanceId), nameof(DocumentId))]
 
-    public class MaintenanceDocument
+    public class MaintenanceDocument : IDocumentRelation
     {
-        [Key]
-        public int MaintenanceId {  get; set; }
-        [Key]
-        public int ItemDocumentId { get; set; }
+        public int Id { get; set; }
 
-        public required Maintenance Maintenance { get; set; }
-        public required ItemDocument ItemDocument { get; set; }
+        public int MaintenanceId {  get; set; }
+        public int DocumentId { get; set; }
+
+        public Maintenance Maintenance { get; set; } = null!;
+        public Document Document { get; set; } = null!;
     }
 }

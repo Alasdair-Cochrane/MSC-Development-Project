@@ -109,9 +109,9 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
             return url;
         }
 
-        public async Task<ItemDocument> AddDocument(ItemDocument document)
+        public async Task<Document> AddDocument(Document document)
         {
-            var doc = await _context.ItemDocuments.AddAsync(document);
+            var doc = await _context.Documents.AddAsync(document);
             await SaveAsync();
             return doc.Entity;
         }

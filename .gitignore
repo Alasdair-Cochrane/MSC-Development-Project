@@ -39,3 +39,5 @@ fine-sublime-428810-m0-d95026cd8e46.json
 wwwroot/*
 WebAPI_Vue_Equipment_Manager_App.Server/wwwroot/*
 *.json
+keys/
+launchSettings.json

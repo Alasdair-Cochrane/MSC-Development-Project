@@ -16,8 +16,10 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data
         public DbSet<MaintenanceCategory> MaintenanceTypes { get; set; }
         public DbSet<ItemNote> ItemNotes { get; set; }
         public DbSet<EquipmentModelCategory> EquipmentTypes { get; set;}
-        public DbSet<ItemDocument> ItemDocuments { get; set; }
+        public DbSet<Document> Documents { get; set; }
         public DbSet<EquipmentModelDocument> ModelDocuments { get; set; }
+        public DbSet<ItemDocument> ItemDocuments { get; set; }
+        public DbSet<MaintenanceDocument> MaintenanceDocuments { get; set; }
 
         
         public MainDbContext(DbContextOptions<MainDbContext> options) : base(options) { }
@@ -32,6 +34,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data
             builder.Entity<MaintenanceCategory>().HasIndex(e => e.Name).IsUnique();
             builder.Entity<EquipmentModelCategory>().HasIndex(e => e.Name).IsUnique();
             builder.Entity<ItemStatusCategory>().HasIndex(e => e.Name).IsUnique();
+
 
             builder.Entity<Unit>().
                 HasOne<Unit>().
@@ -48,7 +51,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data
                 new UserRole { Id = 2, Name = "Private User", NormalizedName = "PRIVATE" },
                 new UserRole { Id = 3, Name = "Public User", NormalizedName = "PUBLIC" }
                 );
-            builder.Entity<EquipmentModelCategory>().HasData(GetSeedCategories());
+            //builder.Entity<EquipmentModelCategory>().HasData(GetSeedCategories());
 
            
         }

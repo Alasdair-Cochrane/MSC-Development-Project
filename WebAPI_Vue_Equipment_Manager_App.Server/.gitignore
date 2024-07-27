@@ -36,3 +36,5 @@ coverage
 fine-sublime-428810-m0-d95026cd8e46.json
 ./wwwroot/*
 *.json
+/keys
+launchSettings.json

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using WebAPI_Vue_Equipment_Manager_App.Server.Data;
@@ -11,9 +12,11 @@ using WebAPI_Vue_Equipment_Manager_App.Server.Data;
 namespace WebAPI_Vue_Equipment_Manager_App.Server.Migrations
 {
     [DbContext(typeof(MainDbContext))]
-    partial class MainDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240727152905_Refactor_Document_Relations")]
+    partial class Refactor_Document_Relations
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -217,19 +220,11 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Migrations
 
             modelBuilder.Entity("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.EquipmentModelDocument", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
                     b.Property<int>("DocumentId")
                         .HasColumnType("integer");
 
                     b.Property<int>("ModelId")
                         .HasColumnType("integer");
-
-                    b.HasKey("Id");
 
                     b.HasIndex("DocumentId");
 
@@ -298,19 +293,11 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Migrations
 
             modelBuilder.Entity("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.ItemDocument", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
                     b.Property<int>("DocumentId")
                         .HasColumnType("integer");
 
                     b.Property<int>("ItemId")
                         .HasColumnType("integer");
-
-                    b.HasKey("Id");
 
                     b.HasIndex("DocumentId");
 
@@ -421,18 +408,15 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Migrations
 
             modelBuilder.Entity("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.MaintenanceDocument", b =>
                 {
-                    b.Property<int>("MaintenanceId")
-                        .HasColumnType("integer");
-
                     b.Property<int>("DocumentId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("Id")
+                    b.Property<int>("MaintenanceId")
                         .HasColumnType("integer");
 
-                    b.HasKey("MaintenanceId", "DocumentId");
-
                     b.HasIndex("DocumentId");
+
+                    b.HasIndex("MaintenanceId");
 
                     b.ToTable("MaintenanceDocuments");
                 });

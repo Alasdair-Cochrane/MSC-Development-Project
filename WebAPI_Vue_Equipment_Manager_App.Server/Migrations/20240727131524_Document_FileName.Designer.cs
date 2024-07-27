@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using WebAPI_Vue_Equipment_Manager_App.Server.Data;
@@ -11,9 +12,11 @@ using WebAPI_Vue_Equipment_Manager_App.Server.Data;
 namespace WebAPI_Vue_Equipment_Manager_App.Server.Migrations
 {
     [DbContext(typeof(MainDbContext))]
-    partial class MainDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240727131524_Document_FileName")]
+    partial class Document_FileName
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -125,28 +128,6 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.Document", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("FileName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("URL")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Documents");
-                });
-
             modelBuilder.Entity("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.EquipmentModel", b =>
                 {
                     b.Property<int>("Id")
@@ -213,6 +194,183 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Migrations
                         .IsUnique();
 
                     b.ToTable("EquipmentTypes");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Analytical Balance"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Autoclave"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Bunsen Burner"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "Desiccator"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Name = "Dry Heat Sterilizer"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Name = "Electron Microscope"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Name = "Fluorometer"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            Name = "Fluorescence Microscope"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            Name = "Fume Hood"
+                        },
+                        new
+                        {
+                            Id = 10,
+                            Name = "Gas Chromatograph"
+                        },
+                        new
+                        {
+                            Id = 11,
+                            Name = "Gel Electrophoresis System"
+                        },
+                        new
+                        {
+                            Id = 12,
+                            Name = "Homogenizer"
+                        },
+                        new
+                        {
+                            Id = 13,
+                            Name = "Heating Mantle"
+                        },
+                        new
+                        {
+                            Id = 14,
+                            Name = "Incubator"
+                        },
+                        new
+                        {
+                            Id = 15,
+                            Name = "Lab Freezer"
+                        },
+                        new
+                        {
+                            Id = 16,
+                            Name = "Laminar Flow Cabinet"
+                        },
+                        new
+                        {
+                            Id = 17,
+                            Name = "Light Microscope"
+                        },
+                        new
+                        {
+                            Id = 18,
+                            Name = "Liquid Chromatograph"
+                        },
+                        new
+                        {
+                            Id = 19,
+                            Name = "Microwave Oven"
+                        },
+                        new
+                        {
+                            Id = 20,
+                            Name = "Microcentrifuge"
+                        },
+                        new
+                        {
+                            Id = 21,
+                            Name = "Multi-Channel Pipette"
+                        },
+                        new
+                        {
+                            Id = 22,
+                            Name = "Pipette Filler"
+                        },
+                        new
+                        {
+                            Id = 23,
+                            Name = "Refrigerator"
+                        },
+                        new
+                        {
+                            Id = 24,
+                            Name = "Refractometer"
+                        },
+                        new
+                        {
+                            Id = 25,
+                            Name = "Spectrophotometer"
+                        },
+                        new
+                        {
+                            Id = 26,
+                            Name = "Shaker Incubator"
+                        },
+                        new
+                        {
+                            Id = 27,
+                            Name = "Sonicator"
+                        },
+                        new
+                        {
+                            Id = 28,
+                            Name = "Top-Loading Balance"
+                        },
+                        new
+                        {
+                            Id = 29,
+                            Name = "Vortex Mixer"
+                        },
+                        new
+                        {
+                            Id = 30,
+                            Name = "Water Bath"
+                        },
+                        new
+                        {
+                            Id = 31,
+                            Name = "Western Blot Apparatus"
+                        },
+                        new
+                        {
+                            Id = 32,
+                            Name = "Single-Channel Pipette"
+                        },
+                        new
+                        {
+                            Id = 33,
+                            Name = "Thermometer"
+                        },
+                        new
+                        {
+                            Id = 34,
+                            Name = "Floor Model Centrifuge"
+                        },
+                        new
+                        {
+                            Id = 35,
+                            Name = "Ultracentrifuge"
+                        });
                 });
 
             modelBuilder.Entity("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.EquipmentModelDocument", b =>
@@ -223,15 +381,19 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("DocumentId")
-                        .HasColumnType("integer");
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<int>("ModelId")
                         .HasColumnType("integer");
 
-                    b.HasKey("Id");
+                    b.Property<string>("URL")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
-                    b.HasIndex("DocumentId");
+                    b.HasKey("Id");
 
                     b.HasIndex("ModelId");
 
@@ -304,15 +466,19 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("DocumentId")
-                        .HasColumnType("integer");
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<int>("ItemId")
                         .HasColumnType("integer");
 
-                    b.HasKey("Id");
+                    b.Property<string>("URL")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
-                    b.HasIndex("DocumentId");
+                    b.HasKey("Id");
 
                     b.HasIndex("ItemId");
 
@@ -417,24 +583,6 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Migrations
                         .IsUnique();
 
                     b.ToTable("MaintenanceTypes");
-                });
-
-            modelBuilder.Entity("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.MaintenanceDocument", b =>
-                {
-                    b.Property<int>("MaintenanceId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("DocumentId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("Id")
-                        .HasColumnType("integer");
-
-                    b.HasKey("MaintenanceId", "DocumentId");
-
-                    b.HasIndex("DocumentId");
-
-                    b.ToTable("MaintenanceDocuments");
                 });
 
             modelBuilder.Entity("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.MaintenanceFrequency", b =>
@@ -708,19 +856,11 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Migrations
 
             modelBuilder.Entity("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.EquipmentModelDocument", b =>
                 {
-                    b.HasOne("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.Document", "Document")
-                        .WithMany()
-                        .HasForeignKey("DocumentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.EquipmentModel", "Model")
-                        .WithMany()
+                        .WithMany("Documents")
                         .HasForeignKey("ModelId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Document");
 
                     b.Navigation("Model");
                 });
@@ -754,21 +894,11 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Migrations
 
             modelBuilder.Entity("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.ItemDocument", b =>
                 {
-                    b.HasOne("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.Document", "Document")
-                        .WithMany()
-                        .HasForeignKey("DocumentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.Item", "Item")
-                        .WithMany()
+                    b.HasOne("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.Item", null)
+                        .WithMany("Documents")
                         .HasForeignKey("ItemId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Document");
-
-                    b.Navigation("Item");
                 });
 
             modelBuilder.Entity("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.ItemNote", b =>
@@ -797,25 +927,6 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Migrations
                         .IsRequired();
 
                     b.Navigation("Category");
-                });
-
-            modelBuilder.Entity("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.MaintenanceDocument", b =>
-                {
-                    b.HasOne("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.Document", "Document")
-                        .WithMany()
-                        .HasForeignKey("DocumentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.Maintenance", "Maintenance")
-                        .WithMany()
-                        .HasForeignKey("MaintenanceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Document");
-
-                    b.Navigation("Maintenance");
                 });
 
             modelBuilder.Entity("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.MaintenanceFrequency", b =>
@@ -879,8 +990,15 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.EquipmentModel", b =>
+                {
+                    b.Navigation("Documents");
+                });
+
             modelBuilder.Entity("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.Item", b =>
                 {
+                    b.Navigation("Documents");
+
                     b.Navigation("Notes");
                 });
 

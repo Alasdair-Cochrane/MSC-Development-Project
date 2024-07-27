@@ -23,7 +23,6 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities
 
         [ForeignKey(nameof(CategoryId))]
         public EquipmentModelCategory Category { get; set; } = null!;
-        public ICollection<EquipmentModelDocument> Documents { get; set; } = null!;
     }
  
 

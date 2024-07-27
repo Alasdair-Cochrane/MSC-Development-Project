@@ -8,6 +8,7 @@ using WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs.Queries;
 using WebAPI_Vue_Equipment_Manager_App.Server.Application.Error_Handling;
 using WebAPI_Vue_Equipment_Manager_App.Server.Application.Services;
 using WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Services;
+using WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities;
 using WebAPI_Vue_Equipment_Manager_App.Server.Migrations;
 using static System.Net.Mime.MediaTypeNames;
 
@@ -23,21 +24,16 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
         private readonly ILogger<ItemsController> _logger;
         private readonly IImageService _imageService;
         private readonly IUserService _userService;
-
-        public ItemsController(IItemService itemSerivce, ILogger<ItemsController> logger, IImageService imageService, IUserService userService)
+        private readonly IDocumentService _documentService;
+        public ItemsController(IItemService itemSerivce, ILogger<ItemsController> logger, 
+            IImageService imageService, IUserService userService, IDocumentService documentService)
         {
             _itemSerivce = itemSerivce;
             _logger = logger;
             _imageService = imageService;
             _userService = userService;
+            _documentService = documentService;
         }
-
-        //[HttpGet]
-        //public async Task<IActionResult> GetAll()
-        //{
-        //    var items = await _itemSerivce.GetAllAsync();
-        //    return Ok(items);
-        //}
 
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
@@ -162,6 +158,44 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
 
             return File(csvStream, "application/octet-stream", "Equipment.csv");
         }
+
+        [HttpPost("{id}/documents")]
+        public async Task<IActionResult> UploadItemDocument(IFormFile file, int id)
+        {
+
+            string ext = Path.GetExtension(file.FileName).ToLower();
+            if (ext != ".pdf")
+            {
+                return BadRequest();
+            }
+            string uri = $"-I-{id}-" + Guid.NewGuid().ToString() + ext;
+
+            var document = new Document { FileName = file.FileName, URL = uri };
+            if (await _documentService.ValidateAsync(file))
+            {
+                 await _documentService.UploadAsync(file, uri);
+            }
+            else
+            {
+                return BadRequest("Document Invalid");
+
+            }
+            try
+            {
+                var itemDoc = await  _itemSerivce.CreateItemDocumentAsync(document,id);
+                return Ok(itemDoc);
+
+            }
+            catch
+            {
+                await _documentService.RemoveAsync(uri);
+                throw;
+            }
+
+
+
+        }
+
 
     }
 }

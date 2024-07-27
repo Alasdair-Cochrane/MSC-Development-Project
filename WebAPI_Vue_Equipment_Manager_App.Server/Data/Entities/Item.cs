@@ -29,7 +29,6 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities
         //Navigation Properties
         public EquipmentModel EquipmentModel { get; set; } = null!;
         public  Unit Unit { get; set; } = null!;
-        public ICollection<ItemDocument>? Documents { get;}
         public ICollection<ItemNote>? Notes { get;}
         public ItemStatusCategory StatusCategory { get; set; } = null!;
 

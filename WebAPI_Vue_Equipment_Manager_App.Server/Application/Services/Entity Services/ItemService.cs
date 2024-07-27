@@ -24,11 +24,13 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Se
         private readonly IUnitRepository _unitRepository;
         private readonly IItemQueryBuilder _itemQueryBuilder;
         private readonly IUserService _userService;
+        private readonly DocumentRepository _documentRepository;
         public ItemService(IItemRepository itemRepository, ICategoryRepository<ItemStatusCategory> categories,
             IMaintenanceService maintenanceService, IEquipmentModelRepository modelRepository,
             ICategoryRepository<EquipmentModelCategory> modelCategories, IUnitRepository unitRepository,
             IItemQueryBuilder itemQueryBuilder,
-            IUserService userService)
+            IUserService userService,
+            DocumentRepository documentRepository)
         {
             _ItemRepository = itemRepository;
             _statusRepository = categories;
@@ -38,6 +40,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Se
             _unitRepository = unitRepository;
             _itemQueryBuilder = itemQueryBuilder;
             _userService = userService;
+            _documentRepository = documentRepository;
         }
 
         public async Task<ItemDTO?> AddAsync(ItemDTO item, int userId)
@@ -190,6 +193,12 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Se
                 throw new UnauthorisedOperationException($"UserID [{userId}] is notunauthorised for this operation for Unit {item.UnitId.Value} ");
             }
         }
+
+        public async Task<ItemDocument> CreateItemDocumentAsync(Document document, int itemId)
+        {
+            var result = await _documentRepository.AddItemDocument(document, itemId); 
+            return result;
+        }
     }
     
 
@@ -207,5 +216,6 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Se
         public Task<string?> GetImageUrl(int id);
         public Task<IEnumerable<ItemDTO>?> Search(ItemQuery query, int userId);
         Task<MemoryStream> GetExport(int userId, IEnumerable<int>? unitIds = null);
+        Task<ItemDocument> CreateItemDocumentAsync(Document document, int itemId);
     }
 }

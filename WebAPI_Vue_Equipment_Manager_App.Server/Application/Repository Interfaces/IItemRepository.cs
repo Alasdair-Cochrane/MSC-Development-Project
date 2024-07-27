@@ -9,7 +9,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Repository_Interfa
         public Task<IEnumerable<Item>> GetAllByUnitIdAsync(int unitId);
         public Task<bool> SetImageUrlAsync(int id, string url);
         public Task<string?> GetImageUrl(int id);
-        public Task<ItemDocument> AddDocument(ItemDocument item);
+        public Task<Document> AddDocument(Document item);
         Task<IEnumerable<Item>> GetAllByUnitIdAsync(IEnumerable<int> unitIds);
         Task<IEnumerable<ItemExportDTO>> GetExportData(IEnumerable<int> unitIds);
     }

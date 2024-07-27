@@ -7,6 +7,7 @@ using WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.Abstract_Classes;
 
 namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
 {
+    //new means it must have a parameterless constructuctor
     public class GenericCategoryRepository<T> : Repository<T> , ICategoryRepository<T> where T : Category, new()
     {
         private readonly DbSet<T> _contextSet;

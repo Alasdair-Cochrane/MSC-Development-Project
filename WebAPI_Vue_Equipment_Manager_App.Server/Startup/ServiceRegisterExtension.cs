@@ -14,6 +14,9 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Startup
             services.AddScoped<IEquipmentModelRepository, EquipmentModelRepository>();
             services.AddScoped<IItemRepository, ItemRepository>();
             services.AddScoped(typeof(ICategoryRepository<>), typeof(GenericCategoryRepository<>));
+
+            services.AddScoped<DocumentRepository>();    
+
             services.AddScoped<IUnitRepository, UnitRepository>();
             services.AddScoped<IMaintenanceRepository, MaintenanceRepository>();
             services.AddScoped<IItemQueryBuilder, ItemQueryBuilder>();
@@ -29,13 +32,17 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Startup
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IMaintenanceService, MaintenanceService>();
             services.AddScoped<IImageService, ServerImageService>();
-            services.AddScoped<IDocumentService, DocumentService>();
+
+            services.AddSingleton<StorageClientProvider>();
+            services.AddScoped<IDocumentService, FirebaseDocumentService>();
+            
 
             services.AddSingleton<IEntityCache<EquipmentModelCategory>, InMemoryEntityCache<EquipmentModelCategory>>();
             services.AddSingleton<IEntityCache<MaintenanceCategory>, InMemoryEntityCache<MaintenanceCategory>>();
             services.AddSingleton<IEntityCache<ItemStatusCategory>, InMemoryEntityCache<ItemStatusCategory>>();
 
             services.AddScoped<ILabelInterpretationService, GoogleLabelInterpretationService>();
+            services.AddScoped<IVirusScanService, VirusScanService>();
 
         }
     }

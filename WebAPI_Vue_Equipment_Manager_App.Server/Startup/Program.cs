@@ -12,6 +12,8 @@ using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using Google.Protobuf.WellKnownTypes;
 using Microsoft.OpenApi.Models;
 using System.Xml.Linq;
+using Microsoft.Net.Http.Headers;
+using System.Configuration;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -79,6 +81,7 @@ builder.Services.RegisterRepositories();
 builder.Services.RegisterServices();
 
 //Configure
+builder.Services.AddHttpClient();
 
 var app = builder.Build();
 
