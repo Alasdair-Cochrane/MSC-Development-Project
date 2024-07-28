@@ -17,23 +17,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
             _documentService = documentService;        
         }
 
-        [HttpPost]
-        public async Task<IActionResult> UploadDocument(IFormFile file)
-        {
-            string ext = Path.GetExtension(file.FileName).ToLower();
-            if (ext != ".pdf")
-            {
-                return BadRequest();
-            }
-             string uri = "-D-" + Guid.NewGuid().ToString() + ext;
-
-            if (await _documentService.ValidateAsync(file))
-            {
-                 await _documentService.UploadAsync(file, uri);
-                return CreatedAtAction(nameof(GetDocument), new { url = uri });
-            }
-            return BadRequest();
-        }
+       
 
         [HttpGet]
         [Route("{url}", Name="GetDocument")]
@@ -48,8 +32,10 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
         [HttpDelete("{uri}")]
         public async Task<IActionResult> DeleteDocument(string uri)
         {
-            throw new NotImplementedException();
+            await _documentService.RemoveAsync(uri);
+            return NoContent();
         }
+
 
     }
 }

@@ -199,6 +199,11 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Se
             var result = await _documentRepository.AddItemDocument(document, itemId); 
             return result;
         }
+
+        public async Task UpdateImageUrl(int id, string url)
+        {
+            await _ItemRepository.UpdateImageUrl(id,url);
+        }
     }
     
 
@@ -215,7 +220,8 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Se
         public Task SetImageUrl(int itemId, string url);
         public Task<string?> GetImageUrl(int id);
         public Task<IEnumerable<ItemDTO>?> Search(ItemQuery query, int userId);
-        Task<MemoryStream> GetExport(int userId, IEnumerable<int>? unitIds = null);
-        Task<ItemDocument> CreateItemDocumentAsync(Document document, int itemId);
+        public Task<MemoryStream> GetExport(int userId, IEnumerable<int>? unitIds = null);
+        public  Task<ItemDocument> CreateItemDocumentAsync(Document document, int itemId);
+        public Task UpdateImageUrl(int id, string url);
     }
 }

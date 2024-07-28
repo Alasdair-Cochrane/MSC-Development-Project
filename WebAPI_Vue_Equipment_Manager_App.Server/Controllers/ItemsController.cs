@@ -69,10 +69,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
             {
                 item.ImageURL = await UploadImage(image);
             }
-            else
-            {
-            }
-            if (!ModelState.IsValid) return BadRequest();
+
             var added = await _itemSerivce.AddAsync(item.ToItemDTOFromPost(), user.Id);
             if (added != null)
             {
@@ -135,6 +132,15 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
 
             var returnFile = File(image, "image/jpeg");
             return Ok(returnFile);
+        }
+
+        [HttpPost("{id}/image")]
+        public async Task<IActionResult> UpdateImage(int id, IFormFile image)
+        {
+            var url = await UploadImage(image);
+            if(url == null) return StatusCode(500);
+            await _itemSerivce.UpdateImageUrl(id, url);
+            return Ok(url);
         }
 
         [HttpGet]

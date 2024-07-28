@@ -32,6 +32,8 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities
         public ICollection<ItemNote>? Notes { get;}
         public ItemStatusCategory StatusCategory { get; set; } = null!;
 
+        public ICollection<ItemDocument> Documents { get; set; } = null!;
+
     }
     
 }

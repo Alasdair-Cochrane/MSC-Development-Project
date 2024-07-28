@@ -4,21 +4,24 @@ import ItemDetail from '@/components/ItemDetail.vue';
 import ItemSearch from '@/components/ItemSearch.vue'
 import { EquipmentModel } from '@/Models/EquipmentModel';
 import { Item } from '@/Models/Item';
+import { UploadItemFile } from '@/Services/FileService';
 import {ref} from 'vue'
 
 const editMode = ref(false)
-const item = ref(new Item(new EquipmentModel()))
+const item = ref()
+const uploadLoading = ref(false)
 
 function toggleExtra() {editMode.value = !editMode.value
-    console.log("emit recieved")
 }
 
 function viewItem(newItem){
     if(newItem)
     {
     item.value = newItem
+    console.log(newItem.documents)
     }
 }
+
 
 
 </script>
@@ -27,31 +30,36 @@ function viewItem(newItem){
     <div class="search">
         <ItemSearch @item-searched="viewItem" @item-selected="viewItem"></ItemSearch>
     </div>
-    <div class="display">
-        <ItemDetail @editTrue="toggleExtra" v-model="item" :selected-Item="item"></ItemDetail>
-    </div>
-    <div v-if="!editMode" class="extra">
-        <FileDisplay title="Maintenance Records"></FileDisplay>
+    <div class="details">
+        <div class="display">
+            <ItemDetail @editTrue="toggleExtra()" :selected-Item="item" v-if="item" @update="(i) => item=i"></ItemDetail>
+        </div>
+        <div v-if="!editMode" class="extra">
+            
+        </div>
     </div>
 </div>
 </template>
 
 <style scoped>
-div{
-    /* border: black 2px solid; */
-}
+
 .page{
     display: flex;
     flex-wrap: wrap;
     flex: 1;
     padding: 1rem;
+    gap: 2rem;
 }
 .search{
 
 
 }
-.display{
+.details{
+    display: flex;
+    justify-content: space-around;
     flex: 1;
+}
+.display{
 
 }
 .extra{

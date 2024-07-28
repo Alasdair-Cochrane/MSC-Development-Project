@@ -28,18 +28,14 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs
 
         [JsonPropertyOrder(2)]
         public required string CurrentStatus { get; set; }
+        public string? UnitName { get; set; }
 
         [JsonPropertyOrder(3)]
 
-        public  string? UnitName { get; set; } 
+        public  UnitDTO? Unit { get; set; }
+
+        [JsonPropertyOrder(4)]
+        public ICollection<ItemDocument>? Documents { get; set; }
     }
-
-
-    public class ItemWithPurchaseDTO : ItemDTO
-    {
-        public decimal? Purchase_Price { get; set; }
-        public int? PurchaseOrder {  get; set; }
-    }
-
 
 }

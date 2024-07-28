@@ -12,11 +12,13 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services
     {
         private readonly string _bucketName;
         private readonly StorageClient _storageClient;
+        private readonly DocumentRepository _documentRepository;
 
-        public FirebaseDocumentService(StorageClientProvider clientProvider)
+        public FirebaseDocumentService(StorageClientProvider clientProvider, DocumentRepository docRepo)
         {
             _storageClient = clientProvider.GetClient();
             _bucketName = "msc-development-project-2da37.appspot.com";
+            _documentRepository = docRepo;
         }
 
         public async Task<byte[]?> RetrieveAsync(string uri)
@@ -41,6 +43,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services
         public async Task RemoveAsync(string uri) { 
 
             await _storageClient.DeleteObjectAsync(_bucketName, uri);
+            await _documentRepository.DeleteDocument(uri);
         }
 
 

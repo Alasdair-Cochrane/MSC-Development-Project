@@ -25,7 +25,7 @@ const cardClikced = () => {
 <template>
     <div :class="{ canClick : clickable }" @click="cardClikced" style="flex: 1;">
     <div class="container "  >
-        <div id="thumbnail">
+        <div id="thumbnail" v-if="item && item.imageUrl">
             <img :src=item?.imageUrl height="80px" width="100%" v-if="item && item.imageUrl">
         </div>
         <div id="item-info">
@@ -62,8 +62,7 @@ const cardClikced = () => {
     border: 1px black solid;
     box-shadow: 0 2px 2px 0 rgba(28, 25, 25, 0.2);
     border-radius: 25px;
-    display: grid;
-    grid-template-columns: 0.4fr 1fr 0.15fr;    
+    display: flex;
     padding: 3px;
 }
 img{
@@ -76,6 +75,7 @@ img{
     margin: 5px;
     border-radius: 10px;    
     min-width:80px;
+    max-width: 100px;
 }
 #item-info{
     flex: 1;
@@ -94,6 +94,7 @@ img{
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
+    justify-self: flex-end;
 }
 Button{
     max-width: 30px;
@@ -102,6 +103,9 @@ Button{
 .canClick :hover{
     background-color: var(--p-surface-100);
 
+}
+span{
+    font-size: small;
 }
 
 </style>

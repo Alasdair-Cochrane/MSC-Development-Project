@@ -1,4 +1,5 @@
-﻿using WebAPI_Vue_Equipment_Manager_App.Server.Application.Error_Handling;
+﻿using Microsoft.EntityFrameworkCore;
+using WebAPI_Vue_Equipment_Manager_App.Server.Application.Error_Handling;
 using WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities;
 
 namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
@@ -55,6 +56,51 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
             _context.Documents.Remove(document);
             await _context.SaveChangesAsync();
         }
+        public async Task DeleteDocument(string uri)
+        {
+            var document = await _context.Documents.
+                Where(x => x.URL == uri).
+                SingleAsync();
+            _context.Documents.Remove(document);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<IEnumerable<ItemDocument>> GetAllDocumentsForItem(int itemId)
+        {
+            var documents = await _context.ItemDocuments.
+                Where(x => x.ItemId == itemId).
+                Include(x => x.Document).
+                ToListAsync();
+            return documents;
+        }
+        public async Task<IEnumerable<EquipmentModelDocument>> GetAllDocumentsForModel(int modelId)
+        {
+            var documents = await _context.ModelDocuments.
+                Where(x => x.ModelId == modelId).
+                Include(x => x.Document).
+                ToListAsync();
+            return documents;
+        }
+        public async Task<IEnumerable<MaintenanceDocument>> GetAllDocumentsForMaintenance(int maintenanceId)
+        {
+            var documents = await _context.MaintenanceDocuments.
+                Where(x => x.MaintenanceId == maintenanceId).
+                Include(x => x.Document).
+                ToListAsync();
+            return documents;
+        }
+
+        public async Task<IEnumerable<string>> GetOrphanedDocuments(IEnumerable<string> documentURLs)
+        {
+            var orphans = await _context.Documents.
+                Select(x => x.URL).
+                Except(documentURLs).
+                ToListAsync();
+            return orphans;
+        }
+
+
+
 
     }
 }

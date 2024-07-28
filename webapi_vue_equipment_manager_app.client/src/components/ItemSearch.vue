@@ -2,6 +2,7 @@
 import {onMounted, ref} from 'vue'
 import { Item, getSearchFields } from '@/Models/Item';
 import { QueryItems, GetItem, searchItemsByProperties } from '@/Services/ItemService';
+import ItemCard from './ItemCard.vue';
 
 const searchValue = ref("")
 const searchProperty = ref("Serial Number")
@@ -52,11 +53,8 @@ async function scanImage(item){
     </div>
     <div class="entries">
         <ul v-for="i in searchResults" :key="i.Id">
-           <div class="search-result" @click="$emit('itemSelected',i); beenClicked = i" :class="{clicked : beenClicked === i}">
-               <label>{{i.serialNumber}}</label>
-               <label>{{i.model.modelName}}</label>
-               <label>{{i.model.modelNumber}}</label>
-           </div>
+           <ItemCard :item="i" :show-buttons="false" :clickable="true" 
+           @clicked="$emit('itemSelected',i);beenClicked = i" :class="{clicked : beenClicked === i}"></ItemCard>
         </ul>
     <div v-if="!searchResults.length">
         <label>No Results Found</label>
@@ -99,17 +97,15 @@ ul{
     list-style-type: none;
     width: 100%;
     padding: 0;
+
 }
 
-.search-result{
-    display: flex;
-    justify-content: space-between;
-}
 ul :hover{
     background-color: var(--p-surface-100);
 }
 .clicked{
     background-color:var(--p-surface-200);
+    border-radius: 25px;
 }
 
 
@@ -117,9 +113,11 @@ ul :hover{
         display: flex;
         flex-direction: column;
         flex: 1;
-        height: 100%;
+        max-height: 70vh;
         padding: 0.5rem;
         width: 100%;
+        gap: 5px;
+        overflow: auto;
     }
 
 .btns-scan{
@@ -132,4 +130,5 @@ ul :hover{
     flex: 1;
     width: 100%;
 }
+
 </style>

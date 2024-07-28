@@ -119,7 +119,6 @@ async function addNew(){
 }
 
 function assignImage(Image){
-    console.log(Image)
     selectedImage.value = Image
     imageDisplay.value.src = URL.createObjectURL(Image)
     showCamera.value = false
@@ -283,8 +282,8 @@ function modelNumberSelected(event){
                 <DatePicker showIcon icon-display="input" v-model="item.date_of_reciept" date-format="dd/mm/yy"/>
             </div>
             <div class="input-field">
-            <label for="condition">Condition on Reciept</label>
-            <SelectButton id="condition" size="small" v-model="item.condition_on_reciept" :options="condOptions"/>
+                <label for="condition">Condition on Reciept</label>
+                <SelectButton id="condition" size="small" v-model="item.condition_on_reciept" :options="condOptions"/>
             </div>
         </div>
         <div class="input-field">

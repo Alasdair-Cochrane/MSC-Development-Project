@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs;
 using WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs.Mappings;
+using WebAPI_Vue_Equipment_Manager_App.Server.Application.Error_Handling;
 using WebAPI_Vue_Equipment_Manager_App.Server.Application.Repository_Interfaces;
 using WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities;
 
@@ -148,7 +149,17 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
                 ToListAsync();
             return items;
 
+        }
 
+        public async Task UpdateImageUrl(int id, string url)
+        {
+            var item = await _context.Items.FindAsync(id);
+            if (item == null)
+            {
+                throw new DataInsertionException($"Could not find item {id} to update image");
+            }
+            item.Image = url;
+            _context.SaveChanges();
         }
 
        

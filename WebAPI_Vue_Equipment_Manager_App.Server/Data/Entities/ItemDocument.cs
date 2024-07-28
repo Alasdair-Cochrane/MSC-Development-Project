@@ -10,7 +10,6 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities
         public int ItemId { get; set; }
 
         public int DocumentId { get; set; }
-        public Item Item { get; set; } = null!;
         public Document Document { get; set; } = null!;
     }
 }

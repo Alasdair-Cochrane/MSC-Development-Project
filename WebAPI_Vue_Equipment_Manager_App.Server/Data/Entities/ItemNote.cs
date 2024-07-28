@@ -12,6 +12,5 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities
 
         [MaxLength(500)]
         public required string Text { get; set; }
-        public required User User { get; set; }
     }
 }

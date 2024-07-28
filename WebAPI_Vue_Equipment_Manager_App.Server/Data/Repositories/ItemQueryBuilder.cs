@@ -6,6 +6,8 @@ using WebAPI_Vue_Equipment_Manager_App.Server.Application.Repository_Interfaces;
 using WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities;
 using WebAPI_Vue_Equipment_Manager_App.Server.Data.Filters;
 
+
+//For case insensitive searching https://stackoverflow.com/questions/43277868/entity-framework-core-contains-is-case-sensitive-or-case-insensitive
 namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
 {
     public class ItemQueryBuilder : IItemQueryBuilder
@@ -32,26 +34,26 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
 
             if (!String.IsNullOrEmpty(queryObject.SerialNumber))
             {
-                query = query.Where(x => x.SerialNumber.Contains(queryObject.SerialNumber!));
+                query = query.Where(x => EF.Functions.ILike(x.SerialNumber, $"%{queryObject.SerialNumber}%"));
             }
 
             if (!String.IsNullOrEmpty(queryObject.LocalName))
             {
                 query = query.Where(x => x.LocalName != null).
-                    Where(x => x.LocalName.Contains(queryObject.LocalName!));
+                    Where(x => EF.Functions.ILike(x.LocalName!, $"%{queryObject.LocalName}%"));
             }
 
             if (!String.IsNullOrEmpty(queryObject.Barcode))
             {
-                query = query.Where(x => x.Barcode.Equals(queryObject.Barcode));
+                query = query.Where(x => EF.Functions.ILike(x.Barcode, $"%{queryObject.Barcode}%"));
             }
 
             if (!String.IsNullOrEmpty(queryObject.UnitName))
             {
-                Unit? unit = await _context.Units.
-                    Where(x => x.Name.Contains(queryObject.UnitName!)).
-                    FirstOrDefaultAsync();
-                if (unit != null)
+                Unit? unit = units.
+                    Where(x => x.Name.ToLower().Contains(queryObject.UnitName.ToLower())).
+                    FirstOrDefault();
+                if (unit != null )
                 {
                     query = query.Where(x => x.UnitId == unit.Id);
                 }
@@ -76,21 +78,21 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
                 if (!String.IsNullOrEmpty(queryObject.ModelNumber))
                 {
                     modelIds.UnionWith(await _context.Models.
-                        Where(x => x.ModelNumber.Contains(queryObject.ModelNumber!)).
+                        Where(x => EF.Functions.ILike(x.ModelNumber, $"%{queryObject.ModelNumber}%")).
                         Select(x => x.Id).
                         ToListAsync());
                 }
                 if (!String.IsNullOrEmpty(queryObject.ModelName))
                 {
                     modelIds.UnionWith(await _context.Models.
-                        Where(x => x.ModelName.Contains(queryObject.ModelName!)).
+                        Where(x => EF.Functions.ILike(x.ModelName, $"%{queryObject.ModelName}%")).
                         Select(x => x.Id).
                         ToListAsync());
                 }
                 if (!String.IsNullOrEmpty(queryObject.Manufacturer))
                 {
                     modelIds.UnionWith(await _context.Models.
-                        Where(x => x.Manufacturer.Contains(queryObject.Manufacturer!)).
+                        Where(x => EF.Functions.ILike(x.Manufacturer, $"%{queryObject.Manufacturer}%")).
                         Select(x => x.Id).
                         ToListAsync());
                 }
@@ -98,7 +100,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
                 {
                     modelIds.UnionWith(
                         await _context.Models.
-                        Where(x => x.Category.Name.Contains(queryObject.Category!)).
+                        Where(x => EF.Functions.ILike(x.Category.Name, $"%{queryObject.Category}%")).
                         Select(x => x.Id).
                         ToListAsync()
                         );
@@ -113,13 +115,17 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
                    return Enumerable.Empty<Item>();
                 }
             }
-          
+
             List<Item> results = await query.
                 Include(x => x.Unit).
                 Include(x => x.EquipmentModel).
+                ThenInclude(x => x.Category).
                 Include(x => x.Notes).
                 Include(x => x.StatusCategory).
-                Include(x => x.EquipmentModel.Category).
+                Include(x => x.Documents).
+                ThenInclude(x => x.Document).
+                AsSplitQuery().
+                AsNoTracking().
                 ToListAsync();
             return results;
         }

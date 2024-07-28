@@ -26,8 +26,10 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs.Mappings
                 ImageUrl = item.Image ?? "",
 
                 Model = item.EquipmentModel.ToDTO(),
+                Unit = item.Unit.ToDTO() ?? null,
                 UnitName = item.Unit.Name,
-                CurrentStatus = item.StatusCategory.Name
+                CurrentStatus = item.StatusCategory.Name,
+                Documents = item.Documents ?? []
             };
             return dto;
         }

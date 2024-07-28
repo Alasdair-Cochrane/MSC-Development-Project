@@ -1,122 +1,163 @@
 <script setup>
-import { Download, Upload } from '@/Services/FileService';
-import {ref} from 'vue'
+import { DeleteFile, Download, } from '@/Services/FileService';
+import {onBeforeUnmount, onMounted, ref} from 'vue'
 
-defineProps({
-    title: String,
-    recordId: Number,
-    files: [{
-            name: String,
-            url: String,
-            }]
-})
+const files = defineModel()
+const props = defineProps({header:{type:String},uploadLoading:{type:Boolean}})
+const fileSelected = ref()
+const elementSelected = ref()
+const loading = ref(false)
+const deleteLoading = ref(false)
+const selectedNewFile = ref()
+const emit = defineEmits(['upload'])
 
-function download(url){
-    Download(url)
+function deselectFile(event) {
+    if(event.target !== elementSelected.value){
+        elementSelected.value = null
+    }
+}
+function selectFile(event){
+    elementSelected.value = event.target
 }
 
-const testItem = ref([{name:"filename", url:"url/url"},])
+function newFileSelected(event){     
+    selectedNewFile.value = event.target.files[0]
+    console.log(selectedNewFile.value)
+}
+onMounted(() => {
+    document.addEventListener('click', deselectFile)
+})
+onBeforeUnmount(() => {
+    document.removeEventListener('click', deselectFile)
+})
 
-import { useToast } from "primevue/usetoast";
-const toast = useToast();
-const fileupload = ref();
+const deleteFile = async  () => {
+    deleteLoading.value = true
+    console.log("happened")
+    console.log(fileSelected.value)
+    let result = await DeleteFile(fileSelected.value.document)
+    if(result.successfull){
+        files.value = files.value.filter(x => x !== fileSelected.value)
+    }
+    console.log(result)
+    deleteLoading.value = false
 
-const upload = () => {
-    toast.add({ severity: 'info', summary: 'Success', detail: 'File Uploaded', life: 3000 });
-    Upload(fileupload.value);
-    fileupload.value = null;
-};
+}
+const downloadFile = async (file) =>{
+    loading.value = true
+    console.log(file)
+    await Download(file.document)
+    loading.value = false;
+}
+
+const uploadFile = async () => {
+    if(selectedNewFile.value){
+        emit('upload', selectedNewFile.value)
+    }
+}
 
 </script>
 
 <template>
-<div class="wrapper">
-    <label id="title">{{ title ?? "Documents" }}</label>
-    <div class="list">
-        <div v-for="file in files" :key="file.name"  class="file-item">
-            <label>{{ file.name }}</label>
-            <Button icon="pi pi-download" @click="download(file.url)"></Button>
-        </div>
-        <div v-for="file in testItem" :key="file.name"  class="file-item">
-            <label>{{ file.name }}</label>
-            <Button icon="pi pi-download" @click="download(file.url)"></Button>
-        </div>
-    </div>
-    <div class="upload">
-        <div class="card flex justify-center">
-        <Toast />
-        <FileUpload mode="basic" name="demo[]" url="/api/upload" accept=".pdf" :maxFileSize="1000000" @upload="upload" :auto="true" chooseLabel="Browse" />
-    </div>
-        
-    </div>
-    
+<div class="container">
+<div id="header" >
+    <h3>{{ header }}</h3>
+    <Button severity="danger" rounded icon="pi pi-trash" v-if="elementSelected" 
+    @click="deleteFile() ; elementSelected = $event.target"
+    :loading="deleteLoading"></Button>
+</div>
+    <ul>
+        <li v-for="file in files" v-bind:key="file.id" 
+            class="file-item" 
+            :class="{selected : file === fileSelected && elementSelected}">
+            <span @click="selectFile($event); fileSelected = file" style="flex: 1;">{{ file.document.fileName }}</span>
+            <Button  icon="pi pi-download" :loading="loading" @click="downloadFile(file)" class="download-bttn"></Button>
+        </li>
+    </ul>    
+<div id="footer">
+    <input type="file" class="fileInput" @change="newFileSelected">
+    <Button label="Upload" icon="pi pi-upload" 
+    style="max-width: fit-content;" @click="uploadFile"
+    v-if="selectedNewFile"
+    :loading="uploadLoading"
+    ></Button>
+</div>
 
 </div>
 </template>
 
 <style scoped>
-.wrapper{
-    flex: 1;
+
+.container{
+    padding-inline: 1rem;
     display: flex;
     flex-direction: column;
-    max-height: 400px;
-    height: 100%;
-    background-color: var(--p-surface-100);
-    border-radius: 25px;
-    padding:10px 10px 5px 10px;
-    width: 100%;
-    min-width: 200px;
-    max-width: 300px;
     align-items: center;
-    gap:5px;
+    border-radius: 10px;
+    box-shadow: 0 2px 2px 0 rgba(28, 25, 25, 0.2);
+    height: fit-content;
+    
+
+}
+span{
+    font-size: small;
 }
 
-#title{
-    width: 100%;
-    display: block;
-    text-align: center;
-    font-weight: bolder;
-    
-}
-.list{
-    flex: 1;
-    width: auto;
-    overflow-y: auto;
-    background-color: var(--p-surface-0);
-    border-radius: 25px;
-    padding: 5px;
-    width: 100%;
-}
-.file-item{
-    background-color: var(--p-surface-200);
+ul{
+    list-style-type: none;
+    padding: 2px;
     display: flex;
-    justify-content: flex-end;
-    gap: 5px;
+    flex-direction: column;
+    gap: 10px;
+    min-height: 50px;
+    overflow-y: auto;
+    max-height: 350px;
+    width: 100%;
+    background-color: var(--p-surface-50);
+    border-radius: 10px;
+}
+.download-bttn{
+    max-height: 30px;
+    max-width: 30px;
+    position: relative;
+    left: 1px;
+}
+
+li{
+    text-decoration: none;
+    display: flex;
+    gap: 1rem;
     align-items: center;
+    box-shadow: 0 2px 2px 0 rgba(28, 25, 25, 0.6);
+    border: solid black 1px;
+    justify-content: space-between;
     padding-left: 5px;
-    border-radius: 15px;
-    
+    border-radius: 7px;
+    min-width: 250px;
+    max-height: 30px;
 }
-.file-item Button{
-}
-.file-item label{
-    font-size: smaller;
-    text-align: end;
-
-}
-
-.upload{
+#header{
     display: flex;
     justify-content: space-between;
     align-items: center;
-    flex: 0;
-    padding-inline: 5px;
-    gap: 5px;
-
+    margin-block: 10px;
+    min-height: 40px;
+    max-height: 45px;
+    flex: 1;
+    width: 100%;
 }
-.upload button{
-    background-color: var(--p-surface-0);
-    align-self: center;
+.selected{
+    background-color: var(--p-surface-300);
 }
 
+h3{
+    font-weight: bold;
+}
+#footer{
+    margin-block: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
 </style>

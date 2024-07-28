@@ -38,9 +38,17 @@ export async function addItem(item, image) {
     }
 }
 
-export async function updateItem(item){
-    item.date_of_commissioning = FormatDate(item.date_of_commissioning)
-    item.date_of_reciept = FormatDate(item.date_of_reciept)    
+export async function UpdateItem(item){
+    if(item.date_of_commissioning){
+        let cDate = new Date(item.date_of_commissioning)
+        cDate = cDate.toISOString()
+        item.date_of_commissioning = cDate
+    }
+    if(item.date_of_reciept){
+        let rDate = new Date(item.date_of_reciept)
+        rDate = rDate.toISOString()
+        item.date_of_reciept = rDate
+    }
     try{
     const response = await fetch(route, {
         method: 'PUT',
@@ -53,7 +61,6 @@ export async function updateItem(item){
     })
     if(response.ok) {
         let updated = await response.json();
-        console.log("update successful" + JSON.stringify(updated))
         return {successful : true , item: updated}
     }
     else{
@@ -144,16 +151,19 @@ export async function searchItemsByProperties(propertiesObject){
     return list;
 }
 
-export async function UploadImage(image){
+export async function UploadImage(itemid, image){
+    let data = new FormData()
+    data.append('image', image)
     try{
-    const response = await fetch(route +"/image",{
+    const response = await fetch(route +"/" +itemid + "/image",{
         method: 'POST',
         headers : {
             "Authorization" : await getAccessToken()
         },
-        body:image})
+        body:data})
         if(response.ok){
-            return {successful : true, url: response.json()}
+            let result = await response.text()
+            return {successful : true, url: result}
         }
         else{
             return {successful : false, error: response.statusText}
