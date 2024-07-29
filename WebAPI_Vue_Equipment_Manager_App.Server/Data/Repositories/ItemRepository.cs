@@ -162,6 +162,22 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
             _context.SaveChanges();
         }
 
-       
+        public async Task<IEnumerable<StatusQuantity>> GetQuantityByStatusAsync(IEnumerable<int> unitIds)
+        {
+            var categories = await _context.Items.
+                Where(x => unitIds.Contains(x.UnitId)).
+                GroupBy(x => x.ItemStatusCategoryId).
+                Select(y => new StatusQuantity
+                {
+                    ItemQuantity = y.Count(),
+                    StatusId = y.Key,
+                    StatusName = y.First().StatusCategory.Name,
+                }).
+                ToListAsync();
+            
+            return categories;
+        }
+
+
     }
 }

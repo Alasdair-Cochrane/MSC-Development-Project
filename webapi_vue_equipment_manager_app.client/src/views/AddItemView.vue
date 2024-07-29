@@ -9,12 +9,12 @@ const addedItemsList = ref([])
 
 <template>
 <div class="grid-nogutter page">
-    <div class="col-12 sm:col-8">
+    <div class="col-12 sm:col-9">
         <AddItem @itemSaved="(i) => addedItemsList.push(i)"></AddItem>
     </div>
-    <div class="col-12 sm:col-4 right">
+    <div class="col-12 sm:col-3 right">
     <div class="added-list">
-        <div v-for="i in addedItemsList" :key="i.id" class="item-content">
+        <div v-for="i in addedItemsList" :key="i.id">
             <ItemCard :item=i ></ItemCard>
         </div>
         
@@ -35,18 +35,18 @@ const addedItemsList = ref([])
         min-height: 100vh;
     }
     .right{
-        padding: 1rem;
+        flex: 1;
+        width: 100%;
     }
 
-    .item-content{
-        display: flex;
-    }
     .added-list{
         display: flex;
         flex-direction: column;
         gap: 5px;
         overflow-y: auto;
         max-height: 90vh;
+        flex: 1;
+        padding: 10px;
     }
 
 

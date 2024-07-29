@@ -47,6 +47,10 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
             {
                 query = query.Where(x => EF.Functions.ILike(x.Barcode, $"%{queryObject.Barcode}%"));
             }
+            if(queryObject.StatusCategoryId != null)
+            {
+                query = query.Where(x => x.ItemStatusCategoryId == queryObject.StatusCategoryId);
+            }
 
             if (!String.IsNullOrEmpty(queryObject.UnitName))
             {
@@ -70,7 +74,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
             if (!String.IsNullOrEmpty(queryObject.ModelName) ||
                     !String.IsNullOrEmpty(queryObject.Manufacturer) ||
                     !String.IsNullOrEmpty(queryObject.Category) ||
-                    !String.IsNullOrEmpty(queryObject.ModelNumber))
+                    !String.IsNullOrEmpty(queryObject.ModelNumber) )
             {
 
                 HashSet<int> modelIds = new HashSet<int>();
@@ -124,6 +128,8 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
                 Include(x => x.StatusCategory).
                 Include(x => x.Documents).
                 ThenInclude(x => x.Document).
+                Include(x => x.Maintenances).
+                ThenInclude(x => x.Category).
                 AsSplitQuery().
                 AsNoTracking().
                 ToListAsync();

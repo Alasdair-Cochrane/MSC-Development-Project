@@ -13,5 +13,6 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Repository_Interfa
         Task<IEnumerable<Item>> GetAllByUnitIdAsync(IEnumerable<int> unitIds);
         Task<IEnumerable<ItemExportDTO>> GetExportData(IEnumerable<int> unitIds);
         Task UpdateImageUrl(int id, string url);
+        Task<IEnumerable<StatusQuantity>> GetQuantityByStatusAsync(IEnumerable<int> unitIds);
     }
 }

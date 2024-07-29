@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using WebAPI_Vue_Equipment_Manager_App.Server.Data;
@@ -11,9 +12,11 @@ using WebAPI_Vue_Equipment_Manager_App.Server.Data;
 namespace WebAPI_Vue_Equipment_Manager_App.Server.Migrations
 {
     [DbContext(typeof(MainDbContext))]
-    partial class MainDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240729140218_Maintenance_Description")]
+    partial class Maintenance_Description
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -378,6 +381,9 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime>("Date_Completed")
                         .HasColumnType("timestamp with time zone");
 
@@ -388,9 +394,6 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Migrations
                     b.Property<int>("ItemId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("MaintenanceCategoryId")
-                        .HasColumnType("integer");
-
                     b.Property<string>("Provider_Name")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -398,9 +401,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ItemId");
-
-                    b.HasIndex("MaintenanceCategoryId");
+                    b.HasIndex("CategoryId");
 
                     b.ToTable("Maintenances");
                 });
@@ -790,15 +791,9 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Migrations
 
             modelBuilder.Entity("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.Maintenance", b =>
                 {
-                    b.HasOne("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.Item", null)
-                        .WithMany()
-                        .HasForeignKey("ItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities.MaintenanceCategory", "Category")
                         .WithMany()
-                        .HasForeignKey("MaintenanceCategoryId")
+                        .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

@@ -197,11 +197,30 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
                 await _documentService.RemoveAsync(uri);
                 throw;
             }
-
-
-
         }
 
+        [HttpGet("statuses/names")]
+        public async Task<IActionResult> GetStatusNames()
+        {
+            var statuses = await _itemSerivce.GetStatusCategoryNames();
+           
+            if (statuses.IsNullOrEmpty())
+            {
+                return StatusCode(500);
+            }
+            else
+            {
+                return Ok(statuses);
+            }
+        }
+        [HttpGet("statuses")]
+        public async Task<IActionResult> GetAllItemsByStatus()
+        {
+            var user = await _userService.GetCurrentUserAsync(HttpContext);
+
+            var list = await _itemSerivce.GetQuantityByStatusAsync(user.Id);
+            return Ok(list);
+        }
 
     }
 }

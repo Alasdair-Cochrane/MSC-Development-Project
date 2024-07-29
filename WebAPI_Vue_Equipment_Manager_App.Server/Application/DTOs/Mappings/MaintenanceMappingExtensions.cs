@@ -4,7 +4,8 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs.Mappings
 {
     public static class MaintenanceMappingExtensions
     {
-        public static MaintenanceDTO ToDTO(this Maintenance entity) {
+        public static MaintenanceDTO ToDTO(this Maintenance entity)
+        {
 
             var dto = new MaintenanceDTO
             {
@@ -12,12 +13,18 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs.Mappings
                 ItemId = entity.ItemId,
                 Provider_Name = entity.Provider_Name,
                 Date_Completed = entity.Date_Completed,
-                CategoryName = entity.Category.Name
+                CategoryName = entity.Category.Name,
+                Description = entity.Description,
             };
-            return dto;  
+            return dto;
+        }
+        public static ICollection<MaintenanceDTO> ToDTO(this ICollection<Maintenance> entities)
+        {
+            var dtos = entities.Select(x => x.ToDTO()).ToList();
+            return dtos;
         }
 
-        public static Maintenance ToEntity(this MaintenanceDTO dto, int CategoryId) 
+        public static Maintenance ToEntity(this MaintenanceDTO dto, int CategoryId)
         {
             var entity = new Maintenance
             {
@@ -25,9 +32,10 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs.Mappings
                 ItemId = dto.ItemId,
                 Provider_Name = dto.Provider_Name,
                 Date_Completed = dto.Date_Completed,
-                CategoryId = CategoryId,
+                MaintenanceCategoryId = CategoryId,
+                Description = dto.Description,
             };
-            return entity;    
+            return entity;
         }
     }
 

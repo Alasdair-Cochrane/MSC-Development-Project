@@ -38,7 +38,7 @@
       "environmentVariables": {
         "ASPNETCORE_HTTPS_PORTS": "8081",
         "ASPNETCORE_HTTP_PORTS": "8080",
-        "GOOGLE_PROJECT_ID": "fine-sublime-428810-m0",
+        "GOOGLE_PROJECT_ID": "msc-development-project-2da37",
         "FIREBASE_CREDENTIALS_PATH": "Keys/msc-development-project-2da37-firebase-adminsdk-e572g-1a9c99ed29.json"
       },
       "publishAllPorts": true,

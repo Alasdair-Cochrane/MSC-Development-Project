@@ -132,6 +132,22 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
             }
             return units;
         }
+        public async Task<IEnumerable<int>> GetAllRelevantUnitIdsToUserAsync(int userId)
+        {
+            List<UserAssignment> assignedUnits = await _context.Assignments.
+                 AsNoTracking().
+                 Where(x => x.UserId == userId).
+                 Include(x => x.Unit).
+                ToListAsync();
+
+            HashSet<int> units = new HashSet<int>(assignedUnits.Select(x => x.UnitId).ToList());
+
+            foreach (var id in assignedUnits.Where(x => x.RoleId == 1 || x.RoleId == 2).Select(x => x.UnitId).ToList())
+            {
+                units.UnionWith(await GetChildrenIDsOfUnit(id));
+            }
+            return units;
+        }
 
         public async Task<IEnumerable<Unit>> GetAllAssignedRootsAsync(int userId)
         {

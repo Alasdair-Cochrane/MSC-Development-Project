@@ -1,10 +1,8 @@
 <script setup>
-import FileDisplay from '@/components/FileDisplay.vue';
 import ItemDetail from '@/components/ItemDetail.vue';
 import ItemSearch from '@/components/ItemSearch.vue'
-import { EquipmentModel } from '@/Models/EquipmentModel';
-import { Item } from '@/Models/Item';
-import { UploadItemFile } from '@/Services/FileService';
+import MaintenanceDisplay from '@/components/MaintenanceDisplay.vue';
+
 import {ref} from 'vue'
 
 const editMode = ref(false)
@@ -18,7 +16,6 @@ function viewItem(newItem){
     if(newItem)
     {
     item.value = newItem
-    console.log(newItem.documents)
     }
 }
 
@@ -35,7 +32,7 @@ function viewItem(newItem){
             <ItemDetail @editTrue="toggleExtra()" :selected-Item="item" v-if="item" @update="(i) => item=i"></ItemDetail>
         </div>
         <div v-if="!editMode" class="extra">
-            
+            <MaintenanceDisplay v-model="item" v-if="item"></MaintenanceDisplay>
         </div>
     </div>
 </div>
@@ -63,8 +60,6 @@ function viewItem(newItem){
 
 }
 .extra{
-    max-width: 20%;
-    min-width: 300px;
 
 
 }

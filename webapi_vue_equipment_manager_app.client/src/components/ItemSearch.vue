@@ -104,8 +104,8 @@ ul :hover{
     background-color: var(--p-surface-100);
 }
 .clicked{
-    background-color:var(--p-surface-200);
-    border-radius: 25px;
+    background-color:var(--p-surface-300);
+    border-radius: 10px;
 }
 
 

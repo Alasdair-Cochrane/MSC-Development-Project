@@ -24,5 +24,6 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Repository_Interfa
         Task<IEnumerable<Unit>> GetAllAssignedRootsAsync(int userId);
         Task<UnitDTO> GetDTOWithChildrenAsync(Unit unit);
         Task<bool> CheckUserHasRoleInParentOfUnit(int userId, IEnumerable<int> roleIds, int unitId);
+        Task<IEnumerable<int>> GetAllRelevantUnitIdsToUserAsync(int userId);
     }
 }

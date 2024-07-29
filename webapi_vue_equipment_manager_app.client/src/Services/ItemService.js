@@ -2,6 +2,7 @@ const route = "api/Items"
 import { Item } from "@/Models/Item";
 import { FormatDate } from "./FormatService";
 import { getAccessToken } from "./UserService";
+import { UpdateItemData } from "@/Store/Store";
 
 export async function addItem(item, image) {
 
@@ -30,6 +31,7 @@ export async function addItem(item, image) {
         const errorDetails = await response.json()
         console.log(`HTTP RESPONSE:${response.status} ${response.statusText}`)
         console.log('Erorror Details:', errorDetails)
+        UpdateItemData()
         return {successful : false, error: errorDetails}
     }
     }catch(err){
@@ -61,6 +63,7 @@ export async function UpdateItem(item){
     })
     if(response.ok) {
         let updated = await response.json();
+        UpdateItemData()
         return {successful : true , item: updated}
     }
     else{
@@ -73,6 +76,29 @@ export async function UpdateItem(item){
         console.error('Fetch Error: ',err)
         return {successful : false, error: err}
     }
+}
+
+export async function DeleteItem(itemId){
+    try{
+    let response = await fetch(route + "/" + itemId,{
+        method : "DELETE",
+        headers:{
+            "Authorization" : getAccessToken()
+        }
+    })
+    if(response.ok){
+        UpdateItemData()
+        return {successful : true}
+    }
+    else{
+        let err = await response.json()
+        return {successful: false, error: response.statusText, message : err}
+    }
+}
+catch(e)
+{
+    return {successful : false, errors: e.message}
+}
 }
 
 export async function getAllItems() {

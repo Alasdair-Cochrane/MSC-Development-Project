@@ -4,6 +4,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Repository_Interfa
 {
     public interface IMaintenanceRepository : IRepository<Maintenance>
     {
-        public Task<IEnumerable<Maintenance>> GetAllByItemIdAsync(int id); 
+        public Task<IEnumerable<Maintenance>> GetAllByItemIdAsync(int id);
+        Task<IEnumerable<string>> GetAllCategoryNamesAsync();
     }
 }

@@ -33,6 +33,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities
         public ItemStatusCategory StatusCategory { get; set; } = null!;
 
         public ICollection<ItemDocument> Documents { get; set; } = null!;
+        public ICollection<Maintenance> Maintenances { get; set; } = null!;
 
     }
     

@@ -68,6 +68,11 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Se
             }
             return updated.ToDTO();
         }
+
+        public async Task<IEnumerable<string>> GetCategoryNamesAsync()
+        {
+            return await _repository.GetAllCategoryNamesAsync();
+        }
     }
 
         public interface IMaintenanceService {
@@ -77,7 +82,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Se
         public Task<MaintenanceDTO?> GetAsync(int id);
         public Task<IEnumerable<MaintenanceDTO>> GetAllAsync();
         public Task<IEnumerable<MaintenanceDTO>> GetAllForItemAsync(int itemId);
-
+        Task<IEnumerable<string>> GetCategoryNamesAsync();
     }
 
 }

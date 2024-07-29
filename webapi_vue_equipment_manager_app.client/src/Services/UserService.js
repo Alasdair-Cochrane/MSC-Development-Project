@@ -1,4 +1,4 @@
-import { toggleLogIn, toggleLogOut } from "@/Store/Store";
+import { PopulateStartingData, toggleLogIn, toggleLogOut } from "@/Store/Store";
 import { renderSlot } from "vue";
 
 export async function userLogin(login){
@@ -15,6 +15,7 @@ export async function userLogin(login){
         toggleLogIn()
         let t = await response.json()
         localStorage.setItem("accessToken", JSON.stringify({ token : t, timestamp : Date.now() }))
+        PopulateStartingData()
         return {successfull : true}
     }
     else{
@@ -60,6 +61,7 @@ export async function getAccessToken(){
 }
 
 export async function CheckRefreshToken(){
+    try{
     let tString = localStorage.getItem("accessToken")
     let t = JSON.parse(tString)
     const response = await fetch("api/refresh", {
@@ -75,9 +77,13 @@ export async function CheckRefreshToken(){
         return `Bearer ${t.accessToken}`
     }
     else{
-        console.log("Refresh Error : " + response.statusText)
+        console.warn("Refresh Error : " + response.statusText)
         userLogout();
     }
+}catch(e){
+    console.warn("Could not refresh : ")
+    userLogout()
+}
 }
 
 export async function userLogout(){

@@ -14,7 +14,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services
 
     {
         private readonly string projectID;
-        private readonly string location = "us-central1";
+        private readonly string location = "europe-west2";
         private readonly string publisher = "google";
         private readonly string model = "gemini-1.5-flash-001";
 
@@ -64,7 +64,9 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services
 
             var predictionServiceClient = new PredictionServiceClientBuilder
             {
-                Endpoint = $"{location}-aiplatform.googleapis.com"
+                Endpoint = $"{location}-aiplatform.googleapis.com",
+                CredentialsPath = Environment.GetEnvironmentVariable("FIREBASE_CREDENTIALS_PATH")
+                
             }.Build();
 
             var generateContentRequest = new GenerateContentRequest

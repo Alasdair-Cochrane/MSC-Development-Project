@@ -8,7 +8,6 @@ const props = defineProps({
         default : true,
     },
     item:{
-        type : Item
     },
     clickable: {
         type : Boolean,
@@ -58,12 +57,11 @@ const cardClikced = () => {
     flex: 1;
     height: 100%;
     min-height: 80px;
-    max-width: 500px;
-    border: 1px black solid;
-    box-shadow: 0 2px 2px 0 rgba(28, 25, 25, 0.2);
-    border-radius: 25px;
+    max-width: 350px;
+    border-radius: 10px;
     display: flex;
     padding: 3px;
+    border: solid var(--p-primary-600) 2px;
 }
 img{
     border-radius: 10px;
@@ -102,7 +100,6 @@ Button{
 }
 .canClick :hover{
     background-color: var(--p-surface-100);
-
 }
 span{
     font-size: small;

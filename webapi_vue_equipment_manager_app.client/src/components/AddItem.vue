@@ -69,7 +69,7 @@ async function save(){
     console.log(modelName.value)
     item.value.model.modelName = modelName?.value;
     item.value.model.modelNumber = modelNumber?.value;
-    item.value.unitID = selectedUnit?.value.id
+    item.value.unitID = selectedUnit.value?.id
 
     if(!validateSubmission()) {
         toast.add({severity:'error', summary: 'Required Fields Empty', life: 2000 })
@@ -136,11 +136,11 @@ const modelName = ref("")
 const modelNumber = ref("")
 
 async function searchModelName(event){
-    if(store.Models.length === 0) {await UpdateModels()}
+    if(store.Models.length === 0 || !store.Models) {await UpdateModels()}
     searchedModels.value = store.Models.filter(x => x.modelName.toLowerCase().includes(event.query.toLowerCase()))
 }
 async function searchModelNumber(event){
-    if(store.Models.length === 0) {await UpdateModels()}
+    if(store.Models.length === 0 || !store.Models) {await UpdateModels()}
     searchedModels.value = store.Models.filter(x => x.modelNumber.toLowerCase().includes(event.query.toLowerCase()))
 }
 
@@ -208,7 +208,8 @@ function modelNumberSelected(event){
         <div class="input-field">
             <label for="status">Current Status</label>
             <small class="validation-warning" v-if="!isNotEmpty(item.currentStatus) ">Required</small>
-            <InputText id="status" size="small" v-model="item.currentStatus" :invalid="showIsValid && !isNotEmpty(item.currentStatus)"/>
+            <Select  id="status" size="small" v-model="item.currentStatus" :invalid="showIsValid && !isNotEmpty(item.currentStatus)"
+            :options="store.Statuses"/>
         </div>
         
         <div class="input-group">
@@ -290,20 +291,28 @@ function modelNumberSelected(event){
         <label for="commisionDate">Date of Commissioning</label>
         <DatePicker showIcon icon-display="input" v-model="item.date_of_commissioning" date-format="dd/mm/yy"/>
         </div>
-        
+    </form> 
+    <div class="panel-2">
+        <div class="submit-btns mobile" >
+            <Button icon="pi pi-save" label="Save" class="s-btn" @click="save"></Button>
+            <!-- <Button icon="pi pi-plus" label="New" class="s-btn" @click="addNew"></Button> -->
+            <Button icon="pi pi-eraser" label="Clear" severity="danger" class="s-btn" @click="clear"></Button>
+        </div>
         <div class="card image-upload">
-            <Button label="image" @click="showCamera = true" icon="pi pi-camera"></Button>
             <Dialog v-model:visible="showCamera" modal header="Choose Image" :style="{ width: '450px' }" :breakpoints="{ '1199px': '75vw', '575px': '90vw' }">
                 <CaptureImage @imageConfirmed="assignImage" @cancelled="showCamera = false"/>
             </Dialog>
             <div class="img-container" v-show="selectedImage"><img ref="imageDisplay" v-bind:src="imageDisplay" alt="item-image"/></div>
+            <div>
+            <Button label="image" @click="showCamera = true" icon="pi pi-camera"></Button>
+            <Button severity="danger" @click="selectedImage = null" icon="pi pi-trash" style="width: 40px; margin-left: 5px;" v-show="selectedImage"></Button>  
         </div>
-        <div class="submit-btns mobile" >
-            <Button icon="pi pi-save" label="Save" class="s-btn" @click="save"></Button>
-            <Button icon="pi pi-plus" label="New" class="s-btn" @click="addNew"></Button>
-            <Button icon="pi pi-eraser" label="Clear" severity="danger" class="s-btn" @click="clear"></Button>
+
+
         </div>
-    </form> 
+        
+    </div>
+
 </div>
 
 </template>
@@ -312,6 +321,7 @@ function modelNumberSelected(event){
     display: flex;
     justify-content: center;
     flex: 1;
+    flex-wrap: wrap;
 }
 input{
     max-height: 35px;
@@ -360,16 +370,24 @@ form{
     justify-content: center;
     width: fit-content;
 }
+.panel-2{
+    display: flex;
+    flex-direction: column;
+    height: fit-content;
+    align-items: center;
+    width: fit-content;
+    min-width: 250px;
+    gap: 1rem;
+}
 
 img{
-    max-width: 400px;
-    max-height: 400px;
+    max-width: 320px;
+    max-height: 320px;
 }
 .img-container{
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
     border-radius: 10px;
     padding: 5px;
-    margin: 1rem;
 }
 
 .num-input{
@@ -378,19 +396,26 @@ img{
 .submit-btns{
     display: flex;
     justify-content: center;
-    flex-wrap: wrap;
-    position: sticky;
-    top:0;
-    padding: 0.5rem;
-    gap:0.5rem;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    align-items: center;
     z-index: 98;
-    margin-top: 1rem;
+    margin-top: 10px;
 
+}
+
+@media (max-width: 760px){
+    .submit-btns{
+        flex-direction: row;
+    }
+    
 }
 .submit-btns Button{
     max-height: 3rem;
     flex: 1;
     max-width: 150px;
+    min-width: 100px;
 }
 
 .container{
@@ -460,10 +485,5 @@ Button {
     padding: 0.4rem;
     display: flex;
     justify-content: space-evenly
-}
-
-.mobile{
-    position: sticky;
-    top:0;
 }
 </style>

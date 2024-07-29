@@ -196,14 +196,30 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Se
 
         public async Task<ItemDocument> CreateItemDocumentAsync(Document document, int itemId)
         {
-            var result = await _documentRepository.AddItemDocument(document, itemId); 
+            var result = await _documentRepository.AddItemDocument(document, itemId);
             return result;
         }
 
         public async Task UpdateImageUrl(int id, string url)
         {
-            await _ItemRepository.UpdateImageUrl(id,url);
+            await _ItemRepository.UpdateImageUrl(id, url);
         }
+
+        public async Task<IEnumerable<string>> GetStatusCategoryNames()
+        {
+            var statuses = await _statusRepository.GetAllAsync();
+            var names = statuses.Select(x => x.Name).ToList();
+            return names;
+        }
+
+        public async Task<IEnumerable<StatusQuantity>> GetQuantityByStatusAsync(int userId)
+        {
+            var units = await _unitRepository.GetAllRelevantUnitIdsToUserAsync(userId);
+            var result = await  _ItemRepository.GetQuantityByStatusAsync(units);
+            return result;
+        }
+
+
     }
     
 
@@ -223,5 +239,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Se
         public Task<MemoryStream> GetExport(int userId, IEnumerable<int>? unitIds = null);
         public  Task<ItemDocument> CreateItemDocumentAsync(Document document, int itemId);
         public Task UpdateImageUrl(int id, string url);
+        Task<IEnumerable<string>> GetStatusCategoryNames();
+        Task<IEnumerable<StatusQuantity>> GetQuantityByStatusAsync(int userId);
     }
 }

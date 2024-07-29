@@ -13,7 +13,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities
         public int MaintenanceId {  get; set; }
         public int DocumentId { get; set; }
 
-        public Maintenance Maintenance { get; set; } = null!;
+        //public Maintenance Maintenance { get; set; } = null!;
         public Document Document { get; set; } = null!;
     }
 }

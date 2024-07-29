@@ -36,6 +36,15 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs
 
         [JsonPropertyOrder(4)]
         public ICollection<ItemDocument>? Documents { get; set; }
+
+        public ICollection<MaintenanceDTO>? Maintenances { get; set; }
+    }
+
+    public class StatusQuantity
+    {
+        public required int StatusId { get; set; }
+        public required string StatusName { get; set; }
+        public required int ItemQuantity { get; set; }
     }
 
 }

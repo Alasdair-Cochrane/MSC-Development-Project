@@ -29,7 +29,8 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs.Mappings
                 Unit = item.Unit.ToDTO() ?? null,
                 UnitName = item.Unit.Name,
                 CurrentStatus = item.StatusCategory.Name,
-                Documents = item.Documents ?? []
+                Documents = item.Documents ?? [],
+                Maintenances = item.Maintenances.ToDTO() ?? []
             };
             return dto;
         }

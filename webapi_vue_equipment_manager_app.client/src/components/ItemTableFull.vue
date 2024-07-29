@@ -50,7 +50,7 @@ onMounted( async () => {
 const columns = ref([
     {label: "Serial Number" , show: true},
     {label: "Local Identifier" , show: true},
-    {label: "Barcode" , show: true},
+    {label: "Barcode" , show: false},
     {label: "Model Number" , show: true},
     {label: "Model Name" , show: true},
     {label: "Manufacturer" , show: true},

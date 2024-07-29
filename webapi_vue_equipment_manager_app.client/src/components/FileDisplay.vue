@@ -101,6 +101,8 @@ const uploadFile = async () => {
 }
 span{
     font-size: small;
+    text-wrap: nowrap;
+    overflow: hidden;
 }
 
 ul{
@@ -117,10 +119,11 @@ ul{
     border-radius: 10px;
 }
 .download-bttn{
-    max-height: 30px;
     max-width: 30px;
     position: relative;
     left: 1px;
+    max-height: 95%;
+    margin: 2px;
 }
 
 li{
@@ -133,8 +136,8 @@ li{
     justify-content: space-between;
     padding-left: 5px;
     border-radius: 7px;
-    min-width: 250px;
-    max-height: 30px;
+    max-height: 35px;
+    max-width: 250px;
 }
 #header{
     display: flex;

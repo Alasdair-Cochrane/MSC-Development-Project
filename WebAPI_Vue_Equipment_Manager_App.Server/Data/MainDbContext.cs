@@ -35,7 +35,13 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data
             builder.Entity<EquipmentModelCategory>().HasIndex(e => e.Name).IsUnique();
             builder.Entity<ItemStatusCategory>().HasIndex(e => e.Name).IsUnique();
 
-           //setting up one-to-many foreign keys to avoid navigation properties in child entity
+            //setting up one-to-many foreign keys to avoid navigation properties in child entity
+            builder.Entity<Item>().
+                 HasMany(x => x.Maintenances).
+                 WithOne().
+                 HasForeignKey(i => i.ItemId);
+
+           
             builder.Entity<Item>().
                 HasMany(i => i.Documents).
                 WithOne().
@@ -51,10 +57,10 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data
                 WithOne().
                 HasForeignKey(d => d.MaintenanceId);
 
-            //builder.Entity<Item>().
-            //    HasMany<ItemNote>().
-            //    WithOne().
-            //    HasForeignKey(d => d.ItemId);
+            builder.Entity<Item>().
+               HasMany(i => i.Notes).
+               WithOne().
+               HasForeignKey(d => d.ItemId);
 
             builder.Entity<User>().
                 HasMany<ItemNote>().

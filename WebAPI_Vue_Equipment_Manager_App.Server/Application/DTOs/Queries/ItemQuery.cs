@@ -9,6 +9,8 @@
         public string? ModelNumber { get; set; }
         public string? Manufacturer { get; set; }
         public string? Category { get; set; }
+        public int? StatusCategoryId { get; set; }
+        public string? StatusCategoryName { get; set; }
         public string? UnitName { get; set; }
         public int? UnitId { get; set; }
 

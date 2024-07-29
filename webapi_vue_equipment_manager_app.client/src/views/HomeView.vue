@@ -3,6 +3,8 @@ import { RouterLink } from 'vue-router';
 import {ref, onMounted} from 'vue'
 import { IsMobile } from '@/Services/DeviceService';
 import ExportItems from '@/components/ExportItems.vue';
+import { PopulateStartingData, store } from '@/Store/Store';
+import { QueryItems } from '@/Services/ItemService';
 
 
 
@@ -10,6 +12,7 @@ onMounted(() => {
     mobileScreen.value = !IsMobile();     
     chartData.value = setChartData();
     chartOptions.value = setChartOptions();
+    PopulateStartingData();
 });
 
 const chartData = ref();
@@ -24,12 +27,12 @@ const setChartData = () => {
     const documentStyle = getComputedStyle(document.body);
 
     return {
-        labels: ['A', 'B', 'C'],
+        labels: store.StatusQuantities.map(x => x.statusName),
         datasets: [
             {
-                data: [540, 325, 702],
-                backgroundColor: [documentStyle.getPropertyValue('--p-cyan-500'), documentStyle.getPropertyValue('--p-orange-500'), documentStyle.getPropertyValue('--p-gray-500')],
-                hoverBackgroundColor: [documentStyle.getPropertyValue('--p-cyan-400'), documentStyle.getPropertyValue('--p-orange-400'), documentStyle.getPropertyValue('--p-gray-400')]
+                data: store.StatusQuantities.map(x => x.itemQuantity),
+                //backgroundColor: [documentStyle.getPropertyValue('--p-cyan-500'), documentStyle.getPropertyValue('--p-orange-500'), documentStyle.getPropertyValue('--p-gray-500')],
+                //hoverBackgroundColor: [documentStyle.getPropertyValue('--p-cyan-400'), documentStyle.getPropertyValue('--p-orange-400'), documentStyle.getPropertyValue('--p-gray-400'), documentStyle.getPropertyValue('--p-gray-400')]
             }
         ]
     };
@@ -47,6 +50,11 @@ const setChartOptions = () => {
         maintainAspectRatio: false,
     };
 };
+
+const showStatusQuantityItems= async (data) => {
+    let result = await QueryItems("statusCategoryId", data.statusId)
+    console.log(result)
+}
 
 </script>
 
@@ -113,14 +121,23 @@ const setChartOptions = () => {
         <div class="right-panels">
             <div class="panel data grid-nogutter"> 
                     <div class="left col-12 md:col-6">
-                    <DataTable class="">
-                        <Column field="status" header="Status"></Column>
-                        <Column field="quantity" header="#"></Column>
+                    <div class="data-table">
+                    <DataTable class="" :value="store.StatusQuantities" size="small" v-if="store.StatusQuantities.length > 0" style="width: 300px;">
+                        <Column field="statusName" header="Status" style="width: 150px;"></Column>
+                        <Column field="itemQuantity" header="#" style="width: 80px;"></Column>
+                        <Column style="width: 50px;">
+                            <template #body="{data}">
+                            <div class="btn role-btn">
+                                <Button rounded outlined icon="pi pi-search" @click="showStatusQuantityItems(data)" style="width: 25px; height: 25px;"></Button>
+                            </div>
+                        </template></Column>
+
                     </DataTable>
-                    <!-- <DataTable class="">
-                        <Column field="type" header="Type"></Column>
-                        <Column field="quantity" header="#"></Column>
-                    </DataTable> -->
+                    <div v-else>
+                        No Data To Display
+                    </div>
+                </div>
+                    
                 </div>
                     <div class="right col-12 md:col-6" v-if="mobileScreen">
                         <Chart type="doughnut" :data="chartData" :options="chartOptions"></Chart>
@@ -174,6 +191,12 @@ const setChartOptions = () => {
     }
 }
 
+.data-table{
+    box-shadow:  0 2px 2px 0 rgba(28, 25, 25, 0.2);
+    width: fit-content;
+    border-radius: 10px;
+    padding: 10px;
+}
 
 
 .panel{
