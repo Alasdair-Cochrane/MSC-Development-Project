@@ -12,10 +12,10 @@ export async function userLogin(login){
             body: JSON.stringify(login),
         })
     if(response.ok){
-        toggleLogIn()
         let t = await response.json()
         localStorage.setItem("accessToken", JSON.stringify({ token : t, timestamp : Date.now() }))
-        PopulateStartingData()
+        await PopulateStartingData()
+        toggleLogIn()
         return {successfull : true}
     }
     else{

@@ -1,4 +1,6 @@
-﻿using WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities;
+﻿using Microsoft.IdentityModel.Tokens;
+using System.Collections.ObjectModel;
+using WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities;
 
 namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs.Mappings
 {
@@ -20,6 +22,10 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs.Mappings
         }
         public static ICollection<MaintenanceDTO> ToDTO(this ICollection<Maintenance> entities)
         {
+            if(entities.IsNullOrEmpty())
+            {
+                return [];
+            }
             var dtos = entities.Select(x => x.ToDTO()).ToList();
             return dtos;
         }

@@ -1,9 +1,9 @@
 <script setup>
-    import { ref, onMounted } from "vue"
+    import { ref, onMounted, onBeforeMount } from "vue"
     import { Item } from '@/Models/Item';
     import {EquipmentModel } from '@/Models/EquipmentModel'
     import { addItem} from '@/Services/ItemService'
-    import { store, UpdateCategories, UpdateModels } from "@/Store/Store";
+    import { store, UpdateCategories, UpdateItemData, UpdateModels, UpdateStatuses, UpdateUnits } from "@/Store/Store";
     import { IsMobile } from "@/Services/DeviceService";
     import {useToast} from 'primevue/usetoast'
     import InterpretImage from "@/components/InterpretImage.vue";
@@ -110,13 +110,12 @@ async function save(){
     }
 }
 
-async function addNew(){
-    if(await save()){
-    item.value = new Item(new EquipmentModel())
-    modelName.value = ""
-    modelNumber.value = ""
-    }
-}
+onBeforeMount(async () => {
+    await UpdateUnits()
+    await UpdateCategories()
+    await UpdateStatuses()
+    await UpdateModels()
+})
 
 function assignImage(Image){
     selectedImage.value = Image
@@ -147,7 +146,7 @@ async function searchModelNumber(event){
 const searchedCategories = ref()
 async function searchCategory(event){
     item.value.model.category = event.query
-    if(store.ModelCategories.length === 0) {await UpdateCategories()}
+    if(!store.ModelCategories || store.ModelCategories.length < 1) {await UpdateItemData() ; console.log("await completed" + store.ModelCategories)}
     searchedCategories.value = store.ModelCategories.filter(x => x.toLowerCase().includes(event.query.toLowerCase()))
 }
 

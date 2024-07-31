@@ -2,12 +2,16 @@
 import ItemDetail from '@/components/ItemDetail.vue';
 import ItemSearch from '@/components/ItemSearch.vue'
 import MaintenanceDisplay from '@/components/MaintenanceDisplay.vue';
+import NotesDisplay from '@/components/NotesDisplay.vue';
+
 
 import {ref} from 'vue'
 
 const editMode = ref(false)
 const item = ref()
 const uploadLoading = ref(false)
+const searchExpanded = ref(true)
+
 
 function toggleExtra() {editMode.value = !editMode.value
 }
@@ -24,17 +28,24 @@ function viewItem(newItem){
 </script>
 <template>
 <div class="page">
+
     <div class="search">
-        <ItemSearch @item-searched="viewItem" @item-selected="viewItem"></ItemSearch>
+        <Button icon="pi pi-chevron-left" @click="searchExpanded = false" severity="secondary" outlined="" v-show="searchExpanded && item"></Button>
+        <Button icon="pi pi-search" @click="searchExpanded = true"   v-show="!searchExpanded && item"></Button>
+
+
+        <div v-show="searchExpanded"><ItemSearch @item-searched="viewItem" @item-selected="viewItem" ></ItemSearch></div>
     </div>
     <div class="details">
         <div class="display">
             <ItemDetail @editTrue="toggleExtra()" :selected-Item="item" v-if="item" @update="(i) => item=i"></ItemDetail>
         </div>
-        <div v-if="!editMode" class="extra">
-            <MaintenanceDisplay v-model="item" v-if="item"></MaintenanceDisplay>
-        </div>
+        
     </div>
+    <div v-if="!editMode" class="extra">
+            <MaintenanceDisplay v-model="item" v-if="item"></MaintenanceDisplay>
+            <NotesDisplay v-model="item" v-if="item"></NotesDisplay>
+        </div>
 </div>
 </template>
 
@@ -45,11 +56,19 @@ function viewItem(newItem){
     flex-wrap: wrap;
     flex: 1;
     padding: 1rem;
-    gap: 2rem;
+    gap: 10px;
 }
 .search{
+    max-width: 300px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 
-
+}
+.search .p-button{
+    max-height: 25px; 
+    width: 100%;
+    min-width: 40px;
 }
 .details{
     display: flex;

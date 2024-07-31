@@ -4,7 +4,6 @@ using WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs.Queries;
 using WebAPI_Vue_Equipment_Manager_App.Server.Application.Error_Handling;
 using WebAPI_Vue_Equipment_Manager_App.Server.Application.Repository_Interfaces;
 using WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities;
-using WebAPI_Vue_Equipment_Manager_App.Server.Data.Filters;
 
 
 //For case insensitive searching https://stackoverflow.com/questions/43277868/entity-framework-core-contains-is-case-sensitive-or-case-insensitive
@@ -129,7 +128,10 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
                 Include(x => x.Documents).
                 ThenInclude(x => x.Document).
                 Include(x => x.Maintenances).
-                ThenInclude(x => x.Category).
+                ThenInclude(x => x.Documents).
+                Include(x => x.Maintenances).
+                ThenInclude(x => x.Category). 
+                Include(x => x.Notes).
                 AsSplitQuery().
                 AsNoTracking().
                 ToListAsync();

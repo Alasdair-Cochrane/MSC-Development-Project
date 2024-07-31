@@ -38,6 +38,8 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs
         public ICollection<ItemDocument>? Documents { get; set; }
 
         public ICollection<MaintenanceDTO>? Maintenances { get; set; }
+
+        public ICollection<ItemNote>? Notes { get; set; }
     }
 
     public class StatusQuantity

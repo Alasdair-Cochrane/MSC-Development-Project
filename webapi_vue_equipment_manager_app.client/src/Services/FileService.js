@@ -38,6 +38,11 @@ export async function UploadItemFile(file, itemId){
 
 }
 
+export async function UploadMaintenanceFile(file, mainId){
+    let route = `api/items/maintenance/${mainId}/documents`
+    return await uploadFile(route,file)
+}
+
 async function uploadFile(route, file){
     try{
     let data = new FormData()

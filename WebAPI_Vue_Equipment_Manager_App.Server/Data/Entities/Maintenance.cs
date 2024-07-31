@@ -13,6 +13,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities
         public required DateTime Date_Completed { get; set; }
         public required int MaintenanceCategoryId { get; set; }
         public MaintenanceCategory Category { get; set; } = null!;
+        public ICollection<MaintenanceDocument> Documents { get; set; } = null!;
 
     }
     

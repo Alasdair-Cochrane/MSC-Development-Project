@@ -19,7 +19,6 @@ async function login(){
     if(response.successfull){
         successfull.value = true;
         unsuccessfull.value = false;
-        console.log("login successful")
     }
     else{
         unsuccessfull.value = true;

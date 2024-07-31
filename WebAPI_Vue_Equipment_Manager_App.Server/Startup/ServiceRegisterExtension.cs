@@ -22,6 +22,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Startup
             services.AddScoped<IItemQueryBuilder, ItemQueryBuilder>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IAssignmentRepository, AssignmentRepository>();
+            services.AddScoped<INoteRepository, NoteRepository>();
             
         }
         public static void RegisterServices(this IServiceCollection services)
@@ -32,6 +33,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Startup
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IMaintenanceService, MaintenanceService>();
             services.AddScoped<IImageService, ServerImageService>();
+            services.AddScoped<INotesService, NotesService>();
 
             services.AddSingleton<StorageClientProvider>();
             services.AddScoped<IDocumentService, FirebaseDocumentService>();

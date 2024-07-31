@@ -30,7 +30,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
             {
                 return false;
             }
-            _context.Remove(toBeDeleted);
+            _dbSet.Remove(toBeDeleted);
             await _context.SaveChangesAsync();
             return true;
         }

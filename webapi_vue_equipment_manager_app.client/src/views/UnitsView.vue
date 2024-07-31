@@ -3,7 +3,7 @@ import OrgChart from '@/components/OrgChart.vue'
 import OrgTable from '@/components/OrgTable.vue'
 import AddUnit from '@/components/AddUnit.vue';
 import { onMounted, ref } from 'vue';
-import { GetStructure} from '@/Store/Store';
+import { store, UpdateStructure} from '@/Store/Store';
 
 const showOrgChart = ref(false)
 const showAddNewUnit = ref(false)
@@ -14,7 +14,10 @@ const dataLoading = ref(true)
 const chartIndex = ref()
 
 onMounted(async () => {
-    let structure = await GetStructure()
+    if(store.OrgStructure.length === 0){
+        await UpdateStructure()
+    }
+    let structure = store.OrgStructure.length
     orgStructure.value.push(structure)
     dataLoading.value = false;
 }

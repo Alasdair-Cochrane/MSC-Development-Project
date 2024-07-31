@@ -50,7 +50,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Se
             int statusCategoryID = _statusRepository.FindOrCreateByName(item.CurrentStatus).Id;
             int modelCategoryID = _modelCategories.FindOrCreateByName(item.Model.Category).Id;
 
-            EquipmentModel? model = await _modelRepository.FindOrCreate(item.Model.ToEntity(modelCategoryID));
+            EquipmentModel? model = await _modelRepository.UpsertbyModelNumber(item.Model.ToEntity(modelCategoryID));
             if (model == null)
             {
                 string entity = JsonSerializer.Serialize(item);
@@ -104,6 +104,11 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Se
             await CheckIsAuthorised(item, userId);
 
             int statusId = _statusRepository.FindOrCreateByName(item.CurrentStatus).Id;
+            int modelCategoryID = _modelCategories.FindOrCreateByName(item.Model.Category).Id;
+            //make sure any changes to the model are tracked
+            var model = await _modelRepository.UpsertbyModelNumber(item.Model.ToEntity(modelCategoryID));
+            item.ModelId = model.Id;
+
             var updated = await _ItemRepository.UpdateAsync(item.ToEntity(statusId));
             if (updated == null)
             {

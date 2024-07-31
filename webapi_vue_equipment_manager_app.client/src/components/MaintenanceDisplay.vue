@@ -2,18 +2,21 @@
 import { onMounted, ref, watch } from 'vue';
 import { FormatDate } from '@/Services/FormatService';
 
-const maintenances = ref()
+const maintenances = ref([])
 const item = defineModel()
 const showView = ref(false)
 const showAdd = ref(false)
+const selectedMaintenance = ref()
 
 const displayDetails = (data) => {
-    console.log(item.value)
     showView.value = true
+    selectedMaintenance.value = data
 }
 onMounted(() => maintenances.value = item.value.maintenances)
 
 watch(item, () => maintenances.value = item.value.maintenances)
+watch(maintenances, () => {item.value.maintenances = maintenances.value
+})
 
 </script>
 <template>
@@ -23,9 +26,9 @@ watch(item, () => maintenances.value = item.value.maintenances)
             <Button icon="pi pi-plus" @click="showAdd = true"></Button>
         </div>
         <div class="list">
-            <DataTable :value="maintenances">
-                <Column field="categoryName" header="Type" style="width: 150px;"></Column>
-                 <Column field="date_Completed" header="Date" style="width: 80px;">
+            <DataTable :value="maintenances" scrollable scroll-height="280px" style="width: 100%" >
+                <Column field="categoryName" header="Type" style="width: 120px;" sortable></Column>
+                 <Column field="date_Completed" header="Date" style="width: 80px;" sortable>
                     <template #body="{data}">
                             {{ FormatDate(data.date_Completed) }}
                     </template>
@@ -41,7 +44,7 @@ watch(item, () => maintenances.value = item.value.maintenances)
         </div>
 
     </div>
-    <Dialog v-model:visible="showView"></Dialog>
+    <Dialog v-model:visible="showView"><MaintenanceDetails v-model:list="maintenances" :item="item" v-model:maintenance="selectedMaintenance" @delete="showView = false"></MaintenanceDetails></Dialog>
     <Dialog v-model:visible="showAdd"><AddMaintenance v-model="item"></AddMaintenance></Dialog>
 
 </template>
@@ -54,6 +57,8 @@ watch(item, () => maintenances.value = item.value.maintenances)
     flex-direction: column;
     box-shadow:  0 2px 2px 0 rgba(28, 25, 25, 0.4);
     border-radius: 10px;
+    max-height: 450px;
+    max-width: 360px;
 }
 h3{
     width: fit-content;
@@ -91,5 +96,9 @@ h3{
     flex: 1;
     grid-template-columns: 1fr 1fr;
 }
-
+.value{
+    max-height: 400px;
+    max-width: 250px;
+    overflow-y: auto;
+}
 </style>

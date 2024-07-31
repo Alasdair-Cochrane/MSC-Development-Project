@@ -10,7 +10,9 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities
         public int UserId { get; set; }
         public DateTime Created { get; set; }
 
-        [MaxLength(500)]
+        [MaxLength(1000)]
         public required string Text { get; set; }
+        [MaxLength(100)]
+        public required string Title { get; set; }
     }
 }

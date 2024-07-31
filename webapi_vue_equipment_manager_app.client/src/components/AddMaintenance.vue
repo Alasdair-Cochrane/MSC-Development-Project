@@ -11,7 +11,6 @@ async function saveMaintenance(){
     loading.value = true
     newMaintenance.value.itemId = item.value.id
     let entry = JSON.stringify(newMaintenance.value)
-    console.log(entry)
     try{
         let response = await fetch('api/items/maintenance',{
             method: "POST",
@@ -23,7 +22,6 @@ async function saveMaintenance(){
             body: entry
         })
         if(response.ok){
-            console.log(response)
             let newEntry = await response.json()
             item.value.maintenances.push(newEntry);
         }

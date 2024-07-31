@@ -1,5 +1,5 @@
 <script setup>
-import { store, UpdateUnits, UpdateStructure, GetStructure } from '@/Store/Store';
+import { store, UpdateUnits, UpdateStructure } from '@/Store/Store';
 import {onMounted, ref} from 'vue'
 
 const units = ref({})
@@ -14,7 +14,10 @@ const props = defineProps({index:{
 const emits = defineEmits(['unitAdded'])
 
 onMounted(async () => {
-    let tree = await GetStructure()
+    if(store.OrgStructure.length === 0){
+        await UpdateStructure()
+    }
+    let tree = store.OrgStructure
     units.value = tree[props.index]    
     loading.value = false;
 

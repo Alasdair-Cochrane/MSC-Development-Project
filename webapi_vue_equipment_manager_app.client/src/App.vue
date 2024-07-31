@@ -1,17 +1,22 @@
 <script setup>
     import {RouterLink, RouterView} from 'vue-router'
     import SideBar from './components/SideBar.vue'
-import { loggedIn, PopulateStartingData } from './Store/Store';
+import { loggedIn, PopulateStartingData} from './Store/Store';
 import LoginView from './views/LoginView.vue';
-import {onMounted, ref} from 'vue'
-import { CheckRefreshToken, getAccessToken } from './Services/UserService';
+import {onBeforeMount, onMounted, ref} from 'vue'
+import { CheckRefreshToken} from './Services/UserService';
 
 const loading = ref(false)
 
+onBeforeMount(async  () => {
+    await CheckRefreshToken()
+    if(loggedIn){
+        await PopulateStartingData()
+    }
+})
 onMounted(async () => {
     loading.value= true;
-    CheckRefreshToken()
-    PopulateStartingData()
+    
     loading.value = false
 })
 
@@ -19,13 +24,16 @@ onMounted(async () => {
 
 <template>    
     <div class="app" >
-            <SideBar v-if="loggedIn"/>
+            <SideBar v-if="loggedIn "/>
         <main>
-            <RouterView class="content" v-if="loggedIn">
+            <RouterView class="content" v-if="loggedIn && !loading">
 
             </RouterView>
-            <div v-else class="content login-view">
+        <div v-else-if="!loggedIn" class="content login-view">
                 <LoginView ></LoginView>
+        </div>
+        <div v-else>
+            LOADING
         </div>
         </main>
     </div>

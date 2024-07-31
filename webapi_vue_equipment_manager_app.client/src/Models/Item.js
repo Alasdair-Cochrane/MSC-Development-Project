@@ -1,4 +1,3 @@
-import { EquipmentModel } from "./EquipmentModel";
 
 export class Item {
     constructor(model, iD, serialNumber, localName, barcode, DOR, DOC, Condition, image, status, unit, purchaseOrder, unitID) {

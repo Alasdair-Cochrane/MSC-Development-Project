@@ -3,6 +3,7 @@ using WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs.Mappings;
 using WebAPI_Vue_Equipment_Manager_App.Server.Application.Interfaces;
 using WebAPI_Vue_Equipment_Manager_App.Server.Application.Repository_Interfaces;
 using WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities;
+using WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories;
 
 namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Services
 {
@@ -10,11 +11,15 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Se
     {
         private readonly IMaintenanceRepository _repository;
         private readonly ICategoryRepository<MaintenanceCategory> _categoryRepository;
+        private readonly IDocumentService _documentService;
+        private readonly DocumentRepository _documentRepository;
 
-        public MaintenanceService(IMaintenanceRepository repository, ICategoryRepository<MaintenanceCategory> categoryRepository)
+        public MaintenanceService(IMaintenanceRepository repository, ICategoryRepository<MaintenanceCategory> categoryRepository, IDocumentService documentService, DocumentRepository documentRepository)
         {
             _repository = repository;
             _categoryRepository = categoryRepository;
+            _documentService = documentService;
+            _documentRepository = documentRepository;
 
         }
         public async Task<MaintenanceDTO?> AddAsync(MaintenanceDTO newEntry)
@@ -31,7 +36,11 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Se
 
         public async Task DeleteAsync(int id)
         {
-            await _repository.DeleteAsync(id);
+            var result = await _repository.DeleteAsync(id);
+            if (!result)
+            {
+                throw new Exception("Could not delete Maintenance");
+            }
         }
 
         public async Task<IEnumerable<MaintenanceDTO>> GetAllAsync()
@@ -73,6 +82,25 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Se
         {
             return await _repository.GetAllCategoryNamesAsync();
         }
+
+        public async Task<MaintenanceDocument> CreateDocumentAsync(Document doc, int id)
+        {
+            var result = await _documentRepository.AddMaintenanceDocument(doc, id);
+            return result;
+
+        }
+        public async Task<IEnumerable<MaintenanceDocument>> GetAllMaintenanceFilesForItemAsync(int itemId)
+        {
+           var maintenances = await _repository.GetAllByItemIdAsync(itemId);
+           var records = await _documentRepository.GetAllDocumentsForMaintenance(maintenances.Select(x => x.Id));
+           return records;
+        }
+        public async Task<IEnumerable<MaintenanceDocument>> GetDocumentsAsync(int id)
+        {
+            var documents = await _documentRepository.GetAllDocumentsForMaintenance(id);
+            return documents;
+        }
+
     }
 
         public interface IMaintenanceService {
@@ -81,8 +109,11 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Se
         public Task DeleteAsync(int id);
         public Task<MaintenanceDTO?> GetAsync(int id);
         public Task<IEnumerable<MaintenanceDTO>> GetAllAsync();
-        public Task<IEnumerable<MaintenanceDTO>> GetAllForItemAsync(int itemId);
+        public Task<IEnumerable<MaintenanceDocument>> GetAllMaintenanceFilesForItemAsync(int itemId);
         Task<IEnumerable<string>> GetCategoryNamesAsync();
+        Task<MaintenanceDocument> CreateDocumentAsync(Document doc, int id);
+        Task<IEnumerable<MaintenanceDTO>> GetAllForItemAsync(int itemId);
+        Task<IEnumerable<MaintenanceDocument>> GetDocumentsAsync(int id);
     }
 
 }

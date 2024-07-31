@@ -1,4 +1,6 @@
 ﻿        using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
+using WebAPI_Vue_Equipment_Manager_App.Server.Application.Error_Handling;
 using WebAPI_Vue_Equipment_Manager_App.Server.Application.Interfaces;
 using WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities;
 
@@ -40,39 +42,39 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
             return model;
         }
 
-        public override async Task<EquipmentModel?> UpdateAsync(EquipmentModel toUpdate)
+        public override async Task<EquipmentModel> UpdateAsync(EquipmentModel toUpdate)
         {
-            _context.Models.Update(toUpdate);
+           _context.Models.Update(toUpdate);
             await _context.SaveChangesAsync();
             var updated = await _context.Models.
                 AsNoTracking().
                 Include(x => x.Category).
                 FirstOrDefaultAsync(x => x.Id == toUpdate.Id);
+            if(updated == null)
+            {
+                throw new DataInsertionException($"Could not update model : {JsonSerializer.Serialize(toUpdate)}");
+            }
             return updated;
 
         }
 
-        public async Task<EquipmentModel?> FindOrCreate(EquipmentModel model)
+        public async Task<EquipmentModel> UpsertbyModelNumber(EquipmentModel model)
         {
-            var found = await _context.Models.FindAsync(model.Id);
-            if (found != null)
+            //find the existing entry that matches either the given id, modelname or model number
+            //if it exists then assign its id to model the update model so that any changes are persisted
+            var found = await _context.Models.
+                    Where(x => x.Id == model.Id || x.ModelNumber == model.ModelNumber && x.Manufacturer == model.Manufacturer
+                    ).AsNoTracking().
+                    FirstOrDefaultAsync();                
+            if(found != null)
             {
-                return found;
+                model.Id = found.Id;
             }
-            else
-            {
-                var searched = await _context.Models.
-                    Where(x => x.ModelNumber == model.ModelNumber && x.Manufacturer == model.Manufacturer
-                    || x.ModelName == model.ModelName && x.Manufacturer == model.Manufacturer).
-                    FirstOrDefaultAsync();
-                if (searched != null)
-                {
-                    return searched;
-                }
-            }
-            return await AddAsync(model);
-                   
+
+            //update rather than add so that changes to model can be tracked
+            return await UpdateAsync(model);                   
         }
+
         public async Task<IEnumerable<string>> GetUserCategoriesAsync(IEnumerable<int> unitIds)
         {
             var categories = await _context.Items.

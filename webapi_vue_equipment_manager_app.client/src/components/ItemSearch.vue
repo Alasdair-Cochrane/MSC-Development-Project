@@ -71,7 +71,6 @@ async function scanImage(item){
     flex: 1;
     flex-direction: column;
     height: auto;
-    min-width: 320px;
     max-width: 350px;
 }
 .search-input{
@@ -117,7 +116,7 @@ ul :hover{
         padding: 0.5rem;
         width: 100%;
         gap: 5px;
-        overflow: auto;
+        overflow-y: auto;
     }
 
 .btns-scan{

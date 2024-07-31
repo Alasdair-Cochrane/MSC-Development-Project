@@ -174,7 +174,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
             {
                 return BadRequest();
             }
-            string uri = $"-I-{id}-" + Guid.NewGuid().ToString() + ext;
+            string uri = $"I-{id}-" + Guid.NewGuid().ToString() + ext;
 
             var document = new Document { FileName = file.FileName, URL = uri };
             if (await _documentService.ValidateAsync(file))
@@ -194,7 +194,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
             }
             catch
             {
-                await _documentService.RemoveAsync(uri);
+                await _documentService.RemoveAsync(uri, false);
                 throw;
             }
         }

@@ -1,5 +1,7 @@
 ﻿using Google.Apis.Auth.OAuth2;
+using Google.Apis.Storage.v1.Data;
 using Google.Cloud.Storage.V1;
+using System.IO.Compression;
 using System.Reflection;
 using WebAPI_Vue_Equipment_Manager_App.Server.Application.Interfaces;
 using WebAPI_Vue_Equipment_Manager_App.Server.Application.Repository_Interfaces;
@@ -28,6 +30,27 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services
                 return stream.ToArray();
             }
         }
+        public async Task<Dictionary<string,byte[]>> RetrieveAll(IEnumerable<string> uris)
+        {
+            Dictionary<string, byte[]> files = new Dictionary<string, byte[]>();
+            Dictionary<string, MemoryStream> streams = new Dictionary<string, MemoryStream>();
+            List<Task<Google.Apis.Storage.v1.Data.Object>> tasks = new List<Task<Google.Apis.Storage.v1.Data.Object>>();
+
+            foreach(var file in uris)
+            {
+                var stream = new MemoryStream();                
+                tasks.Add(_storageClient.DownloadObjectAsync(_bucketName, file, stream));   
+                streams.Add(file,stream);
+            }
+             await Task.WhenAll(tasks);
+
+            foreach(var  result in streams)
+            {
+                files.Add(result.Key, result.Value.ToArray());
+                result.Value.Close();
+            }
+            return files;
+        }
 
         public async Task UploadAsync( IFormFile file, string uri)
         {           
@@ -40,10 +63,14 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services
            return result;
         }
 
-        public async Task RemoveAsync(string uri) { 
+        public async Task RemoveAsync(string uri, bool andRecord) { 
 
             await _storageClient.DeleteObjectAsync(_bucketName, uri);
-            await _documentRepository.DeleteDocument(uri);
+            if (andRecord)
+            {
+                await _documentRepository.DeleteDocument(uri);
+
+            }
         }
 
 

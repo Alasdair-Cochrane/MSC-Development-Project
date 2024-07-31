@@ -47,13 +47,13 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data
                 WithOne().
                 HasForeignKey(d => d.ItemId);
 
-            builder.Entity<EquipmentModel>().
-                HasMany<EquipmentModelDocument>().
-                WithOne().
-                HasForeignKey(d => d.ModelId);
+            //builder.Entity<EquipmentModel>().
+            //    HasMany(m => m.Documents).
+            //    WithOne().
+            //    HasForeignKey(d => d.ModelId);
 
             builder.Entity<Maintenance>().
-                HasMany<MaintenanceDocument>().
+                HasMany(m => m.Documents).
                 WithOne().
                 HasForeignKey(d => d.MaintenanceId);
 

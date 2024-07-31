@@ -48,7 +48,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
             var list = await _context.Maintenances.
                 AsNoTracking().
                 Include(x => x.Category).
-                Where(x => x.MaintenanceCategoryId == id).
+                Where(x => x.ItemId == id).
                 ToListAsync();
             return list;
         }
@@ -58,5 +58,6 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
             var list = await _context.MaintenanceTypes.Select(x => x.Name).ToListAsync();
             return list;
         }
+        
     }
 }

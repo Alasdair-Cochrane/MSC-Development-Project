@@ -27,12 +27,13 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
             if (file == null) { return NotFound(); }
 
             return File(file, "application/pdf");
+            
         }
 
         [HttpDelete("{uri}")]
         public async Task<IActionResult> DeleteDocument(string uri)
         {
-            await _documentService.RemoveAsync(uri);
+            await _documentService.RemoveAsync(uri, true);
             return NoContent();
         }
 

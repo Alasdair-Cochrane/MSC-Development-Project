@@ -3,16 +3,16 @@ import { RouterLink } from 'vue-router';
 import {ref, onMounted} from 'vue'
 import { IsMobile } from '@/Services/DeviceService';
 import ExportItems from '@/components/ExportItems.vue';
-import { PopulateStartingData, store } from '@/Store/Store';
+import { store } from '@/Store/Store';
 import { QueryItems } from '@/Services/ItemService';
 
 
-
-onMounted(() => {
+const dataLoading = ref(true)
+onMounted(async () => {
     mobileScreen.value = !IsMobile();     
     chartData.value = setChartData();
     chartOptions.value = setChartOptions();
-    PopulateStartingData();
+    dataLoading.value = false;
 });
 
 const chartData = ref();
@@ -122,7 +122,7 @@ const showStatusQuantityItems= async (data) => {
             <div class="panel data grid-nogutter"> 
                     <div class="left col-12 md:col-6">
                     <div class="data-table">
-                    <DataTable class="" :value="store.StatusQuantities" size="small" v-if="store.StatusQuantities.length > 0" style="width: 300px;">
+                    <DataTable class="" :value="store.StatusQuantities" size="small" v-if="!dataLoading" style="width: 300px;">
                         <Column field="statusName" header="Status" style="width: 150px;"></Column>
                         <Column field="itemQuantity" header="#" style="width: 80px;"></Column>
                         <Column style="width: 50px;">
@@ -134,7 +134,13 @@ const showStatusQuantityItems= async (data) => {
 
                     </DataTable>
                     <div v-else>
-                        No Data To Display
+                        <Skeleton></Skeleton>
+                        <Skeleton></Skeleton>
+                        <Skeleton></Skeleton>
+                        <Skeleton></Skeleton>
+                        <Skeleton></Skeleton>
+
+
                     </div>
                 </div>
                     

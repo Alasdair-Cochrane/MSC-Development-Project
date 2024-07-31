@@ -2,8 +2,8 @@
 //Used chatgpt to troubleshoot accessing tree-node value for the edit & users buttons 
 //- inserted '' #body="slotProps" ' per ChatGpt's 'advice' 
 
-import { GetStructure, store, UpdateStructure } from '@/Store/Store';
-import {onMounted, onScopeDispose, ref} from 'vue'
+import { store, UpdateStructure } from '@/Store/Store';
+import {onMounted, ref} from 'vue'
 import AssignUser from './AssignUser.vue';
 import AssignedUsersDisplay from '@/components/AssignedUsersDisplay.vue'
 import { DeleteUnit, EditUnit } from '@/Services/UnitService';
@@ -29,7 +29,10 @@ const openOptionSelected = ref()
 const emits = defineEmits(['chartButtonClicked'])
 
 onMounted(async () => {
-    unitTree.value = await GetStructure()
+    if(store.OrgStructure.length === 0){
+        await UpdateStructure()
+    }
+    unitTree.value = store.OrgStructure
     for(const element of unitTree.value){
         expandedKey.value[element.key] = true
     }

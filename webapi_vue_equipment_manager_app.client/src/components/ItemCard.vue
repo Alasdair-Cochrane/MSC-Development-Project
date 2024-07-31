@@ -28,20 +28,17 @@ const cardClikced = () => {
             <img :src=item?.imageUrl height="80px" width="100%" v-if="item && item.imageUrl">
         </div>
         <div id="item-info">
+            <div class="info-labels">
+                <span>S/n: </span>
+                <span>Model: </span>
+                <span>Category: </span>
+            </div>
             <div>
                 <span>{{item?.serialNumber ?? " "}}</span>
                 <span>{{item?.model.modelNumber ?? " "}}</span>
                 <span>{{item?.model.category ?? " "}}</span>
-
-
             </div>
-            <div>
-                <span>{{item?.localName ?? " "}}</span>
-                <span>{{item?.model.modelName ?? " "}}</span>
-                <span>{{item?.unitName ?? " "}}</span>
-
-
-            </div>
+            
         </div>
         <div id="btns" v-if="showButtons">
             <Button rounded icon="pi pi-search" @click="$emit('clicked', item)"></Button>
@@ -73,19 +70,18 @@ img{
     margin: 5px;
     border-radius: 10px;    
     min-width:80px;
-    max-width: 100px;
+    max-width: 80px;
 }
 #item-info{
     flex: 1;
-    display: grid;
-    grid-template-columns: 1fr 1fr; 
-    min-width: 150px;   
+    display: flex;
+    justify-content: space-evenly;
+
 }
 #item-info div{
     display: flex;
     flex-direction: column;
     gap: 5px;
-    align-items: center;
 }
 
 #btns{
@@ -103,6 +99,9 @@ Button{
 }
 span{
     font-size: small;
+}
+.info-labels span{
+    font-weight: 600;
 }
 
 </style>

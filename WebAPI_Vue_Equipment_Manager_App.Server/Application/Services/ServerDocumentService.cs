@@ -45,7 +45,12 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services
             return await Task.FromResult(true);
         }
 
-        public async Task RemoveAsync(string uri)
+        public async Task RemoveAsync(string uri, bool andRecord)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Dictionary<string,byte[]>> RetrieveAll(IEnumerable<string> uris)
         {
             throw new NotImplementedException();
         }
@@ -56,9 +61,8 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services
         public Task<bool> ValidateAsync(IFormFile file);
         public Task UploadAsync(IFormFile file, string uri);
         public Task<byte[]?> RetrieveAsync(string filename);
-        public Task RemoveAsync(string uri);
-
-    
+        public Task RemoveAsync(string uri, bool andRecord);
+        Task<Dictionary<string,byte[]>> RetrieveAll(IEnumerable<string> uris);
     }
 
 }

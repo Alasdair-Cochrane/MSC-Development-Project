@@ -43,10 +43,10 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
         }
         public async Task<MaintenanceDocument> AddMaintenanceDocument(Document document, int maintenanceId)
         {
-            var doc = _context.Documents.Add(document);
-            var mainDoc = new MaintenanceDocument { DocumentId = doc.Entity.Id, MaintenanceId = maintenanceId };
-                _context.MaintenanceDocuments.Add(mainDoc);
+            _context.Add(document);
+            var mainDoc = new MaintenanceDocument { DocumentId = document.Id, MaintenanceId = maintenanceId };
             mainDoc.Document = document;
+           _context.Add(mainDoc);
             await _context.SaveChangesAsync();
             return mainDoc;
         }
@@ -60,7 +60,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
         {
             var document = await _context.Documents.
                 Where(x => x.URL == uri).
-                SingleAsync();
+                FirstAsync();
             _context.Documents.Remove(document);
             await _context.SaveChangesAsync();
         }
@@ -89,6 +89,15 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
                 ToListAsync();
             return documents;
         }
+        public async Task<IEnumerable<MaintenanceDocument>> GetAllDocumentsForMaintenance(IEnumerable<int> maintenanceIds)
+        {
+            var documents = await _context.MaintenanceDocuments.
+                Where(x => maintenanceIds.Contains(x.MaintenanceId)).
+                Include(x => x.Document).
+                ToListAsync();
+            return documents;
+        }
+
 
         public async Task<IEnumerable<string>> GetOrphanedDocuments(IEnumerable<string> documentURLs)
         {
