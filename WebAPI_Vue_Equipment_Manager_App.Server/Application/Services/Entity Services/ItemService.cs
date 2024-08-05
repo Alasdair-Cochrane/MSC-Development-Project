@@ -45,12 +45,12 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Se
 
         public async Task<ItemDTO?> AddAsync(ItemDTO item, int userId)
         {
-            await CheckIsAuthorised(item, userId);
+            await CheckIsAuthorised(item.UnitId.Value, userId);
 
             int statusCategoryID = _statusRepository.FindOrCreateByName(item.CurrentStatus).Id;
             int modelCategoryID = _modelCategories.FindOrCreateByName(item.Model.Category).Id;
 
-            EquipmentModel? model = await _modelRepository.UpsertbyModelNumber(item.Model.ToEntity(modelCategoryID));
+            EquipmentModel? model = await _modelRepository.UpsertbyModelNumberAsync(item.Model.ToEntity(modelCategoryID));
             if (model == null)
             {
                 string entity = JsonSerializer.Serialize(item);
@@ -70,16 +70,32 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Se
             return added.ToDTO();
         }
 
-        public async Task DeleteAsync(ItemDTO item, int userId)
+        public async Task<IEnumerable<Item>> AddManyAsync(IEnumerable<ItemDTO> items)
         {
-            await CheckIsAuthorised(item, userId);
+            var itemEntities = new List<Item>();
+            foreach(var item in items)
+            {
+                var statusId =  _statusRepository.FindOrCreateByName(item.CurrentStatus).Id;
+                var modelCategory = _modelCategories.FindOrCreateByName(item.Model.Category).Id;
+                var model = await _modelRepository.UpsertbyModelNumberAsync(item.Model.ToEntity(modelCategory));
+                var newItem = item.ToEntity(statusId);
+                newItem.ModelId = model.Id;
+                itemEntities.Add(newItem);
+            }
+            var result = await _ItemRepository.AddManyAsync(itemEntities);
+            return result;
+        }
 
-            if (item.Id == null)
+        public async Task DeleteAsync(int itemId, int userId)
+        {
+            var item = await _ItemRepository.GetAsync(itemId);
+            if(item == null)
             {
                 return;
             }
+            await CheckIsAuthorised(item.UnitId, userId);
 
-            var deleted = await _ItemRepository.DeleteAsync(item.Id.Value);
+            await _ItemRepository.DeleteAsync(item.Id);
         }
 
         public async Task<IEnumerable<ItemDTO>> GetAllAsync()
@@ -101,12 +117,16 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Se
 
         public async Task<ItemDTO?> UpdateAsync(ItemDTO item, int userId)
         {
-            await CheckIsAuthorised(item, userId);
+            if(item.UnitId == null)
+            {
+                throw new UnauthorisedOperationException($"Cannot find unitID for item {item.Id}");
+            }
+            await CheckIsAuthorised(item.UnitId.Value, userId);
 
             int statusId = _statusRepository.FindOrCreateByName(item.CurrentStatus).Id;
             int modelCategoryID = _modelCategories.FindOrCreateByName(item.Model.Category).Id;
             //make sure any changes to the model are tracked
-            var model = await _modelRepository.UpsertbyModelNumber(item.Model.ToEntity(modelCategoryID));
+            var model = await _modelRepository.UpsertbyModelNumberAsync(item.Model.ToEntity(modelCategoryID));
             item.ModelId = model.Id;
 
             var updated = await _ItemRepository.UpdateAsync(item.ToEntity(statusId));
@@ -185,17 +205,17 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Se
             return stream;
         }
 
-        private async Task CheckIsAuthorised(ItemDTO item, int userId)
+        private async Task CheckIsAuthorised(int unitId, int userId)
         {
-            if (item.UnitId == null)
+            if(unitId == 0)
             {
-                throw new DataInsertionException("Item's Unit id not specified");
+                throw new UnauthorisedOperationException("UnitId not specified");
             }
 
-            if (!await _userService.CheckUserIsPrivateOrAdminIncParent(userId, item.UnitId.Value))
+            if (!await _userService.CheckUserIsPrivateOrAdminIncParent(userId, unitId))
             {
 
-                throw new UnauthorisedOperationException($"UserID [{userId}] is notunauthorised for this operation for Unit {item.UnitId.Value} ");
+                throw new UnauthorisedOperationException($"UserID [{userId}] is notunauthorised for this operation for Unit {unitId} ");
             }
         }
 
@@ -235,7 +255,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Se
         public Task<ItemDTO?> GetByIdAsync(int id);
         public Task<IEnumerable<ItemDTO>> GetAllAsync();
         public Task<ItemDTO?> UpdateAsync(ItemDTO item, int userId );
-        public Task DeleteAsync(ItemDTO item, int userId);
+        public Task DeleteAsync(int itemId, int userId);
         public Task<ItemDTO?> AddAsync(ItemDTO item, int userId);
         public Task<IEnumerable<ItemDTO>> GetAllByUnitAsync(int UnitID);
         public Task SetImageUrl(int itemId, string url);
@@ -246,5 +266,6 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Se
         public Task UpdateImageUrl(int id, string url);
         Task<IEnumerable<string>> GetStatusCategoryNames();
         Task<IEnumerable<StatusQuantity>> GetQuantityByStatusAsync(int userId);
+        Task<IEnumerable<Item>> AddManyAsync(IEnumerable<ItemDTO> items);
     }
 }

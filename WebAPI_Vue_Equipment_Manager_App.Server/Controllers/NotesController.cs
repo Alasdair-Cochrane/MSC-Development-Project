@@ -42,5 +42,13 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
             var notes = await _notesService.GetNotesForItemAsync(itemId, user.Id);
             return Ok(notes);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetNotesBeforeNow([FromQuery] int daysBeforeNow)
+        {
+            var user = await _userService.GetCurrentUserAsync(HttpContext);
+            var notes = await _notesService.GetNotesBeforeNowAsync(daysBeforeNow, user.Id);
+            return Ok(notes);
+        }
     }
 }

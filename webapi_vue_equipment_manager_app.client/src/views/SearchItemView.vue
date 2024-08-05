@@ -11,6 +11,7 @@ const editMode = ref(false)
 const item = ref()
 const uploadLoading = ref(false)
 const searchExpanded = ref(true)
+const searchResults = ref([])
 
 
 function toggleExtra() {editMode.value = !editMode.value
@@ -20,6 +21,15 @@ function viewItem(newItem){
     if(newItem)
     {
     item.value = newItem
+    }
+}
+function itemDeleted(){
+    searchResults.value = searchResults.value.filter(x => x !== item.value )
+    if(searchResults.value.length){
+        item.value = searchResults.value[0]
+    }
+    else{
+        item.value = null
     }
 }
 
@@ -34,11 +44,12 @@ function viewItem(newItem){
         <Button icon="pi pi-search" @click="searchExpanded = true"   v-show="!searchExpanded && item"></Button>
 
 
-        <div v-show="searchExpanded"><ItemSearch @item-searched="viewItem" @item-selected="viewItem" ></ItemSearch></div>
+        <div v-show="searchExpanded">
+            <ItemSearch @item-searched="viewItem" @item-selected="viewItem" v-model="searchResults"></ItemSearch></div>
     </div>
     <div class="details">
         <div class="display">
-            <ItemDetail @editTrue="toggleExtra()" :selected-Item="item" v-if="item" @update="(i) => item=i"></ItemDetail>
+            <ItemDetail @editTrue="toggleExtra()" :selected-Item="item" v-if="item" @update="(i) => item=i" @deleted="itemDeleted()"></ItemDetail>
         </div>
         
     </div>

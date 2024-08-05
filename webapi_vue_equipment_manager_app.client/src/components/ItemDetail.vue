@@ -1,20 +1,32 @@
 <script setup>
 import {ref, watch} from 'vue'
-import { UpdateItem, UploadImage } from '@/Services/ItemService';
+import { DeleteItem, UpdateItem, UploadImage } from '@/Services/ItemService';
 import FileDisplay from './FileDisplay.vue';
 import { UploadItemFile } from '@/Services/FileService';
 import { store } from '@/Store/Store';
+import { resolveTypeElements } from 'vue/compiler-sfc';
 
+const emit = defineEmits(['editTrue', 'update', 'deleted'])
+const selectedItem = defineModel('selectedItem')
 
 const editMode = ref(false)
-const emit = defineEmits(['editTrue', 'update'])
-const selectedItem = defineModel('selectedItem')
+
 const changedItem = ref()
 const uploadLoading = ref(false)
 const saveLoading = ref(false)
+
 const selectedUnit = ref()
 const condOptions = ["New", "Used"]
+
 const showImageCapture = ref(false)
+const showBarcodeScanner = ref(false)
+
+const showDelete = ref(false)
+const deleteLoading = ref(false)
+const deletionSuccesfull = ref(false)
+const deleteErrorMessage = ref()
+const deleteErrorOccured = ref(false)
+
 const imgRef = ref()
 
 const toggleEdit = () => {
@@ -26,6 +38,7 @@ const toggleEdit = () => {
 
 watch(selectedItem, ()=> {
     changedItem.value = selectedItem.value
+    deleteErrorOccured.value = false
     selectedUnit.value = {name: selectedItem.value.unitName, id : selectedItem.value.unitId}})
 
 async function uploadFile(file){
@@ -55,6 +68,21 @@ async function update() {
     saveLoading.value = false
 }
 
+async function deleteItem(){
+    deleteLoading.value = true
+    let response = await DeleteItem(selectedItem.value.id)
+    if(response.successfull){   
+        deletionSuccesfull.value = true
+        emit('deleted')
+    }
+    else{
+        deleteErrorOccured.value = true;
+        deleteErrorMessage.value = response.message ?? response.error.title        
+    }
+    deleteLoading.value = false
+
+}
+
 async function setImage(image){
     let response = await UploadImage(selectedItem.value.id, image)
     if(response.successful){
@@ -66,6 +94,26 @@ async function setImage(image){
 </script>
 
 <template>
+
+    <!--BARCODE SCANNER-->
+<Dialog :visible="showBarcodeScanner" modal :closable="false">
+    <BarcodeScanner @cancelled="showBarcodeScanner= false" @confirmed="(b) => {selectedItem.barcode = b; showBarcodeScanner = false}"></BarcodeScanner>
+</Dialog>
+<!--DELETE CONFIRM-->
+<Dialog v-model:visible="showDelete" modal>
+   <div class="deletion" v-show="!deletionSuccesfull">
+       <strong>Confirm Deletion?</strong>
+       <div>
+            <Button label="Confirm" @click="deleteItem()" :loading="deleteLoading"></Button>
+           <Button label="Cancel" @click="showDelete = false" severity="danger"></Button>
+       </div>
+       <span v-show="deleteErrorOccured"> Failed to Delete : {{ deleteErrorMessage }}</span>
+   </div>
+   <div v-show="deletionSuccesfull" class="deletion">
+       <label>Deletetion Successfull</label>
+       <Button label="Close" @click="deletionSuccesfull = false; showDelete = false"></Button>
+   </div>
+</Dialog>
 <div class="container">
 <div class="fields">
     <div class="field-group">
@@ -87,7 +135,7 @@ async function setImage(image){
                 <label class="fieldValue" v-show="!editMode">{{ selectedItem.barcode }}</label>
                 <InputGroup v-if="editMode" >
                             <InputText id="serial" size="small" v-model="changedItem.barcode"/>
-                            <Button icon="pi pi-barcode"> </Button>
+                            <Button icon="pi pi-barcode" @click="showBarcodeScanner= true"> </Button>
                 </InputGroup>
             </div>
             <div class="field">
@@ -203,6 +251,8 @@ async function setImage(image){
     <div class="panel-2">
         <div class="edit-bttns">
             <Button label="Edit" v-if="!editMode" @click="toggleEdit"></Button>
+            <Button label="Delete" v-if="!editMode" @click="showDelete = true" severity="danger"></Button>
+
             <Button label="Save Changes" v-if="editMode" @click="update()" :loading="saveLoading"></Button>
             <Button label="Cancel" v-if="editMode" @click="toggleEdit" severity="danger" ref="imgRef"></Button>
         </div>
@@ -324,6 +374,24 @@ padding: 1rem;
         margin: 10px;
     }
             
+}
+
+small{
+    color: red
+}
+
+.deletion{
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    align-items: center;
+}
+.deletion strong{
+    font-weight: bold;
+}
+.deletion div{
+    display: flex;
+    gap: 2rem;
 }
 
 </style>

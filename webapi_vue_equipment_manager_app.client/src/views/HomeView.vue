@@ -3,11 +3,20 @@ import { RouterLink } from 'vue-router';
 import {ref, onMounted} from 'vue'
 import { IsMobile } from '@/Services/DeviceService';
 import ExportItems from '@/components/ExportItems.vue';
-import { store } from '@/Store/Store';
+import { GetFromAPI, store } from '@/Store/Store';
 import { QueryItems } from '@/Services/ItemService';
+import { FormatDate } from '@/Services/FormatService';
+import NotesActivityDisplay from '@/components/NotesActivityDisplay.vue';
+import MaintenanceActivityDisplay from '@/components/MaintenanceActivityDisplay.vue';
 
 
 const dataLoading = ref(true)
+const chartData = ref();
+const chartOptions = ref();
+const mobileScreen = ref(true);
+const showExport = ref(false);
+
+
 onMounted(async () => {
     mobileScreen.value = !IsMobile();     
     chartData.value = setChartData();
@@ -15,12 +24,8 @@ onMounted(async () => {
     dataLoading.value = false;
 });
 
-const chartData = ref();
-const chartOptions = ref();
 
-const mobileScreen = ref(true)
 
-const showExport = ref(false)
 
 //https://primevue.org/chart/
 const setChartData = () => {
@@ -139,14 +144,18 @@ const showStatusQuantityItems= async (data) => {
                         <Skeleton></Skeleton>
                         <Skeleton></Skeleton>
                         <Skeleton></Skeleton>
-
-
                     </div>
+                </div>
+                <div class="data-table">
+                    <NotesActivityDisplay></NotesActivityDisplay>                    
+                </div>
+                <div class="data-table">
+                    <MaintenanceActivityDisplay></MaintenanceActivityDisplay>
                 </div>
                     
                 </div>
                     <div class="right col-12 md:col-6" v-if="mobileScreen">
-                        <Chart type="doughnut" :data="chartData" :options="chartOptions"></Chart>
+                        <!-- <Chart type="doughnut" :data="chartData" :options="chartOptions"></Chart> -->
                         <!-- <Chart type="doughnut" :data="chartData" :options="chartOptions"></Chart> -->
                     </div>   
             </div>

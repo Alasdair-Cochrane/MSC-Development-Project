@@ -55,6 +55,24 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
             return added;
         }
 
+        public async Task<IEnumerable<Item>> AddManyAsync(IEnumerable<Item> items)
+        {
+            _context.Items.AddRange(items);
+            await _context.SaveChangesAsync();
+            return items.Select(x => new Item
+            {
+                Id = x.Id,
+                UnitId = x.UnitId,
+                ModelId = x.ModelId,
+                SerialNumber = x.SerialNumber,
+                ItemStatusCategoryId = x.ItemStatusCategoryId,
+                LocalName = x.LocalName,
+                EquipmentModel = x.EquipmentModel,
+                Condition_On_Reciept = x.Condition_On_Reciept,
+                
+            });
+        }
+
         public override async Task<Item?> UpdateAsync(Item item)
         { 
              _context.Items.Update(item);

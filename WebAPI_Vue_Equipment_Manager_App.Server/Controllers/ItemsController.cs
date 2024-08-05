@@ -92,10 +92,10 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete([FromBody] ItemDTO item)
+        public async Task<IActionResult> Delete(int id)
         {
             var user = await _userService.GetCurrentUserAsync(HttpContext);
-            await _itemSerivce.DeleteAsync(item, user.Id);
+            await _itemSerivce.DeleteAsync(id, user.Id);
             return Ok();
         }
 

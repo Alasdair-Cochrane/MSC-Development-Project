@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs;
 using WebAPI_Vue_Equipment_Manager_App.Server.Application.Repository_Interfaces;
 using WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
@@ -18,11 +19,39 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
             return found;
         }
 
-        public override async Task<IEnumerable<Maintenance>> GetAllAsync()
+
+        //
+        public  async Task<IEnumerable<MaintenanceDTO>> GetAllAsync(int days, IEnumerable<int> unitIds)
         {
+            var dateNow = DateTime.UtcNow;
+            var daysFromNow = dateNow.AddDays(-days);
             var list = await _context.Maintenances.
                 AsNoTracking().
-                Include(x => x.Category).
+                Where(x => x.Date_Completed > daysFromNow).
+                Join(_context.Items, n => n.ItemId, i => i.Id, (n,i) => new 
+                {
+                    Category = n.Category,
+                    Date_Completed = n.Date_Completed,
+                    Description = n.Description,
+                    Provider_Name = n.Provider_Name,
+                    MaintenanceCategoryId = n.MaintenanceCategoryId,
+                    ItemId = n.ItemId,
+                    UnitId = i.UnitId,
+                    SerialNumber = i.SerialNumber,
+                    Id = n.Id,
+
+                }).
+                Where(x => unitIds.Contains(x.UnitId)).
+                Select( n => new MaintenanceDTO
+                {
+                    CategoryName = n.Category.Name,
+                    Date_Completed = n.Date_Completed,
+                    Description = n.Description,
+                    Provider_Name = n.Provider_Name,
+                    ItemId = n.ItemId,
+                    SerialNumber = n.SerialNumber,
+                    Id = n.Id,
+                }).
                 ToListAsync();
             return list;
         }

@@ -1,0 +1,28 @@
+options:{
+unitId : [120,121,123,1,109,110,116,5,2,111,90],
+currentStatus :[ Broken,Active,
+Decommissioned,Requires Calibration, In Storage, Requires Service, Requires Validation, Requires Installation, On Loan],
+
+category:[ "Analytical Balance",
+ "Autoclave", "Bunsen Burner", "Desiccator", "Dry Heat Sterilizer", "Electron Microscope", Fluorometer", "Fluorescence Microscope", "Fume Hood", "Gas Chromatograph", "Gel Electrophoresis System", "Homogenizer", "Heating Mantle", "Incubator", "Lab Freezer", "Laminar Flow Cabinet", "Light Microscope", "Liquid Chromatograph", "Microwave Oven", "Microcentrifuge", "Multi-Channel Pipette", "Pipette Filler", "Refrigerator", "Refractometer", "Spectrophotometer", "Shaker Incubator", "Sonicator", "Top-Loading Balance", "Vortex Mixer", "Water Bath", "Western Blot Apparatus", "Single-Channel Pipette", "Thermometer", "Floor Model Centrifuge", "Ultracentrifuge"]
+condition_on_reciept:["new", "old"]
+}
+schema:{
+    "serialNumber": "string",
+    "barcode": "string",
+    "localName": "string",
+    "date_of_reciept": "2024-08-05T13:54:18.458Z",
+    "date_of_commissioning": "2024-08-05T13:54:18.458Z",
+    "condition_on_reciept": "string",
+    "current_Status_ID": 0,
+    "currentStatus": "string",
+    "unitId": 0,
+    "modelNumber": "string",
+    "modelName": "string",
+    "manufacturer": "string",
+    "weight": 0,
+    "height": 0,
+    "length": 0,
+    "width": 0,
+    "category": "string",
+}

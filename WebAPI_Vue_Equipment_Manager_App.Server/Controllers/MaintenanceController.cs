@@ -16,20 +16,23 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
     {
         private readonly IMaintenanceService _maintenanceService;
         private readonly IDocumentService _documentService;
+        private readonly IUserService _userService;
 
-        public MaintenanceController(IMaintenanceService maintenanceService, IDocumentService documentService)
+        public MaintenanceController(IMaintenanceService maintenanceService, IDocumentService documentService, IUserService userService)
         {
             _maintenanceService = maintenanceService;
             _documentService = documentService;
+            _userService = userService;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery]int daysBeforeNow)
         {
-            var list = await _maintenanceService.GetAllAsync();
+            var user = await _userService.GetCurrentUserAsync(HttpContext);
+            var list = await _maintenanceService.GetAllAsync(daysBeforeNow, user.Id);
             return Ok(list);
         }
-
+        
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {

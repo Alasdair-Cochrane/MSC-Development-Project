@@ -30,7 +30,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
             dto.userCanDelete = true;
             return dto;
         }
-        public async Task DeleteNote(int noteId)
+        public async Task DeleteNoteAsync(int noteId)
         {
             var deleted = await _context.ItemNotes.FindAsync(noteId);
             if (deleted == null) { return; }
@@ -66,6 +66,43 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
                 }).FirstOrDefaultAsync();
             return note;
         }
+
+        //Gets all notes created after specified days before & checks items belong to units that the user is authorised to view
+        public async Task<IEnumerable<ItemNoteDTO>> GetNotesInTimePeriodAsync(int daysBefore, IEnumerable<int> unitIds)
+        {
+            var earliestDate = DateTime.UtcNow.AddDays(-daysBefore);
+            var notes = await _context.ItemNotes.Where(x => x.Created > earliestDate).
+                Join(_context.Items, n => n.ItemId, i => i.Id, (n, i) => new 
+                {
+                    Id = n.Id,
+                    SerialNumber = i.SerialNumber,
+                    DatePosted = n.Created,
+                    UserId = n.UserId,
+                    ItemId = n.ItemId,
+                    Text = n.Text,
+                    Title = n.Title,
+                    UnitId = i.UnitId
+
+                }).
+                Where(x => unitIds.Contains(x.UnitId))
+                .Join(_context.Users, n => n.UserId, u => u.Id, (n, u) =>
+                new ItemNoteDTO
+                {
+                    Id = n.Id,
+                    UserEmail = u.Email,
+                    UserName = $"{u.FirstName} {u.LastName}",
+                    SerialNumber = n.SerialNumber,
+                    DatePosted = n.DatePosted,
+                    UserId = n.UserId,
+                    ItemId = n.ItemId,
+                    Text = n.Text,
+                    Title = n.Title
+
+                }).ToListAsync();
+            return notes;     
+        }
+
+
         public async Task<IEnumerable<ItemNoteDTO>> GetNoteDTOsForItemAsync(int itemId)
         {
             var notes = await _context.ItemNotes.Where(x => x.ItemId == itemId).
@@ -106,7 +143,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
 
         //sets whether the user can delete certain notes in the provided list
         //based on whether they created the note or whether they are admin of the unit in which the item belongs to
-        public async Task<IEnumerable<ItemNoteDTO>> AssignUserCanDelete(IEnumerable<ItemNoteDTO> notes, int userId)
+        public async Task<IEnumerable<ItemNoteDTO>> AssignUserCanDeleteAsync(IEnumerable<ItemNoteDTO> notes, int userId)
         {
             var units = await _unitRepository.GetAllAdminRoleUnits(userId);
             var items = await _context.Items.
@@ -126,7 +163,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
             return notes;
         }
 
-        public async Task<bool> CheckUserCanDelete(int noteId, int userId)
+        public async Task<bool> CheckUserCanDeleteAsync(int noteId, int userId)
         {
             var units = await _unitRepository.GetAllAdminRoleUnits(userId);
             var queryResult = await _context.ItemNotes.

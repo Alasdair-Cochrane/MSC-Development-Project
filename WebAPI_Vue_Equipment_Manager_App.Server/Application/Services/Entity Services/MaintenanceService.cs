@@ -13,13 +13,17 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Se
         private readonly ICategoryRepository<MaintenanceCategory> _categoryRepository;
         private readonly IDocumentService _documentService;
         private readonly DocumentRepository _documentRepository;
+        private readonly IUnitRepository _unitRepository;
 
-        public MaintenanceService(IMaintenanceRepository repository, ICategoryRepository<MaintenanceCategory> categoryRepository, IDocumentService documentService, DocumentRepository documentRepository)
+        public MaintenanceService(IMaintenanceRepository repository, ICategoryRepository<MaintenanceCategory> categoryRepository, 
+            IDocumentService documentService, DocumentRepository documentRepository,
+            IUnitRepository unitRepository)
         {
             _repository = repository;
             _categoryRepository = categoryRepository;
             _documentService = documentService;
             _documentRepository = documentRepository;
+            _unitRepository = unitRepository;
 
         }
         public async Task<MaintenanceDTO?> AddAsync(MaintenanceDTO newEntry)
@@ -43,11 +47,11 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Se
             }
         }
 
-        public async Task<IEnumerable<MaintenanceDTO>> GetAllAsync()
+        public async Task<IEnumerable<MaintenanceDTO>> GetAllAsync(int days, int userId)
         {
-            var list = await _repository.GetAllAsync();
-
-            return list.Select(x => x.ToDTO());
+            var unitIds = await _unitRepository.GetAllRelevantUnitIdsToUserAsync(userId);
+            var list = await _repository.GetAllAsync(days, unitIds);
+            return list;
         }
 
         public async Task<IEnumerable<MaintenanceDTO>> GetAllForItemAsync(int itemId)
@@ -108,7 +112,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Se
         public Task<MaintenanceDTO?> UpdateAsync(MaintenanceDTO updatedEntry);
         public Task DeleteAsync(int id);
         public Task<MaintenanceDTO?> GetAsync(int id);
-        public Task<IEnumerable<MaintenanceDTO>> GetAllAsync();
+        public Task<IEnumerable<MaintenanceDTO>> GetAllAsync(int days, int userId);
         public Task<IEnumerable<MaintenanceDocument>> GetAllMaintenanceFilesForItemAsync(int itemId);
         Task<IEnumerable<string>> GetCategoryNamesAsync();
         Task<MaintenanceDocument> CreateDocumentAsync(Document doc, int id);

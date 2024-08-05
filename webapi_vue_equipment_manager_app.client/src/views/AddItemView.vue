@@ -4,7 +4,9 @@ import ItemCard from '@/components/ItemCard.vue';
 import {ref} from 'vue'
 
 const addedItemsList = ref([])
-
+const deleteItem = (item) =>{
+    addedItemsList.value = addedItemsList.value.filter(x => x!== item)
+}
 </script>
 
 <template>
@@ -15,7 +17,7 @@ const addedItemsList = ref([])
     <div class="col-12 sm:col-3 right">
     <div class="added-list">
         <div v-for="i in addedItemsList" :key="i.id">
-            <ItemCard :item=i ></ItemCard>
+            <ItemCard :item=i @deleted="deleteItem(i)"></ItemCard>
         </div>
         
     </div>

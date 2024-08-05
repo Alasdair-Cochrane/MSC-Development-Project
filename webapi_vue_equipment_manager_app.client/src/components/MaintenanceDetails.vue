@@ -14,7 +14,11 @@ const documents = ref([])
 const fileUploadLoading = ref(false)
 const emit = defineEmits(['delete'])
 const props = defineProps({
-    item:{}
+    item:{},
+    showDelete:{
+        type:Boolean,
+        default: true,
+    }
 })
 
 onBeforeMount(async () => {
@@ -60,7 +64,8 @@ const deleteClicked = async () =>{
 </script>
 <template>
     <div class="wrapper" v-if="!deleteConfirmed">
-            <h3>{{item.serialNumber}}</h3>
+            <h3 v-if="item">{{item.serialNumber}}</h3>
+            <h3 v-if="maintenance.serialNumber">{{ maintenance.serialNumber }}</h3>
         <div class="field">
             <label class="header">Type</label>
             <label class="value">{{maintenance.categoryName}}</label>
@@ -79,7 +84,7 @@ const deleteClicked = async () =>{
         </div>
         <FileDisplay header="Files" @upload="maintenanceFileUpload" v-model="documents" :uploadLoading="fileUploadLoading"></FileDisplay>
         <div class="footer-bttn">
-            <Button icon="pi pi-trash" label="Delete" severity="danger" @click="deleteClicked()" :loading="deleteLoading"></Button>
+            <Button v-if="showDelete" icon="pi pi-trash" label="Delete" severity="danger" @click="deleteClicked()" :loading="deleteLoading"></Button>
             <span style="color: red;" v-if="!deleteConfirmed && errorMessage">{{ errorMessage }}</span>
         </div>        
     </div>

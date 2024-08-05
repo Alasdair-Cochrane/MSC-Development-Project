@@ -8,6 +8,7 @@
     import {useToast} from 'primevue/usetoast'
     import InterpretImage from "@/components/InterpretImage.vue";
 import CaptureImage from "./CaptureImage.vue";
+import BarcodeScanner from "./BarcodeScanner.vue";
 
 
 const item = ref(new Item(new EquipmentModel()))
@@ -20,7 +21,7 @@ const imageDisplay = ref()
 const showScanner = ref(false)
 const showCamera = ref(false)
 const selectedUnit = ref()
-
+const showBarcodeScanner = ref(false)
 const showIsValid = ref(false)
 
 
@@ -66,7 +67,6 @@ function clear(){
 }
 
 async function save(){
-    console.log(modelName.value)
     item.value.model.modelName = modelName?.value;
     item.value.model.modelNumber = modelNumber?.value;
     item.value.unitID = selectedUnit.value?.id
@@ -169,6 +169,10 @@ function modelNumberSelected(event){
     <Dialog v-model:visible="showScanner" modal header="Image" :closable=false :style="{ width: '400px' }" :breakpoints="{ '1199px': '75vw', '575px': '90vw' }">
         <InterpretImage @cancelled="showScanner = false" @confirmed="imageScanConfirmed"></InterpretImage>
     </Dialog>
+<!--BARCODE SCANNER-->
+<Dialog :visible="showBarcodeScanner" modal :closable="false">
+    <BarcodeScanner @cancelled="showBarcodeScanner= false" @confirmed="(b) => {item.barcode = b; showBarcodeScanner = false}"></BarcodeScanner>
+</Dialog>
 
 <div class="container">
     <form >
@@ -185,7 +189,7 @@ function modelNumberSelected(event){
                     <label for="serial">Barcode</label>
                     <InputGroup>
                         <InputText id="serial" size="small" v-model="item.barcode"/>
-                        <Button icon="pi pi-barcode"> </Button>
+                        <Button icon="pi pi-barcode" @click="showBarcodeScanner = true"> </Button>
                     </InputGroup>
                 </div>
         </div>   

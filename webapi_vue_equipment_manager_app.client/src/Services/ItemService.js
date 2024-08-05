@@ -3,6 +3,7 @@ import { Item } from "@/Models/Item";
 import { FormatDate } from "./FormatService";
 import { getAccessToken } from "./UserService";
 import { UpdateItemData } from "@/Store/Store";
+import ApiReponse from "@/Models/ApiResponse";
 
 export async function addItem(item, image) {
 
@@ -83,21 +84,21 @@ export async function DeleteItem(itemId){
     let response = await fetch(route + "/" + itemId,{
         method : "DELETE",
         headers:{
-            "Authorization" : getAccessToken()
+            "Authorization" : await getAccessToken()
         }
     })
     if(response.ok){
         UpdateItemData()
-        return {successful : true}
+        return new ApiReponse(true)
     }
     else{
         let err = await response.json()
-        return {successful: false, error: response.statusText, message : err}
+        return new ApiReponse(false,response.statusText, err)
     }
 }
 catch(e)
 {
-    return {successful : false, errors: e.message}
+    return new ApiReponse(false,e.message)
 }
 }
 

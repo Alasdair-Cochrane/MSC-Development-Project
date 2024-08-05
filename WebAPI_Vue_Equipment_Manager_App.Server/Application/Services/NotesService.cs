@@ -11,10 +11,12 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services
     public class NotesService : INotesService
     {
         private readonly INoteRepository _noteRepository;
+        private readonly IUnitRepository _unitRepository;
 
-        public NotesService(INoteRepository noteRepository)
+        public NotesService(INoteRepository noteRepository, IUnitRepository unitRepository)
         {
             _noteRepository = noteRepository;
+            _unitRepository = unitRepository;
         }
 
         public async Task<ItemNoteDTO> AddNoteAsync(ItemNote note)
@@ -31,14 +33,14 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services
                 return list;
             }
             
-            list = await _noteRepository.AssignUserCanDelete(list, userId);
+            list = await _noteRepository.AssignUserCanDeleteAsync(list, userId);
             return list;
         }
         public async Task DeleteNoteAsync(int noteId, int userId)
         {
-            if(await _noteRepository.CheckUserCanDelete(noteId, userId)) 
+            if(await _noteRepository.CheckUserCanDeleteAsync(noteId, userId)) 
             {
-                await _noteRepository.DeleteNote(noteId);
+                await _noteRepository.DeleteNoteAsync(noteId);
             }
             else
             {
@@ -46,11 +48,19 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services
             }
         }
 
+        public async Task<IEnumerable<ItemNoteDTO>> GetNotesBeforeNowAsync(int days, int userId)
+        {
+            var units = await _unitRepository.GetAllRelevantUnitIdsToUserAsync(userId);
+            var notes = await _noteRepository.GetNotesInTimePeriodAsync(days, units);
+            return notes;
+        }
+
     }
     public interface INotesService
     {
         Task<ItemNoteDTO> AddNoteAsync(ItemNote note);
         Task DeleteNoteAsync(int noteId, int userId);
+        Task<IEnumerable<ItemNoteDTO>> GetNotesBeforeNowAsync(int days, int userId);
         Task<IEnumerable<ItemNoteDTO>> GetNotesForItemAsync(int itemId, int userId);
     }
 

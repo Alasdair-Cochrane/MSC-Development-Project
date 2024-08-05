@@ -8,6 +8,7 @@
         public string Description { get; set; } = string.Empty;
         public DateTime Date_Completed { get; set; }
         public required string CategoryName { get; set; }
+        public string? SerialNumber { get; set; }
 
     }
 }

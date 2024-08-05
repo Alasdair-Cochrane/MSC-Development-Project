@@ -8,8 +8,9 @@ const searchValue = ref("")
 const searchProperty = ref("Serial Number")
 const searchFields = getSearchFields()
 const searchTerms = ref([""])
-const searchResults = ref([])
+const searchResults = defineModel([])
 const showScanner = ref(false)
+const showBarcodeScanner = ref(false)
 const emit = defineEmits(['itemSearched', 'itemSelected'])
 const beenClicked = ref()
 
@@ -21,6 +22,16 @@ async function search(){
     let queryProperty = searchFields[searchProperty.value];
     searchResults.value = await QueryItems(queryProperty, searchValue.value)
     emit('itemSearched', searchResults.value[0])
+}
+
+async function SearchBarcode(code){
+    showBarcodeScanner.value = false;
+    searchProperty.value = "Barcode"
+    searchValue.value = code
+    let queryProperty = {Barcode : searchValue.value}
+    searchResults.value = await searchItemsByProperties(queryProperty)
+    emit('itemSearched', searchResults.value[0])
+
 }
 
 async function scanImage(item){
@@ -46,7 +57,7 @@ async function scanImage(item){
         <Select :options="searchTerms" v-model="searchProperty"></Select>
         </div>
         <div class="btns-scan">
-        <Button id="scan" icon="pi pi-barcode"></Button>
+        <Button id="scan" icon="pi pi-barcode" @click="showBarcodeScanner = true"></Button>
         <Button id="imageScan" icon="pi pi-camera" @click="showScanner = true"></Button>
         </div>
         <Button id="search" label="Search" @click="search"></Button>
@@ -64,6 +75,7 @@ async function scanImage(item){
 <Dialog v-model:visible="showScanner" modal header="Scan Label" :closable=false :style="{ width: '400px' }" :breakpoints="{ '1199px': '75vw', '575px': '90vw' }">
         <InterpretImage @cancelled="showScanner = false" @confirmed="scanImage"></InterpretImage>
     </Dialog>
+<Dialog v-model:visible="showBarcodeScanner" modal header="Scan Barcode"><BarcodeScanner @cancelled="showBarcodeScanner=false" @confirmed="SearchBarcode"></BarcodeScanner></Dialog>
 </template>
 <style scoped>
 .container{

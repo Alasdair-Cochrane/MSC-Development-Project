@@ -58,7 +58,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
 
         }
 
-        public async Task<EquipmentModel> UpsertbyModelNumber(EquipmentModel model)
+        public async Task<EquipmentModel> UpsertbyModelNumberAsync(EquipmentModel model)
         {
             //find the existing entry that matches either the given id, modelname or model number
             //if it exists then assign its id to model the update model so that any changes are persisted

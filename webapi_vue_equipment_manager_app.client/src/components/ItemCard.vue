@@ -1,7 +1,10 @@
 <script setup>
 import { Item } from '@/Models/Item';
+import { DeleteItem } from '@/Services/ItemService';
+import { ref } from 'vue';
 
-const emit = defineEmits(['clicked'])
+const deleteLoading = ref(false)
+const emit = defineEmits(['clicked', 'deleted'])
 const props = defineProps({
     showButtons:{
         type : Boolean,
@@ -19,6 +22,15 @@ const cardClikced = () => {
     if(props.clickable){
         emit('clicked', props.item)
     }
+}
+
+const deleteItem = async () =>{
+    deleteLoading.value = true;
+    let result = await DeleteItem(props.item.id)
+    if(result.successfull){
+        emit('deleted', props.item)
+    }
+    deleteLoading.value = false
 }
 </script>
 <template>
@@ -42,7 +54,7 @@ const cardClikced = () => {
         </div>
         <div id="btns" v-if="showButtons">
             <Button rounded icon="pi pi-search" @click="$emit('clicked', item)"></Button>
-            <Button rounded severity="danger" icon="pi pi-trash" @click="$emit('delete')"></Button>
+            <Button rounded severity="danger" icon="pi pi-trash" @click="deleteItem()"></Button>
         </div>
 
     </div>
