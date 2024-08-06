@@ -6,6 +6,7 @@ import { ref } from 'vue';
 const newMaintenance = ref({})
 const item = defineModel()
 const loading = ref(false)
+const maxDate = ref(new Date())
 
 async function saveMaintenance(){
     loading.value = true
@@ -49,7 +50,7 @@ async function saveMaintenance(){
     </div>
     <div class="field">
         <label for="mDate">Date Completed</label>
-        <DatePicker v-model="newMaintenance.date_Completed" style="max-width: 200px;"></DatePicker>
+        <DatePicker v-model="newMaintenance.date_Completed" style="max-width: 200px;" :maxDate="maxDate"></DatePicker>
     </div>
     <div class="field">
         <label for="mProvider">Description</label>

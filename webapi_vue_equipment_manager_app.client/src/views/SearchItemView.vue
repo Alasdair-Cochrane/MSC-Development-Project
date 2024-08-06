@@ -9,9 +9,16 @@ import {ref} from 'vue'
 
 const editMode = ref(false)
 const item = ref()
-const uploadLoading = ref(false)
 const searchExpanded = ref(true)
 const searchResults = ref([])
+const props = defineProps({scanImage:{
+    type:Boolean,
+    default:false
+    } ,
+    scanBarcode:{
+        type:Boolean,
+        default:false,
+    }  })
 
 
 function toggleExtra() {editMode.value = !editMode.value
@@ -45,7 +52,7 @@ function itemDeleted(){
 
 
         <div v-show="searchExpanded">
-            <ItemSearch @item-searched="viewItem" @item-selected="viewItem" v-model="searchResults"></ItemSearch></div>
+            <ItemSearch @item-searched="viewItem" @item-selected="viewItem" v-model="searchResults" :show-barcode-scanner-first="scanBarcode" :show-scanner-first="scanImage"></ItemSearch></div>
     </div>
     <div class="details">
         <div class="display">
@@ -54,8 +61,8 @@ function itemDeleted(){
         
     </div>
     <div v-if="!editMode" class="extra">
-            <MaintenanceDisplay v-model="item" v-if="item"></MaintenanceDisplay>
-            <NotesDisplay v-model="item" v-if="item"></NotesDisplay>
+            <div class="panel"><MaintenanceDisplay v-model="item" v-if="item"></MaintenanceDisplay></div>
+            <div class="panel"><NotesDisplay v-model="item" v-if="item"></NotesDisplay></div>
         </div>
 </div>
 </template>
@@ -68,14 +75,23 @@ function itemDeleted(){
     flex: 1;
     padding: 1rem;
     gap: 10px;
+    background-color: var(--p-surface-50);
+    height: 100%;
 }
 .search{
     max-width: 300px;
     display: flex;
     flex-direction: column;
     gap: 10px;
-
 }
+.panel{
+    border-radius: 10px;
+    background-color: white;
+    border: solid black 1px;
+    box-shadow:  0 2px 2px 0 rgba(28, 25, 25, 0.2);    
+    height: fit-content;
+}
+
 .search .p-button{
     max-height: 25px; 
     width: 100%;
@@ -90,7 +106,10 @@ function itemDeleted(){
 
 }
 .extra{
-
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    gap: 1rem;
 
 }
 

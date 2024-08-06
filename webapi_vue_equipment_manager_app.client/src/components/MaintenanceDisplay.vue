@@ -55,10 +55,7 @@ watch(maintenances, () => {item.value.maintenances = maintenances.value
     flex: 1;
     height: auto;
     flex-direction: column;
-    box-shadow:  0 2px 2px 0 rgba(28, 25, 25, 0.4);
-    border-radius: 10px;
     max-height: 450px;
-    max-width: 360px;
 }
 h3{
     width: fit-content;

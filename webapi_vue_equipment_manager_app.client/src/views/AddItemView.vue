@@ -16,7 +16,7 @@ const deleteItem = (item) =>{
     </div>
     <div class="col-12 sm:col-3 right">
     <div class="added-list">
-        <div v-for="i in addedItemsList" :key="i.id">
+        <div v-for="i in addedItemsList.slice().reverse()" :key="i.id">
             <ItemCard :item=i @deleted="deleteItem(i)"></ItemCard>
         </div>
         
@@ -35,6 +35,7 @@ const deleteItem = (item) =>{
         display: flex;
         flex-wrap: wrap;
         min-height: 100vh;
+        background-color: var(--p-surface-50);
     }
     .right{
         flex: 1;

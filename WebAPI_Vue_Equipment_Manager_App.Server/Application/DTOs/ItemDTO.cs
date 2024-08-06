@@ -47,6 +47,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs
         public required int StatusId { get; set; }
         public required string StatusName { get; set; }
         public required int ItemQuantity { get; set; }
+        public int Order {  get; set; }
     }
 
 }

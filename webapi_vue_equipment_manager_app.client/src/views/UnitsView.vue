@@ -78,6 +78,8 @@ const chartShown = (i) =>{
     flex-wrap: wrap;
     gap: 2rem;
     justify-content: center;
+    align-items: center;
+    background-color: var(--p-surface-50);
 }
 .header-btns{
     display: flex;
@@ -89,7 +91,13 @@ const chartShown = (i) =>{
     min-height: 50%;
     flex: 1;
     min-width: 600px;
-    max-width: 80%;
+    height: fit-content;
+    padding: 1rem;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow:  0 2px 2px 0 rgba(28, 25, 25, 0.2);
+
+    
 }
 @media(max-width:768px){
     #org-table{

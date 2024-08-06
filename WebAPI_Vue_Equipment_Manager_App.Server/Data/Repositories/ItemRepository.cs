@@ -190,7 +190,9 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
                     ItemQuantity = y.Count(),
                     StatusId = y.Key,
                     StatusName = y.First().StatusCategory.Name,
+                    Order = y.First().StatusCategory.Order,
                 }).
+                OrderBy(x => x.Order).
                 ToListAsync();
             
             return categories;

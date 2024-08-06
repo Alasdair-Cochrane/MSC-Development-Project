@@ -29,6 +29,20 @@ const router = createRouter({
 
         },
         {
+            path: '/search/scanImage',
+            name: 'searchItem.scanImage',
+            component: SearchItemView,
+            props: {scanImage:true}
+
+        },
+        {
+            path: '/search/scanBarcode',
+            name: 'searchItem.scanBarcode',
+            component: SearchItemView,
+            props: {barcodeScan:true}
+
+        },
+        {
             path: '/manage',
             name: 'manageItems',
             component: ManageItemsView

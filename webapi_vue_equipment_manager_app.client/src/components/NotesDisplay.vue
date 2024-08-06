@@ -68,9 +68,7 @@ h3{
     font-weight: bold;
 }
 .container{
-    box-shadow:  0 2px 2px 0 rgba(28, 25, 25, 0.4);
     padding: 10px;
-    border-radius: 10px;
     flex: 1;
 }
 .text-display{

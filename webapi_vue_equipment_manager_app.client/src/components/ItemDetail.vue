@@ -5,6 +5,7 @@ import FileDisplay from './FileDisplay.vue';
 import { UploadItemFile } from '@/Services/FileService';
 import { store } from '@/Store/Store';
 import { resolveTypeElements } from 'vue/compiler-sfc';
+import { FormatDate } from '@/Services/FormatService';
 
 const emit = defineEmits(['editTrue', 'update', 'deleted'])
 const selectedItem = defineModel('selectedItem')
@@ -224,7 +225,7 @@ async function setImage(image){
         <div class ="field-row">
         <div class="field">
             <label class="fieldName">Date of Reciept</label>
-            <label class="fieldValue" v-show="!editMode">{{ selectedItem.date_of_reciept }}</label>
+            <label class="fieldValue" v-show="!editMode">{{ FormatDate(selectedItem.date_of_reciept) }}</label>
             <DatePicker  v-if="editMode" showIcon icon-display="input" v-model="changedItem.date_of_reciept" date-format="dd/mm/yy"/>
 
         </div>
@@ -238,7 +239,7 @@ async function setImage(image){
         <div class ="field-row">
         <div class="field">
             <label class="fieldName">Date of Commissioning</label>
-            <label class="fieldValue" v-show="!editMode">{{ selectedItem.date_of_commissioning }}</label>
+            <label class="fieldValue" v-show="!editMode">{{ FormatDate(selectedItem.date_of_commissioning) }}</label>
             <DatePicker  v-if="editMode" showIcon icon-display="input" v-model="changedItem.date_of_commissioning" date-format="dd/mm/yy"/>
         </div>
         <div class="field"></div>
@@ -260,7 +261,9 @@ async function setImage(image){
         <div class="image-upload" v-if="!editMode">
             <Button label="image" icon="pi pi-upload" @click="showImageCapture = true"></Button>
         </div>
-        <FileDisplay header="Documents" v-model="selectedItem.documents"  @upload="uploadFile" :upload-loading="uploadLoading" v-if="!editMode"></FileDisplay>
+        <div class="panel">
+            <FileDisplay header="Documents" v-model="selectedItem.documents"  @upload="uploadFile" :upload-loading="uploadLoading" v-if="!editMode"></FileDisplay>
+        </div>
     </div>
     <Dialog modal v-model:visible="showImageCapture"><CaptureImage @cancelled="showImageCapture = false" @imageConfirmed="setImage"></CaptureImage></Dialog>
 </div>
@@ -287,6 +290,13 @@ async function setImage(image){
     min-width: 300px;
     max-width: 550px;
     flex: 1;
+    gap: 10px;
+}
+.panel{
+    background-color: white;
+    box-shadow: 0 2px 2px 0 rgba(28, 25, 25, 0.2);
+    border: black solid 1px;
+    border-radius: 10px;
 }
 
 #image{
@@ -296,7 +306,10 @@ async function setImage(image){
     width: 100%;
     height: fit-content;        
     box-shadow: 0 2px 2px 0 rgba(28, 25, 25, 0.2);
-    padding: 2px;
+    background-color: white;
+    border: 1px solid black;
+    border-radius: 10px;
+    padding: 5px;
     
     }
 
@@ -312,10 +325,12 @@ async function setImage(image){
 display: flex;
 flex-direction: column;
 box-shadow: 0 2px 2px 0 rgba(28, 25, 25, 0.2);
+background-color: white;
+border: solid black 1px;
 border-radius: 10px;
 width: 100%;
 max-width: 550px;
-padding: 1rem;
+padding: 10px;
 
 }
 .field-row{
@@ -361,11 +376,7 @@ padding: 1rem;
     max-width: 500px;
     width: fit-content;
 }
-@media(width > 340px){
-    .field-row{
-    }
-            
-}
+
 @media(max-width:760px){
     .field-row{
         gap: 0;

@@ -136,11 +136,11 @@ const modelNumber = ref("")
 
 async function searchModelName(event){
     if(store.Models.length === 0 || !store.Models) {await UpdateModels()}
-    searchedModels.value = store.Models.filter(x => x.modelName.toLowerCase().includes(event.query.toLowerCase()))
+    searchedModels.value = store.Models.filter(x => x.modelName.toLowerCase().startsWith(event.query.toLowerCase()))
 }
 async function searchModelNumber(event){
     if(store.Models.length === 0 || !store.Models) {await UpdateModels()}
-    searchedModels.value = store.Models.filter(x => x.modelNumber.toLowerCase().includes(event.query.toLowerCase()))
+    searchedModels.value = store.Models.filter(x => x.modelNumber.toLowerCase().startsWith(event.query.toLowerCase()))
 }
 
 const searchedCategories = ref()

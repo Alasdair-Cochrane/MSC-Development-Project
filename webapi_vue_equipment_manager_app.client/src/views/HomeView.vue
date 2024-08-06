@@ -19,42 +19,9 @@ const showExport = ref(false);
 
 onMounted(async () => {
     mobileScreen.value = !IsMobile();     
-    chartData.value = setChartData();
-    chartOptions.value = setChartOptions();
     dataLoading.value = false;
 });
 
-
-
-
-//https://primevue.org/chart/
-const setChartData = () => {
-    const documentStyle = getComputedStyle(document.body);
-
-    return {
-        labels: store.StatusQuantities.map(x => x.statusName),
-        datasets: [
-            {
-                data: store.StatusQuantities.map(x => x.itemQuantity),
-                //backgroundColor: [documentStyle.getPropertyValue('--p-cyan-500'), documentStyle.getPropertyValue('--p-orange-500'), documentStyle.getPropertyValue('--p-gray-500')],
-                //hoverBackgroundColor: [documentStyle.getPropertyValue('--p-cyan-400'), documentStyle.getPropertyValue('--p-orange-400'), documentStyle.getPropertyValue('--p-gray-400'), documentStyle.getPropertyValue('--p-gray-400')]
-            }
-        ]
-    };
-};
-
-const setChartOptions = () => {
-
-    return {
-        plugins: {
-            legend: {
-                display: false
-            }
-        },
-        responsive: true,
-        maintainAspectRatio: false,
-    };
-};
 
 const showStatusQuantityItems= async (data) => {
     let result = await QueryItems("statusCategoryId", data.statusId)
@@ -64,45 +31,47 @@ const showStatusQuantityItems= async (data) => {
 </script>
 
 <template>
-<div class="page grid-nogutter">
+<div class="page">
         <!-- Left Column  -->      
-    <div class="col-12 md:col-4 c-main ">
-        <!-- Top Buttons -->   
-
-        <div class="btn-group col-12">
+        <div class="btn-group ">
             <div class="btn-row">
                 <div class="btn-container">
+                    <RouterLink to="/add">
                     <div class="btn-box">
                         <label class="btn-label">Add Item</label> 
                         <i class="pi pi-plus"/>            
                     </div>
+                </RouterLink>
                 </div>
                 <div class="btn-container">
+                    <RouterLink to="/search">
                     <div class="btn-box">
                         <label class="btn-label">Search</label> 
                         <i class="pi pi-search"/>            
                     </div>
+                    </RouterLink>
                 </div>
             </div>
+
             <div class="btn-row">
                 <div class="btn-container">
+                    <RouterLink to="/manage">
                     <div class="btn-box">
                         <label class="btn-label">Manage</label> 
                         <i class="pi pi-table"/>            
                     </div>
+                    </RouterLink>
                 </div>
                 <div class="btn-container">
+                    <RouterLink to="search/scanImage">
                     <div class="btn-box">
-                        <label class="btn-label">Scan</label> 
+                        <label class="btn-label">Scan Image</label> 
                         <i class="pi pi-camera"/>            
                     </div>
-                </div>
-                
+                    </RouterLink>
+                </div>                
             </div>
-        </div>
 
-         <!-- Bottom Buttons -->
-        <div class="btn-group col-12">
             <div class="btn-row">
                 <div class="btn-container">
                     <div class="btn-box" @click="showExport= true">
@@ -111,21 +80,18 @@ const showStatusQuantityItems= async (data) => {
                     </div>
                 </div>
                 <div class="btn-container">
+                    <RouterLink to="/units">
                     <div class="btn-box">
                         <label class="btn-label">Units</label> 
                         <i class="pi pi-building"/>            
                     </div>
+                    </RouterLink>
                 </div>
             </div>
-        </div>
-
  </div>
     
     <!-- Right Column -->
-    <div class="col-12 md:col-8 c-main">
-        <div class="right-panels">
-            <div class="panel data grid-nogutter"> 
-                    <div class="left col-12 md:col-6">
+            <div class="data "> 
                     <div class="data-table">
                     <DataTable class="" :value="store.StatusQuantities" size="small" v-if="!dataLoading" style="width: 300px;">
                         <Column field="statusName" header="Status" style="width: 150px;"></Column>
@@ -152,19 +118,7 @@ const showStatusQuantityItems= async (data) => {
                 <div class="data-table">
                     <MaintenanceActivityDisplay></MaintenanceActivityDisplay>
                 </div>
-                    
-                </div>
-                    <div class="right col-12 md:col-6" v-if="mobileScreen">
-                        <!-- <Chart type="doughnut" :data="chartData" :options="chartOptions"></Chart> -->
-                        <!-- <Chart type="doughnut" :data="chartData" :options="chartOptions"></Chart> -->
-                    </div>   
             </div>
-            <div class="panel activity">
-     
-            </div>
-        </div>
-
-    </div>
    
    <div>
     <Dialog v-model:visible="showExport">
@@ -181,71 +135,30 @@ const showStatusQuantityItems= async (data) => {
     display: flex;
     flex-wrap: wrap;
     height: 100%;
+    background-color: var(--p-surface-50);
 }
-.right-panels{
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    flex-wrap: wrap;
-    height: 100%;
-    border-radius: 40%;
-    margin-inline: 1rem;    
+a{
+    text-decoration: none;
+    color: black;
 }
 
-@media(max-width:768px){
-    .right-panels{
-            height: auto;
-            margin-left: 2.5rem;
-        }
-    .right{
-        flex-direction: row;
-            max-height: 300px;
-    }
-    .p-chart{
-    display: none
-    }
+.data{
+    flex: 1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding: 1rem;
 }
 
 .data-table{
     box-shadow:  0 2px 2px 0 rgba(28, 25, 25, 0.2);
     width: fit-content;
+    height: fit-content;
     border-radius: 10px;
     padding: 10px;
-}
-
-
-.panel{
-    display: flex;
-    flex-wrap: wrap;
-    flex: 1;
-    max-height: 50%;
-    margin-block: 0.5rem;
-}
-
-.right{
-    flex: 1;
-        height: auto; 
-        display: flex;
-        flex-direction: column;
-        justify-content: center; 
-        gap: 1rem;  
-}
-.left{
-        padding: 1rem;
-        flex-direction: column;
-        display: flex;
-        justify-content: space-between;
-} 
-
-.p-chart{
-        height: 40%;
-    }
-
-.c-main{
-    height: auto;
-    display: flex;
-    flex-wrap: wrap;
-    align-content: flex-start;
+    min-height: 300px;
+    border: black solid 1px;
+    background-color: white;
 }
 
 .btn-container{
@@ -261,44 +174,42 @@ const showStatusQuantityItems= async (data) => {
     display: flex; 
     flex-direction: column;
     flex: 1;
-    min-width: 96px;
-    max-width: 96px;
+    min-width: 100px;
+    max-width: 100px;
     aspect-ratio: 1/1;
-    justify-content: flex-end;
     align-items: center;
-    margin-top: 1.5rem;
-
-}
-
-.btn-box :hover label{
-    background-color: rgba(0, 0, 0, 0);
-        top: -2.6rem;
-        transition: 0.2s ease-out;
-}
-.btn-box label{
-        position: relative;
-        color:black;
-        top:-1.9rem;
-        margin-bottom: -2.5rem;
-        font-size:large;
-        background-color: var(--p-surface-0);
+    border-radius: 10px;
+    box-shadow:  0 2px 2px 0 rgba(28, 25, 25, 0.2);
+    background-color: white;
 }
 
 .btn-box i{
-    height: 100%;
     z-index: 98;
     justify-self: center;
     align-self: center;
     align-content: center;
-    font-size: 4.5rem;
+    font-size: 4rem;
     color: black;
 }
 
+.btn-container :hover{
+    background-color: var(--p-primary-400);
+    color: white;
+}
+.btn-container :hover i{
+    color: white;
+}
+
+label{
+    font-weight: bold;
+}
+
 .btn-group{
-    display: flex;
+        display: flex;
         height: fit-content;  
         flex-direction: column;
-        flex-wrap: wrap;    
+        padding: 1rem;
+        gap: 1rem;
     }
 
 .btn-row{

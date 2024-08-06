@@ -1,21 +1,29 @@
 <script setup>
 import {onMounted, ref} from 'vue'
-import { Item, getSearchFields } from '@/Models/Item';
-import { QueryItems, GetItem, searchItemsByProperties } from '@/Services/ItemService';
+import {  getSearchFields } from '@/Models/Item';
+import { QueryItems, searchItemsByProperties } from '@/Services/ItemService';
 import ItemCard from './ItemCard.vue';
 
 const searchValue = ref("")
 const searchProperty = ref("Serial Number")
 const searchFields = getSearchFields()
 const searchTerms = ref([""])
-const searchResults = defineModel([])
+const searchResults = defineModel()
 const showScanner = ref(false)
 const showBarcodeScanner = ref(false)
 const emit = defineEmits(['itemSearched', 'itemSelected'])
 const beenClicked = ref()
 
+const props = defineProps({showScannerFirst:{type:Boolean, default:false}, showBarcodeScannerFirst:{type:Boolean, default:false}})
 
-onMounted(() => searchTerms.value = Object.keys(searchFields))
+
+onMounted(() => {
+    searchTerms.value = Object.keys(searchFields);
+    showScanner.value = props.showScannerFirst
+    showBarcodeScanner.value = props.showBarcodeScannerFirst
+    console.log("params: " + props.showScannerFirst)
+
+})
 
 async function search(){
 

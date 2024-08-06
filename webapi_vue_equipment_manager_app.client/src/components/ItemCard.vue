@@ -70,7 +70,10 @@ const deleteItem = async () =>{
     border-radius: 10px;
     display: flex;
     padding: 3px;
-    border: solid var(--p-primary-600) 2px;
+    border: solid black 2px;
+    box-shadow:  0 2px 2px 0 rgba(28, 25, 25, 0.2);
+    overflow: hidden;
+
 }
 img{
     border-radius: 10px;
