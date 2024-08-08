@@ -32,10 +32,10 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services
 
         public async Task<IEnumerable<UserDetailsDTO>> GetAllPublicUsers(int userId)
         {
-            //get all the root level units that the user belongs to
-            var rootUnits = await _assignmentRepository.GetAssignedRootUnitIds(userId);
+            //get all the units that the user belongs to
+            var rootUnits = await _unitRepository.GetAllRelevantUnitIdsToUserAsync(userId,false);
 
-            //get all the users who are assigned to those root units
+            //get all the users who are assigned to those units
             HashSet<User> users = new HashSet<User>();
             foreach(var unit in rootUnits)
             {

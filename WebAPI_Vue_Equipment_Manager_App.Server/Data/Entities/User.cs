@@ -17,9 +17,9 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities
         }
         public override bool Equals(object? obj)
         {
-            var otherUnit = obj as Unit;
-            if (otherUnit == null) return false;
-            return this.Id == otherUnit.Id;
+            var otherUser= obj as User;
+            if (otherUser == null) return false;
+            return this.Id == otherUser.Id;
 
         }
     }
