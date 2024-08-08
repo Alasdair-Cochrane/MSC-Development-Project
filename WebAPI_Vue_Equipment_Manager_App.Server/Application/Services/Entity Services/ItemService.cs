@@ -176,7 +176,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Se
         //https://stackoverflow.com/questions/52741533/how-to-export-csv-file-from-asp-net-core
         public async Task<MemoryStream> GetExport(int userId, IEnumerable<int>? unitIds = null)
         {
-            var relevantUnits = await _unitRepository.GetAllRelevantUnitsToUserAsync(userId);
+            var relevantUnits = await _unitRepository.GetAllRelevantUnitsToUserAsync(userId, true);
 
             IEnumerable<int> relevantUnitIds = relevantUnits.Select(x => x.Id);
 
@@ -244,6 +244,14 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Se
             return result;
         }
 
+        public async Task<IEnumerable<ItemDTO>> GetLatestCreatedItems(int daysBefore, int userId)
+        {
+            var units = await _unitRepository.GetAllRelevantUnitIdsToUserAsync(userId,true);
+            var items = await _ItemRepository.GetLatestCreatedItemsAsync(daysBefore, units);
+            return items.Select(x => x.ToDTO());
+
+        }
+
 
     }
     
@@ -267,5 +275,6 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Se
         Task<IEnumerable<string>> GetStatusCategoryNames();
         Task<IEnumerable<StatusQuantity>> GetQuantityByStatusAsync(int userId);
         Task<IEnumerable<Item>> AddManyAsync(IEnumerable<ItemDTO> items);
+        Task<IEnumerable<ItemDTO>> GetLatestCreatedItems(int daysBefore, int userId);
     }
 }

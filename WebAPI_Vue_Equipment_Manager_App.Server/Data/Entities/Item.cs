@@ -26,6 +26,8 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities
         public decimal? Purchase_Price { get; set; }
         public int? Purchase_Order {  get; set; }
 
+        public DateTime DateCreated { get; set; } = DateTime.UtcNow;
+
         //Navigation Properties
         public EquipmentModel EquipmentModel { get; set; } = null!;
         public  Unit Unit { get; set; } = null!;

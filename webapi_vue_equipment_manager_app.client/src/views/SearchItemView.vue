@@ -5,7 +5,7 @@ import MaintenanceDisplay from '@/components/MaintenanceDisplay.vue';
 import NotesDisplay from '@/components/NotesDisplay.vue';
 
 
-import {ref} from 'vue'
+import {onMounted, ref} from 'vue'
 
 const editMode = ref(false)
 const item = ref()
@@ -24,12 +24,21 @@ const props = defineProps({scanImage:{
 function toggleExtra() {editMode.value = !editMode.value
 }
 
-function viewItem(newItem){
-    if(newItem)
+function itemsSearched(){
+    if(searchResults.value.length)
     {
-    item.value = newItem
+    item.value = searchResults.value[0]
     }
 }
+
+
+function itemSelected(selectedItem){
+    item.value = selectedItem
+}
+
+
+
+
 function itemDeleted(){
     searchResults.value = searchResults.value.filter(x => x !== item.value )
     if(searchResults.value.length){
@@ -51,8 +60,8 @@ function itemDeleted(){
         <Button icon="pi pi-search" @click="searchExpanded = true"   v-show="!searchExpanded && item"></Button>
 
 
-        <div v-show="searchExpanded">
-            <ItemSearch @item-searched="viewItem" @item-selected="viewItem" v-model="searchResults" :show-barcode-scanner-first="scanBarcode" :show-scanner-first="scanImage"></ItemSearch></div>
+        <div v-show="searchExpanded" class="search-display">
+            <ItemSearch @item-searched="itemsSearched()" @item-selected="itemSelected" v-model="searchResults" :show-barcode-scanner-first="scanBarcode" :show-scanner-first="scanImage"></ItemSearch></div>
     </div>
     <div class="details">
         <div class="display">
@@ -76,6 +85,7 @@ function itemDeleted(){
     padding: 1rem;
     gap: 10px;
     background-color: var(--p-surface-50);
+    min-height: 100vh;
     height: 100%;
 }
 .search{
@@ -90,12 +100,16 @@ function itemDeleted(){
     border: solid black 1px;
     box-shadow:  0 2px 2px 0 rgba(28, 25, 25, 0.2);    
     height: fit-content;
+    max-width: 350px;
 }
 
 .search .p-button{
     max-height: 25px; 
     width: 100%;
     min-width: 40px;
+}
+.search-display{
+    height: auto;
 }
 .details{
     display: flex;

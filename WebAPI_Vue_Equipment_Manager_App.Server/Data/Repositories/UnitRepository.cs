@@ -75,6 +75,15 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
             return children;
         }
 
+        public async Task<IEnumerable<Unit>> GetPublicChildrenOfUnit(int parentId)
+        {
+            var query =
+               "With Recursive children As (Select \"Id\", \"Name\", \"Building\", \"Room\", \"Address\", \"ParentId\" , \"IsPublic\" From \"Units\"   Where \"Id\" = {0} Union Select y.\"Id\", y.\"Name\", y.\"Building\", y.\"Room\", y.\"Address\", y.\"ParentId\" , y.\"IsPublic\" From \"Units\"  y Inner Join children c On c.\"Id\" = y.\"ParentId\") Select * From children Where \"IsPublic\" = true " ;
+
+            var children = await _context.Units.FromSqlRaw(query, parentId).ToListAsync();
+            return children;
+        }
+
         public async Task<IEnumerable<Unit>> GetParentsofUnit(int childId)
         {
             var query =
@@ -116,29 +125,63 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
         }
 
         //Gets all the units within the organisation that the user has been direcly assigned to and their children (If admin or private role)
-        public async Task<IEnumerable<Unit>> GetAllRelevantUnitsToUserAsync(int userId)
+        public async Task<IEnumerable<Unit>> GetAllRelevantUnitsToUserAsync(int userId, bool authorisedOnly = false)
         {
-            List<UserAssignment> assignedUnits = await _context.Assignments.
+            List<UserAssignment> assignedUnits;
+            if (authorisedOnly)
+            {
+                assignedUnits = await _context.Assignments.
                  AsNoTracking().
                  Where(x => x.UserId == userId).
+                 Where(x => x.RoleId == 2 || x.RoleId == 1).
                  Include(x => x.Unit).
                 ToListAsync();
-
+            }
+            else
+            {
+                assignedUnits = await _context.Assignments.
+                AsNoTracking().
+                Where(x => x.UserId == userId).
+                Include(x => x.Unit).
+               ToListAsync();
+            }
+           
+            //where the user is admin or private user in parent unit - get their children
             HashSet<Unit> units = new HashSet<Unit>(assignedUnits.Select(x => x.Unit).ToList());
 
-            foreach (var unit in assignedUnits.Where(x => x.RoleId == 1 || x.RoleId == 2).Select(x => x.Unit).ToList())
+            foreach (var assignedUnit in assignedUnits.Where(x => x.RoleId == 1 || x.RoleId == 2).Select(x => x.Unit).ToList())
             {
-                units.UnionWith(await GetChildrenofUnit(unit.Id));
+                units.UnionWith(await GetChildrenofUnit(assignedUnit.Id));
             }
+            //where the user is assigned as public user but the unit is public - get the public children
+            foreach(var assignedUnit in assignedUnits.Where(x => x.RoleId == 3 && x.Unit.IsPublic == true))
+            {
+                units.UnionWith(await GetPublicChildrenOfUnit(assignedUnit.Unit.Id));
+            }
+
             return units;
+
         }
-        public async Task<IEnumerable<int>> GetAllRelevantUnitIdsToUserAsync(int userId)
+        public async Task<IEnumerable<int>> GetAllRelevantUnitIdsToUserAsync(int userId, bool authorisedOnly = false)
         {
-            List<UserAssignment> assignedUnits = await _context.Assignments.
+            List<UserAssignment> assignedUnits;
+            if (authorisedOnly)
+            {
+                assignedUnits = await _context.Assignments.
                  AsNoTracking().
                  Where(x => x.UserId == userId).
+                 Where(x => x.RoleId == 2 || x.RoleId == 1).
                  Include(x => x.Unit).
                 ToListAsync();
+            }
+            else
+            {
+                assignedUnits = await _context.Assignments.
+                AsNoTracking().
+                Where(x => x.UserId == userId).
+                Include(x => x.Unit).
+               ToListAsync();
+            }
 
             HashSet<int> units = new HashSet<int>(assignedUnits.Select(x => x.UnitId).ToList());
 

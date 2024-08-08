@@ -91,9 +91,9 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Se
                 return;
         }
 
-        public async Task<IEnumerable<UnitDTO>> GetAllAsync(int userId)
+        public async Task<IEnumerable<UnitDTO>> GetAllAsync(int userId, bool authorised)
         {
-            var units = await _unitRepository.GetAllRelevantUnitsToUserAsync(userId);
+            var units = await _unitRepository.GetAllRelevantUnitsToUserAsync(userId,authorised);
             return units.Select(x => x.ToDTO());
         }
 
@@ -158,7 +158,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Se
     {
         Task<UnitDTO?> AddAsync(UnitDTO newEntry, int userId);
         Task DeleteAsync(int id, int userId);
-        Task<IEnumerable<UnitDTO>> GetAllAsync(int userId);
+        Task<IEnumerable<UnitDTO>> GetAllAsync(int userId, bool authorised);
         Task<UnitDTO?> GetAsync(int id);
         Task<IEnumerable<Unit>> GetChildrenById(int id);
         Task<IEnumerable<Unit>> GetParentsById(int id);

@@ -62,7 +62,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services
 
         public async Task<IEnumerable<string>> GetCategoriesAsync(int userId)
         {
-            var units = await _unitRepository.GetAllRelevantUnitsToUserAsync(userId);
+            var units = await _unitRepository.GetAllRelevantUnitsToUserAsync(userId, false);
             var uIds = units.Select(u => u.Id);
 
             var userCategories = await _repository.GetUserCategoriesAsync(uIds);

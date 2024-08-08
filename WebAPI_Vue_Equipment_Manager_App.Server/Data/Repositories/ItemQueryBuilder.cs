@@ -23,7 +23,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
         public async Task<IEnumerable<Item>?> QueryItems(ItemQuery queryObject, int userId)
         {
             //get all the unit ids for which the user is assigned as private or admin (or their child units)
-            var units = await _unitRepository.GetAllRelevantUnitsToUserAsync(userId);
+            var units = await _unitRepository.GetAllRelevantUnitsToUserAsync(userId, true);
             var unitIds = units.Select(x => x.Id).ToList(); 
 
             IQueryable<Item> query = _context.Items.AsQueryable();
@@ -34,6 +34,23 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
             if (!String.IsNullOrEmpty(queryObject.SerialNumber))
             {
                 query = query.Where(x => EF.Functions.ILike(x.SerialNumber, $"%{queryObject.SerialNumber}%"));
+                List<Item> r = await query.
+                Include(x => x.Unit).
+                Include(x => x.EquipmentModel).
+                ThenInclude(x => x.Category).
+                Include(x => x.Notes).
+                Include(x => x.StatusCategory).
+                Include(x => x.Documents).
+                ThenInclude(x => x.Document).
+                Include(x => x.Maintenances).
+                ThenInclude(x => x.Documents).
+                Include(x => x.Maintenances).
+                ThenInclude(x => x.Category).
+                Include(x => x.Notes).
+                AsSplitQuery().
+                AsNoTracking().
+                ToListAsync();
+                return r;
             }
 
             if (!String.IsNullOrEmpty(queryObject.LocalName))
@@ -45,6 +62,23 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
             if (!String.IsNullOrEmpty(queryObject.Barcode))
             {
                 query = query.Where(x => EF.Functions.ILike(x.Barcode, $"%{queryObject.Barcode}%"));
+                List<Item> r = await query.
+               Include(x => x.Unit).
+               Include(x => x.EquipmentModel).
+               ThenInclude(x => x.Category).
+               Include(x => x.Notes).
+               Include(x => x.StatusCategory).
+               Include(x => x.Documents).
+               ThenInclude(x => x.Document).
+               Include(x => x.Maintenances).
+               ThenInclude(x => x.Documents).
+               Include(x => x.Maintenances).
+               ThenInclude(x => x.Category).
+               Include(x => x.Notes).
+               AsSplitQuery().
+               AsNoTracking().
+               ToListAsync();
+                return r;
             }
             if(queryObject.StatusCategoryId != null)
             {

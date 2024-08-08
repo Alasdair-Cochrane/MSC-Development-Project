@@ -13,6 +13,8 @@ import ItemTableFull from '@/components/ItemTableFull.vue'
 .container{
     padding: 1rem;
     height: auto;
+    min-height: 100vh;
+    height: 100%;
 }
 
 </style>

@@ -9,6 +9,7 @@ const daysOptionsLabel = (["1 day","1 week", "2 weeks", "1 month"])
 const daysOptions=([1,7,14,31])
 const selectedOption = ref("1 week")
 const selectedMaintenance = ref()
+const loading = ref(true)
 
 const showMaintenance = ref(false)
 
@@ -20,11 +21,13 @@ const displayMaintenance = (data) =>{
 onMounted(async () => getNotes())
 
 const getNotes = async () => {
+
     if(selectedOption.value){
         let i =  daysOptionsLabel.indexOf(selectedOption.value)
         daysBefore.value = daysOptions[i]
     }
     maintenances.value = await GetFromAPI(`api/items/maintenance?daysBeforeNow=${daysBefore.value}`,"Could not retrieve recent notes")
+    loading.value = false
 }
 
 
@@ -34,9 +37,9 @@ const getNotes = async () => {
 <div class="wrapper">
     <div class="header">
         <h3>Recent Maintenance</h3>
-        <Select v-model="selectedOption" :options="daysOptionsLabel" @change="getNotes()"></Select>
+        <Select v-model="selectedOption" :options="daysOptionsLabel" @change="getNotes()" ></Select>
     </div>
-                    <DataTable class="" :value="maintenances" size="small" scrollable scroll-height="300px" >
+                    <DataTable class="" :value="maintenances" size="small" scrollable scroll-height="300px" :loading="loading">
                         <Column field="categoryName" header="Type" style="width: 80px;"></Column>
                         <Column field="serialNumber" header="Item s/n" style="width: 80px;"></Column>
                         <Column field="date_Completed" header="Date" >

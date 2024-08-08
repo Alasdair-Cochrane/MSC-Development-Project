@@ -22,7 +22,6 @@ function selectFile(event){
 
 function newFileSelected(event){     
     selectedNewFile.value = event.target.files[0]
-    console.log(selectedNewFile.value)
 }
 onMounted(() => {
     document.addEventListener('click', deselectFile)
@@ -33,19 +32,15 @@ onBeforeUnmount(() => {
 
 const deleteFile = async  () => {
     deleteLoading.value = true
-    console.log("happened")
-    console.log(fileSelected.value)
     let result = await DeleteFile(fileSelected.value.document)
     if(result.successfull){
         files.value = files.value.filter(x => x !== fileSelected.value)
     }
-    console.log(result)
     deleteLoading.value = false
 
 }
 const downloadFile = async (file) =>{
     loading.value = true
-    console.log(file)
     await Download(file.document)
     loading.value = false;
 }
@@ -71,7 +66,7 @@ const uploadFile = async () => {
             class="file-item" 
             :class="{selected : file === fileSelected && elementSelected}">
             <span @click="selectFile($event); fileSelected = file" style="flex: 1;">{{ file.document.fileName }}</span>
-            <Button  icon="pi pi-download" :loading="loading" @click="downloadFile(file)" class="download-bttn"></Button>
+            <Button  icon="pi pi-download" :loading="loading" @click="downloadFile(file)" class="download-bttn" style="max-height: 30px;"></Button>
         </li>
     </ul>    
 <div id="footer">
@@ -139,6 +134,7 @@ li{
     max-height: 35px;
     max-width: 250px;
 }
+
 #header{
     display: flex;
     justify-content: space-between;

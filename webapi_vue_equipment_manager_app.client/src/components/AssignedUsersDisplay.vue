@@ -26,11 +26,9 @@ const props = defineProps({
 const newUser = (u) => users.value.push(u)
 
 const editRole = async () => {
-    console.log(toBeEdited.value)
     operationLoading.value = true
     if(toBeEdited.value.roleId === selectedRole.value.id){
         operationLoading.value = false
-        console.log("Role unchanged")
         return;
     }
     var editedAssignment = {unitId: toBeEdited.value.unitId, 
@@ -47,7 +45,7 @@ const editRole = async () => {
             edited.roleName = result.updated.roleName
         }
         else{
-            console.log("Could not find existing user assignment")
+            console.warn("Could not find existing user assignment")
         }
         succesMessage.value = "Update Successfull"
     }
@@ -82,7 +80,7 @@ const deleteRole = async () => {
     }
     else{
         errorOccured.value = true
-        console.log(result.message)
+        console.warn(result.message)
         errorMessage.value = result.message ?? result.errors
     }
     operationLoading.value = false

@@ -4,7 +4,6 @@ import { getAccessToken } from "./UserService"
 const route = "api/units"
 
 export async function addUnit(unit){
-    console.log(JSON.stringify(unit))
     try{
         const response = await fetch(route, {
             method: "POST",
@@ -20,12 +19,12 @@ export async function addUnit(unit){
             return {successful: true}
         }
         else{
-            console.log(response)
+            console.warn(response)
             return {successful: false, error: response.status, message: response.statusText}
         }
     }
     catch(ex){
-        console.log(ex.message)
+        console.warn(ex.message)
         return {successful: false, error: ex.message}
     }
 
@@ -38,15 +37,14 @@ export async function getPublicUnits(){
         )
         if(response.ok){
             let units = await response.json()
-            console.log(units)
             return units
         }
-        console.log("No public organisations found " + response.statusText)
-        console.log(response)
+        console.warn("No public organisations found " + response.statusText)
+        console.warn(response)
         return []
     }
     catch(ex){
-        console.log("No public organisations found " + ex.message)
+        console.warn("No public organisations found " + ex.message)
         return []
     }
 }
@@ -87,11 +85,11 @@ export async function GetOrgStructure(){
         return tree;
     }
     else{
-        console.log("Failed to retrieve org structure. Response: " + response.statusText);
-        console.log(await response.json())
+        console.warn("Failed to retrieve org structure. Response: " + response.statusText);
+        console.warn(await response.json())
     }}
     catch(ex){
-        console.log(ex.message)
+        console.warn(ex.message)
     }
 }
 
@@ -112,19 +110,18 @@ export async function EditUnit(unit){
             return {successful : true, unit: edited}
         }
         else{
-            console.log(response)
+            console.warn(response)
             return {successful : false, errors: response.json()}
         }
     }
     catch(ex){
-        console.log(ex)
+        console.warn(ex)
         return {successful : false, errors : ex.message}
     }
 }
 
 export async function DeleteUnit(unit){
     try{
-        console.log(route + `/${unit.id}`)
     let response = await fetch(route + `/${unit.id}`,{
         method:"DELETE",
         headers : {

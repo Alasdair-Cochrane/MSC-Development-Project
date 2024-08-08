@@ -8,24 +8,28 @@ import { QueryItems } from '@/Services/ItemService';
 import { FormatDate } from '@/Services/FormatService';
 import NotesActivityDisplay from '@/components/NotesActivityDisplay.vue';
 import MaintenanceActivityDisplay from '@/components/MaintenanceActivityDisplay.vue';
+import NewItemActivity from '@/components/NewItemActivity.vue';
+import ItemsTableBasic from '@/components/ItemsTableBasic.vue';
 
 
 const dataLoading = ref(true)
-const chartData = ref();
-const chartOptions = ref();
+
 const mobileScreen = ref(true);
 const showExport = ref(false);
-
+const itemsFromStatus = ref([])
+const showItemsStatusList = ref(false)
+const selectedStatusName = ref()
 
 onMounted(async () => {
     mobileScreen.value = !IsMobile();     
-    dataLoading.value = false;
+
 });
 
 
 const showStatusQuantityItems= async (data) => {
-    let result = await QueryItems("statusCategoryId", data.statusId)
-    console.log(result)
+    showItemsStatusList.value = true
+    itemsFromStatus.value = await QueryItems("statusCategoryId", data.statusId)
+    selectedStatusName.value = data.statusName
 }
 
 </script>
@@ -55,15 +59,16 @@ const showStatusQuantityItems= async (data) => {
 
             <div class="btn-row">
                 <div class="btn-container">
-                    <RouterLink to="/manage">
+                    <RouterLink :to="{name: 'searchItem.scanBarcode'}">
                     <div class="btn-box">
-                        <label class="btn-label">Manage</label> 
-                        <i class="pi pi-table"/>            
+                        <label class="btn-label">Scan Barcode</label> 
+                        <i class="pi pi-barcode"/>            
                     </div>
                     </RouterLink>
-                </div>
+                </div>      
+                
                 <div class="btn-container">
-                    <RouterLink to="search/scanImage">
+                    <RouterLink :to="{ name: 'searchItem.scanImage' }">
                     <div class="btn-box">
                         <label class="btn-label">Scan Image</label> 
                         <i class="pi pi-camera"/>            
@@ -74,15 +79,26 @@ const showStatusQuantityItems= async (data) => {
 
             <div class="btn-row">
                 <div class="btn-container">
+                    <RouterLink to="/manage">
+                    <div class="btn-box">
+                        <label class="btn-label">View</label> 
+                        <i class="pi pi-table"/>            
+                    </div>
+                    </RouterLink>
+                </div>
+                <div class="btn-container">
                     <div class="btn-box" @click="showExport= true">
                         <label class="btn-label">Export</label> 
                         <i class="pi pi-file-excel" />            
                     </div>
                 </div>
+                
+            </div>
+            <div class="btn-row">
                 <div class="btn-container">
                     <RouterLink to="/units">
                     <div class="btn-box">
-                        <label class="btn-label">Units</label> 
+                        <label class="btn-label">Locations</label> 
                         <i class="pi pi-building"/>            
                     </div>
                     </RouterLink>
@@ -93,7 +109,8 @@ const showStatusQuantityItems= async (data) => {
     <!-- Right Column -->
             <div class="data "> 
                     <div class="data-table">
-                    <DataTable class="" :value="store.StatusQuantities" size="small" v-if="!dataLoading" style="width: 300px;">
+                        <h3 style="font-weight: bold; font-size: 18px;">Items</h3>
+                    <DataTable class="" :value="store.StatusQuantities" size="small" :loading="store.StatusQuantities.length < 1" scrollable scroll-height="300px">
                         <Column field="statusName" header="Status" style="width: 150px;"></Column>
                         <Column field="itemQuantity" header="#" style="width: 80px;"></Column>
                         <Column style="width: 50px;">
@@ -104,13 +121,7 @@ const showStatusQuantityItems= async (data) => {
                         </template></Column>
 
                     </DataTable>
-                    <div v-else>
-                        <Skeleton></Skeleton>
-                        <Skeleton></Skeleton>
-                        <Skeleton></Skeleton>
-                        <Skeleton></Skeleton>
-                        <Skeleton></Skeleton>
-                    </div>
+
                 </div>
                 <div class="data-table">
                     <NotesActivityDisplay></NotesActivityDisplay>                    
@@ -118,11 +129,17 @@ const showStatusQuantityItems= async (data) => {
                 <div class="data-table">
                     <MaintenanceActivityDisplay></MaintenanceActivityDisplay>
                 </div>
+                <div class="data-table">
+                    <NewItemActivity></NewItemActivity>
+                </div>
             </div>
    
    <div>
     <Dialog v-model:visible="showExport">
         <ExportItems></ExportItems>
+    </Dialog>
+    <Dialog v-model:visible="showItemsStatusList" :header="selectedStatusName">
+        <ItemsTableBasic :items="itemsFromStatus"></ItemsTableBasic>
     </Dialog>
    </div>
 </div>
@@ -134,9 +151,19 @@ const showStatusQuantityItems= async (data) => {
     flex: 1;
     display: flex;
     flex-wrap: wrap;
+    min-height: 100vh;
     height: 100%;
     background-color: var(--p-surface-50);
 }
+@media(max-width:430px){
+        .page{
+            justify-content: center;
+        }
+        .data{
+            display: flex;
+            justify-content: center;
+        }
+    }
 a{
     text-decoration: none;
     color: black;
@@ -148,6 +175,7 @@ a{
     flex-wrap: wrap;
     gap: 1rem;
     padding: 1rem;
+
 }
 
 .data-table{
@@ -156,9 +184,14 @@ a{
     height: fit-content;
     border-radius: 10px;
     padding: 10px;
-    min-height: 300px;
+    min-height: 200px;
+    min-width: 350px;
+    max-width: 380px;
+    max-height: 350px;
+
     border: black solid 1px;
     background-color: white;
+    font-size: small;
 }
 
 .btn-container{
@@ -193,8 +226,9 @@ a{
 }
 
 .btn-container :hover{
-    background-color: var(--p-primary-400);
+    background-color: var(--p-primary-500);
     color: white;
+    cursor: pointer;
 }
 .btn-container :hover i{
     color: white;

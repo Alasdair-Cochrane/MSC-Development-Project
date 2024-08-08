@@ -18,15 +18,15 @@ const imageCaptured = ref(false)
 var capturedImage = ref(null)
 
 function imageSelected(event){
-
   const data = event.target.files[0]
   capturedImage.value = data
 
   const imageURL = URL.createObjectURL(data)
   imageElement.value.src = imageURL;
-
+  if(window.localStream){
   window.localStream.getTracks().forEach((track) => track.stop())
-  imageCaptured.value = true;
+}
+imageCaptured.value = true;
 }
 
 function initCamera(){
@@ -36,7 +36,7 @@ function initCamera(){
         window.localStream = stream
         video.value.srcObject = stream;
         video.value.play()}).
-        catch((err) => console.log(err));
+        catch((err) => console.warn(err));
 }
 
 onMounted( () =>{
@@ -79,7 +79,7 @@ function takePhoto() {
     window.localStream.getTracks().forEach((track) => track.stop())
     imageCaptured.value = true;
   } else {
-    console.log("width and height are not set")
+    console.warn("width and height are not set")
     clearphoto();
   }
 }
@@ -94,7 +94,9 @@ function clearphoto() {
 }
 function cancel(){
     streaming = false;
+    if(window.localStream){
     window.localStream.getTracks().forEach(track => track.stop())
+    }
     emits('cancelled')
 }
 
@@ -122,7 +124,7 @@ function submit(){
         </div>
         <div class="bttn-group">
           <Button v-if="imageCaptured" id="btn-submit" @click="submit" label="Submit"></Button>
-          <Button v-if="imageCaptured" id="btn-retake" @click="reTake" label="Re-Take" severity="warn"></Button>
+          <Button v-if="imageCaptured" id="btn-retake" @click="reTake" label="Reset" severity="warn"></Button>
 
         </div>
 

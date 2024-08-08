@@ -18,12 +18,16 @@ const toast = useToast();
 const emit = defineEmits(['itemSaved'])
 const selectedImage = ref()
 const imageDisplay = ref()
+
 const showScanner = ref(false)
 const showCamera = ref(false)
+const showIsValid = ref(false)
+const saveLoading = ref(false)
+
 const selectedUnit = ref()
 const showBarcodeScanner = ref(false)
-const showIsValid = ref(false)
 
+const maxDate = ref(new Date())
 
 onMounted(() => {
     mobile.value = IsMobile();
@@ -73,10 +77,10 @@ async function save(){
 
     if(!validateSubmission()) {
         toast.add({severity:'error', summary: 'Required Fields Empty', life: 2000 })
-        console.log("item Invalid");
+        console.warn("item Invalid");
         return;
     }
-
+    saveLoading.value = true
     //Format Dates
     if(item.value.date_of_commissioning){
         let cDate = new Date(item.value.date_of_commissioning)
@@ -97,15 +101,13 @@ async function save(){
         item.value.serialNumber="";
         item.value.localName="";
         item.value.barcode="";
-        console.log("Save Successful " + JSON.stringify(newItem))
         emit('itemSaved',newItem)
-
-        console.log(modelName.value)
-
+        saveLoading.value = false
         return true;
     }
     else{
         toast.add({severity:'error', summary: 'Operation unsuccessfull', detail: response.error.title, life: 2000 })
+        saveLoading.value = false
         return false;
     }
 }
@@ -146,7 +148,7 @@ async function searchModelNumber(event){
 const searchedCategories = ref()
 async function searchCategory(event){
     item.value.model.category = event.query
-    if(!store.ModelCategories || store.ModelCategories.length < 1) {await UpdateItemData() ; console.log("await completed" + store.ModelCategories)}
+    if(!store.ModelCategories || store.ModelCategories.length < 1) {await UpdateItemData() ; }
     searchedCategories.value = store.ModelCategories.filter(x => x.toLowerCase().includes(event.query.toLowerCase()))
 }
 
@@ -161,7 +163,6 @@ function modelNumberSelected(event){
     item.value.model = event.value
     modelName.value = item.value.model.modelName
     modelNumber.value = item.value.model.modelNumber
-    console.log(modelNumber.value)
 }
 </script>
 <template>
@@ -198,13 +199,14 @@ function modelNumberSelected(event){
             <label for="owner">Owner</label>
             <small class="validation-warning" v-if="!isNotEmpty(selectedUnit) ">Required</small>
             <Select id="owner" size="small" v-model="selectedUnit" showClear 
-            :options="store.Units" :invalid="showIsValid && !isNotEmpty(selectedUnit) "
+            :options="store.UnitsAuthorised" :invalid="showIsValid && !isNotEmpty(selectedUnit) "
             optionLabel="name"/>
         </div>
-                <div class="input-field">
-                    <label for="serial">Local Name</label>
-                    <InputText id="serial" size="small" v-model="item.localName"/>
-                </div>
+
+         <div class="input-field">
+             <label for="serial">Local Name</label>
+             <InputText id="serial" size="small" v-model="item.localName"/>
+         </div>
                 
        
         </div>
@@ -283,7 +285,7 @@ function modelNumberSelected(event){
         <div class="input-group">
             <div class="input-field">
                 <label for="recieptDate">Date of Reciept</label>
-                <DatePicker showIcon icon-display="input" v-model="item.date_of_reciept" date-format="dd/mm/yy"/>
+                <DatePicker showIcon icon-display="input" v-model="item.date_of_reciept" date-format="dd/mm/yy" :maxDate="maxDate"/>
             </div>
             <div class="input-field">
                 <label for="condition">Condition on Reciept</label>
@@ -292,12 +294,12 @@ function modelNumberSelected(event){
         </div>
         <div class="input-field">
         <label for="commisionDate">Date of Commissioning</label>
-        <DatePicker showIcon icon-display="input" v-model="item.date_of_commissioning" date-format="dd/mm/yy"/>
+        <DatePicker showIcon icon-display="input" v-model="item.date_of_commissioning" date-format="dd/mm/yy" :maxDate="maxDate"/>
         </div>
     </form> 
     <div class="panel-2">
         <div class="submit-btns mobile" >
-            <Button icon="pi pi-save" label="Save" class="s-btn" @click="save"></Button>
+            <Button icon="pi pi-save" label="Save" class="s-btn" @click="save" :loading="saveLoading"></Button>
             <!-- <Button icon="pi pi-plus" label="New" class="s-btn" @click="addNew"></Button> -->
             <Button icon="pi pi-eraser" label="Clear" severity="danger" class="s-btn" @click="clear"></Button>
         </div>

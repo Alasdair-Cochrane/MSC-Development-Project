@@ -1,5 +1,4 @@
 import { PopulateStartingData, toggleLogIn, toggleLogOut } from "@/Store/Store";
-import { renderSlot } from "vue";
 
 export async function userLogin(login){
     try{
@@ -26,8 +25,7 @@ export async function userLogin(login){
         else{
             result.errors = response.statusText
         }
-        console.log(result)
-        console.log("login Error : " + response.statusText)
+        console.warn("login Error : " + response.statusText)
         return result
     }
     }
@@ -55,7 +53,7 @@ export async function getAccessToken(){
         return `Bearer ${t.accessToken}`
     }
     else{
-        console.log("Refresh Error : " + response.statusText)
+        console.warn("Refresh Error : " + response.statusText)
         userLogout();
     }
 }
@@ -87,8 +85,13 @@ export async function CheckRefreshToken(){
 }
 
 export async function userLogout(){
-    toggleLogOut()
     localStorage.removeItem("accessToken")
+    localStorage.clear()
+    sessionStorage.clear()
+    if(window.localStream){
+        window.localStream.getTracks().forEach((track) => track.stop())
+    }
+    toggleLogOut()
 }
 
 export async function GetUsers(){
@@ -106,11 +109,11 @@ export async function GetUsers(){
         return users;
     }
     else{
-        console.log("Coulld not get public users. Response : " + response.statusText)
+        console.warn("Coulld not get public users. Response : " + response.statusText)
     }
     }
     catch(ex){
-        console.log("Could not get public users. Exception : " + ex.message) 
+        console.warn("Could not get public users. Exception : " + ex.message) 
     }
 }
 
@@ -132,11 +135,10 @@ export async function AssignUser(usId, roId, unId) {
         return {successfull: true , assignment: result}
     }
     let result = await response.json()
-    console.log(result.detail)
     return {successfull: false, errors: response.statusText , message : result?.detail}
     }
     catch(ex){
-        console.log(ex.message)
+        console.warn(ex.message)
         return {successfull: false, errors: ex.message}
     }
 }
@@ -158,7 +160,7 @@ export async function DeleteAssignment(assignment){
         }
         else{
             let result = await response.json()
-            console.log(result.detail)
+            console.warn(result.detail)
             return {successfull : false, errors: response.statusText, message : result?.detail}
         }
     }

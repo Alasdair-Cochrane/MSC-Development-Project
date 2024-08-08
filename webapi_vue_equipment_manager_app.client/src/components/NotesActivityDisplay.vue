@@ -9,6 +9,7 @@ const expandedNotesRows = ref([])
 const daysOptionsLabel = (["1 day","1 week", "2 weeks", "1 month"])
 const daysOptions=([1,7,14,31])
 const selectedOption = ref("1 week")
+const loading = ref(true)
 onMounted(async () => getNotes())
 
 const getNotes = async () => {
@@ -17,6 +18,7 @@ const getNotes = async () => {
         daysBefore.value = daysOptions[i]
     }
     notes.value = await GetFromAPI(`api/items/notes?daysBeforeNow=${daysBefore.value}`,"Could not retrieve recent notes")
+    loading.value = false
 }
 
 
@@ -28,11 +30,13 @@ const getNotes = async () => {
         <h3>Recent Notes</h3>
         <Select v-model="selectedOption" :options="daysOptionsLabel" @change="getNotes()"></Select>
     </div>
-                    <DataTable class="" :value="notes" size="small" :expanded-rows="expandedNotesRows" scrollable scroll-height="300px" >
+                    <DataTable class="" :value="notes" size="small" 
+                    :expanded-rows="expandedNotesRows" scrollable scroll-height="300px" 
+                    :loading="loading">
                         <Column expander></Column>
                         <Column field="title" header="Title" style="width: 150px;"></Column>
-                        <Column field="userName" header="User" ></Column>
                         <Column field="serialNumber" header="Item s/n" style="width: 80px;"></Column>
+                        <Column field="userName" header="User" ></Column>
                         <Column field="datePosted" header="Date" >
                     <template #body="{data}">
                             {{ FormatDate(data.datePosted) }}

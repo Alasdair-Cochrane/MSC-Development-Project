@@ -9,7 +9,9 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Repository_Interfa
         Task<bool> CheckUserHasRoleInUnit(int userId, IEnumerable<int> roleId, int unitId);
         Task<bool> CheckUserIsAdminInParentOfUnit(int userId, int unitId);
         public Task<Unit?> FindByName(string name);
-        Task<IEnumerable<Unit>> GetAllRelevantUnitsToUserAsync(int userId);
+        Task<IEnumerable<Unit>> GetAllRelevantUnitsToUserAsync(int userId, bool authorisedOnly = false);
+        Task<IEnumerable<int>> GetAllRelevantUnitIdsToUserAsync(int userId, bool authorisedOnly = false);
+
         Task<IEnumerable<int>> GetAllUnitIdsWhereUserIsAdmin(int userId);
         public Task<IEnumerable<int>> GetChildrenIDsOfUnit(int parentId);
         Task<IEnumerable<Unit>> GetChildrenofUnit(int parentId);
@@ -24,6 +26,5 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Repository_Interfa
         Task<IEnumerable<Unit>> GetAllAssignedRootsAsync(int userId);
         Task<UnitDTO> GetDTOWithChildrenAsync(Unit unit);
         Task<bool> CheckUserHasRoleInParentOfUnit(int userId, IEnumerable<int> roleIds, int unitId);
-        Task<IEnumerable<int>> GetAllRelevantUnitIdsToUserAsync(int userId);
     }
 }

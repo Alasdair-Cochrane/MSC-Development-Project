@@ -45,7 +45,7 @@ watch(maintenances, () => {item.value.maintenances = maintenances.value
 
     </div>
     <Dialog v-model:visible="showView"><MaintenanceDetails v-model:list="maintenances" :item="item" v-model:maintenance="selectedMaintenance" @delete="showView = false"></MaintenanceDetails></Dialog>
-    <Dialog v-model:visible="showAdd"><AddMaintenance v-model="item"></AddMaintenance></Dialog>
+    <Dialog v-model:visible="showAdd"><AddMaintenance v-model="item" @confirmed="showAdd = false"></AddMaintenance></Dialog>
 
 </template>
 <style scoped>

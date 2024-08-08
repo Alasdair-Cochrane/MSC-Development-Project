@@ -20,7 +20,7 @@ const setEligibleUsers = () =>
     usersOptions.value = store.PublicUsers.filter(x => !userIds.includes(x.id))
 }
 
-onMounted(() => {setEligibleUsers(); console.log(props.UnitId)})
+onMounted(() => {setEligibleUsers();})
 
 const props = defineProps({
     UnitId : {

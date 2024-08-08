@@ -19,6 +19,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs
         public string? Condition_on_reciept { get; set; }
         public int? Current_Status_ID { get; set; }
         public string? ImageUrl { get; set; }
+        public DateTime DateCreated { get; set; }
     }
 
     public class ItemDTO : ItemSimpleDTO

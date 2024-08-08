@@ -41,7 +41,6 @@ watch(maintenance, async () => {documents.value = await getFiles()})
 const maintenanceFileUpload = async (file) =>{
     fileUploadLoading.value = true;
     let result = await UploadMaintenanceFile(file, props.maintenance.id)
-    console.log(result)
     if(result.successfull){
         documents.value.push(result.file)
     }

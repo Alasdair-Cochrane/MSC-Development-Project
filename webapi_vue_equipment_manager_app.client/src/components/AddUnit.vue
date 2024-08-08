@@ -61,7 +61,7 @@ async function addSimilarUnit(){
 
     if(!newUnit.value.name){
         noName.value = true
-        console.log("Name field required")
+        console.warn("Name field required")
         loading.value = false;
         return;
     }
@@ -93,7 +93,7 @@ async function addSimilarUnit(){
         return true
     }
     else{
-        console.log(response.error + " " + response?.message)
+        console.warn(response.error + " " + response?.message)
         loading.value = false;
         errorOccured.value = true;
         return false

@@ -40,7 +40,6 @@ onMounted(async () => {
 )
 
 const setOpenOption = () =>{
-    console.log(toBeEdited.value.isPublic)
     if(toBeEdited.value.isPublic){
         openOptionSelected.value = openOptions[1]
     }
@@ -94,7 +93,6 @@ const confirmEdit = async (unit) =>{
 
 const showChart = (node) =>{
     let index = unitTree.value.indexOf(node)
-    console.log(index)
     emits('chartButtonClicked', index)
 }
 

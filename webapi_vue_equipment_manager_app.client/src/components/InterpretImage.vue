@@ -46,7 +46,6 @@ async function imageSubmitted(image){
     if(image){
         var response = await queryLabelImage(image)
 
-        console.log(response)
         awaitingResponse.value = false;
         if(response.isValidLabel){
             serial.value = response.item.serialNumber

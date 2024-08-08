@@ -23,7 +23,7 @@ export async function Download(doc){
     } 
     else{
         let err = await response.json()
-        console.log(err)
+        console.warn(err)
         return {successfull: false, status : response.status, errors: err}
     }
 }

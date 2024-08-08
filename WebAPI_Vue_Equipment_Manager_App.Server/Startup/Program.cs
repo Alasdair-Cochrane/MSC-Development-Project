@@ -71,7 +71,7 @@ builder.Services.AddIdentityApiEndpoints<User>().
 
 builder.Services.AddDbContext<MainDbContext>(
     options => {
-        options.UseNpgsql(builder.Configuration.GetConnectionString("PostgresRun"));
+        options.UseNpgsql(builder.Configuration.GetConnectionString("Remote_External"));
        
         });
 

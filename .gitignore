@@ -41,3 +41,4 @@ WebAPI_Vue_Equipment_Manager_App.Server/wwwroot/*
 *.json
 keys/
 launchSettings.json
+/WebAPI_Vue_Equipment_Manager_App.Server/Properties/launchSettings.json

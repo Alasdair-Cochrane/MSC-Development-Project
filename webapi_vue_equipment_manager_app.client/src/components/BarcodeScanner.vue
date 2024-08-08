@@ -11,7 +11,6 @@ const scanner = ref()
 const config = { fps: 10, qrbox: {width: 200, height: 200} }
 
 function onScanSuccess(decodedText, decodedResult) {
-    console.log(`Code matched = ${decodedText}, ` + decodedResult);
     scanValue.value = decodedText
     scanResult.value = decodedResult
     confirm()
@@ -56,7 +55,7 @@ const confirm = () => {
 </template>
 <style>
 #reader{
-    width: 600px;
+    width: 300px;
 }
 .scan-success{
   border: solid black 1px;

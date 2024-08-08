@@ -83,9 +83,29 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data
                 new UserRole { Id = 2, Name = "Private User", NormalizedName = "PRIVATE" },
                 new UserRole { Id = 3, Name = "Public User", NormalizedName = "PUBLIC" }
                 );
-            //builder.Entity<EquipmentModelCategory>().HasData(GetSeedCategories());
+            builder.Entity<ItemStatusCategory>().HasData(
+               new ItemStatusCategory { Id = 1, Name = "Active", Order = 1 },
+               new ItemStatusCategory { Id = 2, Name = "In Storage", Order = 2 },
+               new ItemStatusCategory { Id = 3, Name = "Broken", Order = 3 },
+               new ItemStatusCategory { Id = 4, Name = "Decommissioned", Order = 4 },
+               new ItemStatusCategory { Id = 5, Name = "On Loan", Order = 5 },
+               new ItemStatusCategory { Id = 6, Name = "Requires Installation", Order = 6 },
+               new ItemStatusCategory { Id = 7, Name = "Requires Service", Order = 7 },
+               new ItemStatusCategory { Id = 8, Name = "Requires Calibration", Order = 8 },
+               new ItemStatusCategory { Id = 9, Name = "Requires Validation", Order = 9 }
+               );
 
-           
+            builder.Entity<MaintenanceCategory>().HasData(
+                new MaintenanceCategory { Id = 1, Name = "Repair" },
+                new MaintenanceCategory { Id = 2, Name = "Calibration" },
+                new MaintenanceCategory { Id = 3, Name = "Service" },
+                new MaintenanceCategory { Id = 4, Name = "Validation" },
+                new MaintenanceCategory { Id = 5, Name = "Decommissioning" },
+                new MaintenanceCategory { Id = 6, Name = "Decontamination" }
+                );
+
+
+
         }
 
         private EquipmentModelCategory[] GetSeedCategories()

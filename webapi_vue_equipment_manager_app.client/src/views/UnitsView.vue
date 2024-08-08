@@ -24,12 +24,10 @@ onMounted(async () => {
 )
 
 const newStructure = () => {
-    console.log("structure new")
     orgTable.value.NewStructure()
 }
 
 const chartShown = (i) =>{
-    console.log(i)
     chartIndex.value = i;
     showOrgChart.value = true
 }
@@ -73,12 +71,12 @@ const chartShown = (i) =>{
 .wrapper{
     display: flex;
     flex: 1;
+    min-height: 100vh;
     height: 100%;
     padding: 1rem;
     flex-wrap: wrap;
     gap: 2rem;
     justify-content: center;
-    align-items: center;
     background-color: var(--p-surface-50);
 }
 .header-btns{

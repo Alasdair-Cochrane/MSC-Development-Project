@@ -13,7 +13,6 @@ onMounted(async () => {if(item.value) notes.value = await GetNotesForItem(item.v
 
 watch(item, async() => {
     let list = await GetNotesForItem(item.value.id)
-    console.log(list)
     notes.value = list
 })
 

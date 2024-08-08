@@ -15,5 +15,6 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Repository_Interfa
         Task UpdateImageUrl(int id, string url);
         Task<IEnumerable<StatusQuantity>> GetQuantityByStatusAsync(IEnumerable<int> unitIds);
         Task<IEnumerable<Item>> AddManyAsync(IEnumerable<Item> items);
+        Task<IEnumerable<Item>> GetLatestCreatedItemsAsync(int daysBefore, IEnumerable<int> unitIds);
     }
 }

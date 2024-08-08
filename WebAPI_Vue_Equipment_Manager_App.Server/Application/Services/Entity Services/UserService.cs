@@ -145,7 +145,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services
         {
             var assignments = await _assignmentRepository.GetUserAssingmentsDTObyIdAsync(user.Id);
             var unitsDTO = new List<UnitDTO>();
-            var units = await _unitRepository.GetAllRelevantUnitsToUserAsync(user.Id);
+            var units = await _unitRepository.GetAllRelevantUnitsToUserAsync(user.Id, false);
 
             foreach ( var unit in units.ToList() )
             {

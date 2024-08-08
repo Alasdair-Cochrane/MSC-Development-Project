@@ -17,7 +17,6 @@ const toggleRegister = () => {showLogin.value = false; showPasswordRest.value = 
     <div class="panel">
         <LoginComponent v-show="showLogin" @register="toggleRegister" @password-forgot="toggleForgot"></LoginComponent>
         <RegisterComponent v-show="showRegister" @login="toggleLogin"></RegisterComponent>       
-        <ForgotPasswordComponent v-show="showPasswordRest" @login="toggleLogin"></ForgotPasswordComponent> 
     </div>
 </div>
 </template>

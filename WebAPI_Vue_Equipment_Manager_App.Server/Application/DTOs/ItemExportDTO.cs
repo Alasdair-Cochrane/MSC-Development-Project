@@ -16,7 +16,6 @@
         public string? Building {  get; set; }
         public string? Room { get; set; }
         public string? Address { get; set; }
-        public bool IsPublic { get; set; }
         public DateTime? Date_of_reciept { get; set; }
         public DateTime? Date_of_commissioning { get; set; }
         public string? Condition_on_reciept { get; set; }

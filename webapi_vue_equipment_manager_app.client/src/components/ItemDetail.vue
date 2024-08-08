@@ -4,7 +4,6 @@ import { DeleteItem, UpdateItem, UploadImage } from '@/Services/ItemService';
 import FileDisplay from './FileDisplay.vue';
 import { UploadItemFile } from '@/Services/FileService';
 import { store } from '@/Store/Store';
-import { resolveTypeElements } from 'vue/compiler-sfc';
 import { FormatDate } from '@/Services/FormatService';
 
 const emit = defineEmits(['editTrue', 'update', 'deleted'])
@@ -28,11 +27,13 @@ const deletionSuccesfull = ref(false)
 const deleteErrorMessage = ref()
 const deleteErrorOccured = ref(false)
 
+const maxDate = ref(new Date())
+
 const imgRef = ref()
 
 const toggleEdit = () => {
     changedItem.value = selectedItem.value
-    selectedUnit.value = {name: selectedItem.value.unitName, id : selectedItem.value.unitId}
+    selectedUnit.value = selectedItem.value.unit
     editMode.value = !editMode.value
     emit('editTrue')
 }
@@ -48,7 +49,6 @@ async function uploadFile(file){
     if(result.successfull){
         selectedItem.value.documents.push(result.file)
     }
-    console.log(result)
     uploadLoading.value = false
 }
 
@@ -60,11 +60,11 @@ async function update() {
     }
     changedItem.value.unitName = selectedUnit.value.name
     changedItem.value.unitId = selectedUnit.value.id
-    console.log(changedItem.value)
     let response = await UpdateItem(changedItem.value)
     if(response.successful){
         selectedItem.value = response.item
         emit('update', selectedItem.value)
+        editMode.value = false
     }
     saveLoading.value = false
 }
@@ -132,6 +132,12 @@ async function setImage(image){
         </div>
         <div class ="field-row">
             <div class="field">
+            <label class="fieldName">Current Status</label>
+            <label class="fieldValue" v-show="!editMode">{{ selectedItem.currentStatus }}</label>
+            <Select  v-if="editMode" id="status" size="small" v-model="changedItem.currentStatus" :placeholder="changedItem.currentStatus"
+            :options="store.Statuses"/>
+        </div>
+            <div class="field">
                 <label class="fieldName">Barcode</label>
                 <label class="fieldValue" v-show="!editMode">{{ selectedItem.barcode }}</label>
                 <InputGroup v-if="editMode" >
@@ -139,23 +145,39 @@ async function setImage(image){
                             <Button icon="pi pi-barcode" @click="showBarcodeScanner= true"> </Button>
                 </InputGroup>
             </div>
+            
+        </div>
+    </div>
+    <div class="field-group">
+        <div class="field-row">
             <div class="field">
                 <label class="fieldName">Owner</label>
-                <label class="fieldValue" v-show="!editMode">{{ selectedItem.unitName }}</label>
+                <label class="fieldValue" v-show="!editMode">{{ selectedItem.unit.name }}</label>
                 <Select  v-if="editMode" id="owner" size="small" v-model="selectedUnit" :placeholder="selectedUnit.name" 
             :options="store.Units"
             optionLabel="name"/>
             </div>
+            <div class="field">
+                <label class="fieldName">Room</label>
+                <label class="fieldValue" v-if="!editMode">{{ selectedItem.unit.room}}</label>
+                <label class="fieldValue" v-if="editMode">{{ selectedUnit.room}}</label>
+
+            </div>
         </div>
-        <div class ="field-row">
-        <div class="field">
-            <label class="fieldName">Current Status</label>
-            <label class="fieldValue" v-show="!editMode">{{ selectedItem.currentStatus }}</label>
-            <Select  v-if="editMode" id="status" size="small" v-model="changedItem.currentStatus" :placeholder="changedItem.currentStatus"
-            :options="store.Statuses"/>
+        <div class="field-row">
+            <div class="field">
+                <label class="fieldName">Building</label>
+                <label class="fieldValue" v-if="!editMode">{{ selectedItem.unit.building}}</label>
+                <label class="fieldValue" v-if="editMode">{{ selectedUnit.building}}</label>
+
+            </div>
+            <div class="field">
+                <label class="fieldName">Address</label>
+                <p class="fieldValue" v-if="!editMode">{{ selectedItem.unit.address}}</p>
+                <p class="fieldValue" v-if="editMode">{{ selectedUnit.address}}</p>
+
+            </div>
         </div>
-        <div class="field"></div>
-    </div>
     </div>
     <div class="field-group">
         <div class ="field-row">
@@ -192,7 +214,7 @@ async function setImage(image){
                 </InputGroup>
             </div>
             <div class="field"></div>
-        </div>
+        
             <div class="dimensions">
                 <div class="field">
                     <label class="fieldName">Height</label>
@@ -219,14 +241,15 @@ async function setImage(image){
                     </InputGroup>
                 </div>
             </div>
+        </div>
     </div>
 
     <div class="field-group">
         <div class ="field-row">
         <div class="field">
-            <label class="fieldName">Date of Reciept</label>
+            <label class="fieldName">Reciept Date</label>
             <label class="fieldValue" v-show="!editMode">{{ FormatDate(selectedItem.date_of_reciept) }}</label>
-            <DatePicker  v-if="editMode" showIcon icon-display="input" v-model="changedItem.date_of_reciept" date-format="dd/mm/yy"/>
+            <DatePicker  v-if="editMode" showIcon icon-display="input" v-model="changedItem.date_of_reciept" date-format="dd/mm/yy" :maxDate="maxDate"/>
 
         </div>
         <div class="field">
@@ -238,11 +261,14 @@ async function setImage(image){
         </div>
         <div class ="field-row">
         <div class="field">
-            <label class="fieldName">Date of Commissioning</label>
+            <label class="fieldName">Commissioning Date</label>
             <label class="fieldValue" v-show="!editMode">{{ FormatDate(selectedItem.date_of_commissioning) }}</label>
-            <DatePicker  v-if="editMode" showIcon icon-display="input" v-model="changedItem.date_of_commissioning" date-format="dd/mm/yy"/>
+            <DatePicker  v-if="editMode" showIcon icon-display="input" v-model="changedItem.date_of_commissioning" date-format="dd/mm/yy" :maxDate="maxDate"/>
         </div>
-        <div class="field"></div>
+        <div class="field">
+            <label class="fieldName">Date Added</label>
+            <label class="fieldValue" v-show="!editMode">{{ FormatDate(selectedItem.dateCreated) }}</label>
+        </div>
 
     </div>
 
@@ -251,7 +277,7 @@ async function setImage(image){
 </div>
     <div class="panel-2">
         <div class="edit-bttns">
-            <Button label="Edit" v-if="!editMode" @click="toggleEdit"></Button>
+            <Button label="Edit"  v-if="!editMode" @click="toggleEdit"></Button>
             <Button label="Delete" v-if="!editMode" @click="showDelete = true" severity="danger"></Button>
 
             <Button label="Save Changes" v-if="editMode" @click="update()" :loading="saveLoading"></Button>
@@ -347,7 +373,6 @@ padding: 10px;
     max-height: 100px;
     max-width: 300px;
     min-width: 150px;
-    margin: 5px;
     align-items: center;
 }
 .dimensions{
@@ -382,7 +407,7 @@ padding: 10px;
         gap: 0;
     }
     .field{
-        margin: 10px;
+        min-width: 120px;
     }
             
 }

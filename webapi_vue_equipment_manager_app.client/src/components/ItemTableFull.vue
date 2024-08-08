@@ -15,29 +15,23 @@ const dt = ref()
 
 const filters = ref({
         global: {value:null, matchMode: FilterMatchMode.CONTAINS},
-        localName:{operator: FilterOperator.AND, constraints: [{value:null, matchMode: FilterMatchMode.STARTS_WITH}]},
-        modelNumber:{operator: FilterOperator.AND, constraints: [{value:null, matchMode: FilterMatchMode.STARTS_WITH}]},
-        modelName:{operator: FilterOperator.AND, constraints: [{value:null, matchMode: FilterMatchMode.STARTS_WITH}]},
-        manufacturer:{operator: FilterOperator.AND, constraints: [{value:null, matchMode: FilterMatchMode.STARTS_WITH}]},
-        category:{value:null, matchMode:FilterMatchMode.IN},
-        status:{value:null, matchMode:FilterMatchMode.IN},
-        dateOfReciept:{operator:FilterOperator.AND, constraints:[{value:null, matchMode: FilterMatchMode.DATE_IS}]},
-        dateOfCommissioning:{operator:FilterOperator.AND, constraints:[{value:null, matchMode: FilterMatchMode.DATE_IS}]},
+        'model.modelNumber':{operator: FilterOperator.AND, constraints: [{value:null, matchMode: FilterMatchMode.STARTS_WITH}]},
+        'model.modelName':{operator: FilterOperator.AND, constraints: [{value:null, matchMode: FilterMatchMode.STARTS_WITH}]},
+        'model.manufacturer':{operator: FilterOperator.AND, constraints: [{value:null, matchMode: FilterMatchMode.STARTS_WITH}]},
+        'model.category':{value:null, matchMode:FilterMatchMode.IN},
+        currentStatus: {value:null, matchMode:FilterMatchMode.IN},
         unit:{value:null, matchMode:FilterMatchMode.IN},
 
     })
 const clearFilters = () => {
     filters.value ={
         global: {value:null, matchMode: FilterMatchMode.CONTAINS},
-        localName:{operator: FilterOperator.AND, constraints: [{value:null, matchMode: FilterMatchMode.STARTS_WITH}]},
-        modelNumber:{operator: FilterOperator.AND, constraints: [{value:null, matchMode: FilterMatchMode.STARTS_WITH}]},
-        modelName:{operator: FilterOperator.AND, constraints: [{value:null, matchMode: FilterMatchMode.STARTS_WITH}]},
-        manufacturer:{operator: FilterOperator.AND, constraints: [{value:null, matchMode: FilterMatchMode.STARTS_WITH}]},
-        category:{value:null, matchMode:FilterMatchMode.IN},
-        status:{value:null, matchMode:FilterMatchMode.IN},
-        dateOfReciept:{operator:FilterOperator.AND, constraints:[{value:null, matchMode: FilterMatchMode.DATE_IS}]},
-        dateOfCommissioning:{operator:FilterOperator.AND, constraints:[{value:null, matchMode: FilterMatchMode.DATE_IS}]},
-        unit:{value:null, matchMode:FilterMatchMode.IN},
+        'model.modelNumber':{operator: FilterOperator.AND, constraints: [{value:null, matchMode: FilterMatchMode.STARTS_WITH}]},
+        'model.modelName':{operator: FilterOperator.AND, constraints: [{value:null, matchMode: FilterMatchMode.STARTS_WITH}]},
+        'model.manufacturer':{operator: FilterOperator.AND, constraints: [{value:null, matchMode: FilterMatchMode.STARTS_WITH}]},
+        'model.category':{value:null, matchMode:FilterMatchMode.IN},
+        currentStatus: {value:null, matchMode:FilterMatchMode.IN},
+       
     }
 }
 
@@ -92,7 +86,7 @@ const exportCSV = () => {
     filterDisplay="menu"
     :loading="loading"
     :size="'small'" 
-    :globalFilterFields="['serialNumber','localName','barcode','modelNumber','modelName',]"
+    :globalFilterFields="['serialNumber','localName','barcode','model.modelNumber','model.modelName','model.category', 'model.manufacturer']"
     editMode="row"
     v-model:editingRows="editedRows"
     @row-edit-save="onRowEditSave"
@@ -108,7 +102,9 @@ const exportCSV = () => {
         <template #header>
             <div class="header-bar">
                 <Button label="Add" icon="pi pi-plus" @click="addNew = true"></Button>
-                <div class="flex justify-end">
+                <div style="display: flex; gap:10px">
+                    <Button type="button" icon="pi pi-filter-slash" label="Clear" severity="warn" @click="clearFilters()" />
+
                     <IconField>
                         <InputIcon>
                             <i class="pi pi-search" />
@@ -147,7 +143,7 @@ const exportCSV = () => {
     </Column>
 
 <!-- MODEL NUMBER-->
-    <Column field="modelNumber" header="Model Number" sortable filterField="modelNumber" v-if="columns[3].show">
+    <Column field="model.modelNumber" header="Model Number" sortable filterField="model.modelNumber" v-if="columns[3].show">
         <template #body="{data}">
             {{ data.model.modelNumber }}
         </template>
@@ -157,7 +153,7 @@ const exportCSV = () => {
     </Column>
 
 <!-- MODEL NAME -->
-    <Column field="modelName" header="Model Name" sortable filterField="modelName" v-if="columns[4].show">
+    <Column field="model.modelName" header="Model Name" sortable filterField="model.modelName" v-if="columns[4].show">
         <template #body="{data}">
             {{ data.model.modelName }}
         </template>
@@ -167,7 +163,7 @@ const exportCSV = () => {
     </Column>
 
 <!-- MANUFACTURER -->
-    <Column field="manufacturer" header="Manufacturer" sortable filterField="manufacturer" v-if="columns[5].show">
+    <Column field="model.manufacturer" header="Manufacturer" sortable filterField="model.manufacturer" v-if="columns[5].show">
         <template #body="{data}">
             {{ data.model.manufacturer }}
         </template>
@@ -177,7 +173,7 @@ const exportCSV = () => {
     </Column>
 
 <!-- CATEGORY -->
-    <Column field="category" header="Category" sortable :showFilterMatchModes="false" filterField="category" v-if="columns[6].show">
+    <Column field="model.category" header="Category" sortable :showFilterMatchModes="false" filterField="model.category" v-if="columns[6].show">
         <template #body="{data}">
             {{ data.model.category }}
         </template>
@@ -187,53 +183,49 @@ const exportCSV = () => {
     </Column>
 
 <!-- WEIGHT -->
-    <Column field="weight" header="Weight (kg)" sortable filterField="weight" v-if="columns[7].show" dataType="numeric"> 
+    <Column field="model.weight" header="Weight (kg)" sortable filterField="weight" v-if="columns[7].show" dataType="numeric"> 
         <template #body="{data}">
             {{ data.model.weight }}
         </template>
     </Column> 
 
 <!-- LENGTH -->
-    <Column field="length" header="Length (mm)" sortable filterField="length" v-if="columns[8].show" dataType="numeric">
+    <Column field="model.length" header="Length (mm)" sortable filterField="length" v-if="columns[8].show" dataType="numeric">
         <template #body="{data}">
             {{ data.model.length }}
         </template>
     </Column> 
 
 <!-- WIDTH -->
-    <Column field="width" header="Width (mm)" sortable filterField="width" v-if="columns[9].show" dataType="numeric">
+    <Column field="model.width" header="Width (mm)" sortable filterField="width" v-if="columns[9].show" dataType="numeric">
         <template #body="{data}">
             {{ data.model.width }}
         </template>
     </Column> 
 
 <!-- Height -->
-    <Column field="height" header="Height (mm)" sortable filterField="height" v-if="columns[10].show" dataType="numeric">
+    <Column field="model.height" header="Height (mm)" sortable filterField="height" v-if="columns[10].show" dataType="numeric">
         <template #body="{data}">
             {{ data.model.height }}
         </template>
     </Column> 
 
 <!-- DATE OF RECIEPT -->
-<Column field="dateOfReciept" header="Reciept Date" sortable filterField="dateOfReciept" v-if="columns[11].show"
+<Column field="date_of_reciept" header="Reciept Date" sortable v-if="columns[11].show"
     dataType="date">
     <template #body="{data}">
         {{ FormatDate(data.date_of_reciept) }}
     </template>
-    <template #filter="{filterModel}">
-        <DatePicker v-model="filterModel.value" placeholder="dd/mm/yyyy"></DatePicker>
-    </template>
+
 </Column>
 
 <!-- DATE OF COMMISSIONING -->
-<Column field="dateOfCommissioning" header="Commission Date" sortable filterField="dateOfCommissioning" v-if="columns[12].show"
+<Column field="date_of_commissioning" header="Commission Date" sortable v-if="columns[12].show"
     dataType="date">
     <template #body="{data}" >
         {{ FormatDate(data.date_of_commissioning) }}
     </template>
-    <template #filter="{filterModel}">
-        <DatePicker v-model="filterModel.value" placeholder="dd/mm/yyyy"></DatePicker>
-    </template>
+
 </Column>
 <!-- Unit -->
 <Column field="unit" header="Owner" sortable :showFilterMatchModes="false" filterField="unit" v-if="columns[13].show">
@@ -241,13 +233,13 @@ const exportCSV = () => {
             {{ data.unitName }}
         </template>
         <template #filter="{filterModel}">
-            <MultiSelect v-model="filterModel.value" :options="store.Units" placeholder="select"></MultiSelect>
+            <MultiSelect v-model="filterModel.value" :options="store.UnitsAuthorised" optionLabel="name" placeholder="select"></MultiSelect>
         </template>
     </Column>
 
 <!-- STATUS -->
     <Column field="currentStatus" header="Status" sortable 
-    :showFilterMatchModes="false" filterField="status"  v-if="columns[14].show" >
+    :showFilterMatchModes="false" filterField="currentStatus" v-if="columns[14].show" >
         <template #body="{data}">
             {{ data.currentStatus }}
         </template>
@@ -261,7 +253,7 @@ const exportCSV = () => {
 </DataTable>
 
 <Dialog v-model:visible="addNew" modal header="Add New Item">
-    <AddItem></AddItem>
+    <AddItem @itemSaved="(i) => {items.push(i); addNew = false}"></AddItem>
 </Dialog>
 </div>
 </template>

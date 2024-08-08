@@ -37,7 +37,13 @@ export const UpdateStructure = async () =>{
 
 export async function UpdateUnits(){
     store.Units = await GetFromAPI('/api/units', "Could not retrieve Units")
+    store .UnitsAuthorised = await UpdateAuthorisedUnits()
     return store.Units
+}
+
+async function UpdateAuthorisedUnits(){
+    store.UnitsAuthorised = await GetFromAPI('api/units?authorised=true', "Could not retrieve authorised units")
+    return store.UnitsAuthorised
 }
 
 const GetPublicUsers = async () =>{
@@ -100,6 +106,7 @@ export async function UpdateItemData(){
 
 export const store = reactive({
     Units : ref([]),
+    UnitsAuthorised: ref([]),
     UserDetails : ref([]),
     ModelCategories: ref([]),
     Statuses: ref([]),

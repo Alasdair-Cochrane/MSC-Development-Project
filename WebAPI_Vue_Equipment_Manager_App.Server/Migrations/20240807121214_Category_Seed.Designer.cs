@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using WebAPI_Vue_Equipment_Manager_App.Server.Data;
@@ -11,9 +12,11 @@ using WebAPI_Vue_Equipment_Manager_App.Server.Data;
 namespace WebAPI_Vue_Equipment_Manager_App.Server.Migrations
 {
     [DbContext(typeof(MainDbContext))]
-    partial class MainDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240807121214_Category_Seed")]
+    partial class Category_Seed
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -249,9 +252,6 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Migrations
 
                     b.Property<string>("Condition_On_Reciept")
                         .HasColumnType("text");
-
-                    b.Property<DateTime>("DateCreated")
-                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime?>("Date_Of_Commissioning")
                         .HasColumnType("timestamp with time zone");

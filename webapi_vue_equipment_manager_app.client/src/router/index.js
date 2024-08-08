@@ -29,17 +29,19 @@ const router = createRouter({
 
         },
         {
-            path: '/search/scanImage',
+            path: '/search',
             name: 'searchItem.scanImage',
+            alias: '/search/scanImage',
             component: SearchItemView,
             props: {scanImage:true}
 
         },
         {
-            path: '/search/scanBarcode',
+            path: '/search',
+            alias: '/search/scanBarcode',
             name: 'searchItem.scanBarcode',
             component: SearchItemView,
-            props: {barcodeScan:true}
+            props: {scanBarcode:true}
 
         },
         {

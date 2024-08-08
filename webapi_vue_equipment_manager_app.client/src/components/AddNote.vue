@@ -27,7 +27,6 @@ const addNote = async() =>{
     let result = await AddNote(newNote.value)
     if(result.successfull){
         notes.value.push(result.payload)
-        console.log(result)
         emit("added", newNote.value)
     }
     loading.value = false;

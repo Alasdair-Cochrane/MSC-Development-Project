@@ -4,5 +4,6 @@
     <ActiveDebugProfile>Container (Dockerfile)</ActiveDebugProfile>
     <Controller_SelectedScaffolderID>MvcControllerEmptyScaffolder</Controller_SelectedScaffolderID>
     <Controller_SelectedScaffolderCategoryPath>root/Common/MVC/Controller</Controller_SelectedScaffolderCategoryPath>
+    <NameOfLastUsedPublishProfile>C:\Users\alasd\OneDrive\Documents\MSC\Project\2935419c-development-project\WebAPI_Vue_Equipment_Manager_App.Server\Properties\PublishProfiles\registry.hub.docker.com_alasdairc123.pubxml</NameOfLastUsedPublishProfile>
   </PropertyGroup>
 </Project>

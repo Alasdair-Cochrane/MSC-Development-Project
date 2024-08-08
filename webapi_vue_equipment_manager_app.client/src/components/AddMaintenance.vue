@@ -7,6 +7,7 @@ const newMaintenance = ref({})
 const item = defineModel()
 const loading = ref(false)
 const maxDate = ref(new Date())
+const emit = defineEmits(['confirmed'])
 
 async function saveMaintenance(){
     loading.value = true
@@ -25,13 +26,14 @@ async function saveMaintenance(){
         if(response.ok){
             let newEntry = await response.json()
             item.value.maintenances.push(newEntry);
+            emit('confirmed')
         }
         else{
             console.warn(await response.json())
         }
     }
     catch(e){
-        console.log(e)
+        console.warn(e)
     }
     loading.value = false
 }

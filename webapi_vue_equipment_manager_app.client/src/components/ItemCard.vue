@@ -1,10 +1,14 @@
 <script setup>
-import { Item } from '@/Models/Item';
 import { DeleteItem } from '@/Services/ItemService';
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 
 const deleteLoading = ref(false)
 const emit = defineEmits(['clicked', 'deleted'])
+const shownItem = ref()
+const showDetails = ref(false)
+
+onMounted(() => shownItem.value = props.item)
+
 const props = defineProps({
     showButtons:{
         type : Boolean,
@@ -18,7 +22,7 @@ const props = defineProps({
     }
 })
 
-const cardClikced = () => {
+const cardClicked = () => {
     if(props.clickable){
         emit('clicked', props.item)
     }
@@ -34,10 +38,10 @@ const deleteItem = async () =>{
 }
 </script>
 <template>
-    <div :class="{ canClick : clickable }" @click="cardClikced" style="flex: 1;">
+    <div :class="{ canClick : clickable }" @click="cardClicked" style="flex: 1;">
     <div class="container "  >
-        <div id="thumbnail" v-if="item && item.imageUrl">
-            <img :src=item?.imageUrl height="80px" width="100%" v-if="item && item.imageUrl">
+        <div id="thumbnail" v-if="shownItem && shownItem.imageUrl">
+            <img :src=shownItem?.imageUrl height="80px" width="100%" v-if="shownItem && shownItem.imageUrl">
         </div>
         <div id="item-info">
             <div class="info-labels">
@@ -46,18 +50,20 @@ const deleteItem = async () =>{
                 <span>Category: </span>
             </div>
             <div>
-                <span>{{item?.serialNumber ?? " "}}</span>
-                <span>{{item?.model.modelNumber ?? " "}}</span>
-                <span>{{item?.model.category ?? " "}}</span>
+                <span>{{shownItem?.serialNumber ?? " "}}</span>
+                <span>{{shownItem?.model.modelNumber ?? " "}}</span>
+                <span>{{shownItem?.model.category ?? " "}}</span>
             </div>
             
         </div>
         <div id="btns" v-if="showButtons">
-            <Button rounded icon="pi pi-search" @click="$emit('clicked', item)"></Button>
+            <Button rounded icon="pi pi-search" @click="showDetails= true"></Button>
             <Button rounded severity="danger" icon="pi pi-trash" @click="deleteItem()"></Button>
+            <Dialog v-model:visible="showDetails"><ItemDetail :selectedItem="shownItem"></ItemDetail></Dialog>
         </div>
 
     </div>
+
 </div>
 </template>
 <style scoped>
@@ -110,7 +116,7 @@ Button{
     max-height: 30px;
 }
 .canClick :hover{
-    background-color: var(--p-surface-100);
+    background-color: var(--p-surface-200);
 }
 span{
     font-size: small;

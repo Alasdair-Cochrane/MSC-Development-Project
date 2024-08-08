@@ -31,7 +31,9 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs.Mappings
                 CurrentStatus = item.StatusCategory.Name,
                 Documents = item.Documents ?? [],
                 Maintenances = item.Maintenances.ToDTO() ?? [],
-                Notes = item.Notes ?? []
+                Notes = item.Notes ?? [],
+                DateCreated = item.DateCreated,
+
             };
             return dto;
         }
@@ -143,7 +145,6 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs.Mappings
                 Building = item.Unit.Building,
                 Room = item.Unit.Room,
                 Address = item.Unit.Address,
-                IsPublic = item.Unit.IsPublic,
 
                 Date_of_reciept = item.Date_Of_Reciept,
                 Date_of_commissioning = item.Date_Of_Commissioning,

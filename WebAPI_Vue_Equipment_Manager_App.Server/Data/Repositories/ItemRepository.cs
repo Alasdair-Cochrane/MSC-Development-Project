@@ -41,6 +41,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
 
         public override async Task<Item?> AddAsync(Item item)
         {
+            item.DateCreated= DateTime.UtcNow;
             _context.Items.Add(item);
             await _context.SaveChangesAsync();
 
@@ -57,6 +58,10 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
 
         public async Task<IEnumerable<Item>> AddManyAsync(IEnumerable<Item> items)
         {
+            foreach (var item in items)
+            {
+                item.DateCreated = DateTime.UtcNow;
+            }
             _context.Items.AddRange(items);
             await _context.SaveChangesAsync();
             return items.Select(x => new Item
@@ -158,7 +163,6 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
                     Building = item.Unit.Building,
                     Room = item.Unit.Room,
                     Address = item.Unit.Address,
-                    IsPublic = item.Unit.IsPublic,
 
                     Date_of_reciept = item.Date_Of_Reciept,
                     Date_of_commissioning = item.Date_Of_Commissioning,
@@ -196,6 +200,21 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
                 ToListAsync();
             
             return categories;
+        }
+
+        public async Task<IEnumerable<Item>> GetLatestCreatedItemsAsync(int daysBeforeNow, IEnumerable<int> unitIds)
+        {
+            var dateBefore = DateTime.UtcNow.AddDays(-daysBeforeNow);
+            var items = await _context.Items.
+                Where(x => x.DateCreated > dateBefore).
+                Where(x => unitIds.Contains(x.UnitId)).
+                Include(x => x.Unit).
+                Include(x => x.EquipmentModel).
+                ThenInclude(x => x.Category).
+                Include(x => x.StatusCategory).
+                OrderByDescending(x => x.DateCreated).
+                ToListAsync();
+            return items;
         }
 
     }

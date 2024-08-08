@@ -222,6 +222,13 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
             return Ok(list);
         }
 
+        [HttpGet("latest")]
+        public async Task<IActionResult> GetLatestCreatedItems([FromQuery]int daysBefore)
+        {
+            var user = await _userService.GetCurrentUserAsync(HttpContext);
+            var list = await _itemSerivce.GetLatestCreatedItems(daysBefore,user.Id);
+            return Ok(list);
+        }
     }
 }
 

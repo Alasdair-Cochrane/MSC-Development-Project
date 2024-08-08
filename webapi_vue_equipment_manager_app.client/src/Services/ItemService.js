@@ -11,11 +11,6 @@ export async function addItem(item, image) {
     Object.keys(item).forEach(key => {if(item[key]) formdata.append(key,item[key])})
     Object.keys(item.model).forEach(key => {if(item.model[key]) formdata.append(key,item.model[key])})
     if(image) {formdata.append('image',image)}
-
-    for(let pair of formdata.entries()){
-        console.log(pair[0] + ": " + pair[1]);
-    }
-    
     try{
     const response = await fetch(route, {
         method: 'POST',
@@ -30,8 +25,8 @@ export async function addItem(item, image) {
     }
     else{
         const errorDetails = await response.json()
-        console.log(`HTTP RESPONSE:${response.status} ${response.statusText}`)
-        console.log('Erorror Details:', errorDetails)
+        console.warn(`HTTP RESPONSE:${response.status} ${response.statusText}`)
+        console.warn('Error Details:', errorDetails)
         UpdateItemData()
         return {successful : false, error: errorDetails}
     }
@@ -69,8 +64,8 @@ export async function UpdateItem(item){
     }
     else{
         const errorDetails = await response.json()
-        console.log(`HTTP RESPONSE:${response.status} ${response.statusText}`)
-        console.log('Erorror Details:', errorDetails)
+        console.warn(`HTTP RESPONSE:${response.status} ${response.statusText}`)
+        console.warn('Error Details:', errorDetails)
         return {successful : false, error: errorDetails}
     }
     }catch(err){
@@ -118,7 +113,6 @@ export async function getAllItems() {
 }
 
 export async function GetItem() {
-    console.log(route)
 
     const response = await fetch(route + "/" + 11,
         {
@@ -130,8 +124,6 @@ export async function GetItem() {
             }
         })
     let list = response.json()
-    console.log(list)
-
 
     return list;
 }
@@ -139,7 +131,7 @@ export async function GetItem() {
 export async function QueryItems(key, value){
 
     let query = `?${key}=${value}`
-    console.log(route + query)
+    console.log(query)
     const response = await fetch(route + query, 
         {
         method: "GET",
@@ -159,9 +151,15 @@ export async function QueryItems(key, value){
 }
 
 export async function searchItemsByProperties(propertiesObject){
-    let queryParams = new URLSearchParams(propertiesObject).toString()
+    let queryParams = "?"
+    console.log(propertiesObject)
+    for(const key in propertiesObject){
+        if(propertiesObject[key]){
+        queryParams = queryParams + `${key}=${propertiesObject[key]}&`
+        }
+    }
     console.log(queryParams)
-    const response = await fetch(route + "?" + queryParams,
+    const response = await fetch(route + queryParams,
         {method: "Get",
             headers: {
                 "Content-Type": "application/json",
@@ -197,7 +195,6 @@ export async function UploadImage(itemid, image){
         }
     }
     catch(err){
-        console.log(err)
         return {successful : false, error: err}
 
     }
@@ -245,7 +242,6 @@ export async function queryLabelImage(image){
             }
         }
         else{
-            console.log(await response.text())
             return {isValidLabel : false, errors : [`Request to server failed: ${response.statusText}`]}
         }
     }

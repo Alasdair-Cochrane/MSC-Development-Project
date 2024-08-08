@@ -24,14 +24,14 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll([FromQuery] bool adminOnly = true, bool flat = true) {
+        public async Task<IActionResult> GetAll([FromQuery] bool adminOnly = true, bool flat = true, bool authorised = false) {
 
             var user = await _userService.GetCurrentUserAsync(HttpContext);
             IEnumerable<UnitDTO> units;
 
             if (flat)
             {
-                units = await _unitService.GetAllAsync(user.Id);
+                units = await _unitService.GetAllAsync(user.Id,authorised);
             }
             else
             {

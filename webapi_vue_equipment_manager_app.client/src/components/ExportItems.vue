@@ -27,8 +27,8 @@ const getExport = async ()=> {
         }
     })
     if(!response.ok){
-        console.log(response.statusText)
-        console.log(await response.json())
+        console.warn(response.statusText)
+        console.warn(await response.json())
     }
    let file = await response.blob()
    let fileUrl = URL.createObjectURL(file)

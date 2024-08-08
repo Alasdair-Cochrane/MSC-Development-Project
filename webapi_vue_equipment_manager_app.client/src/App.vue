@@ -5,8 +5,11 @@ import { loggedIn, PopulateStartingData} from './Store/Store';
 import LoginView from './views/LoginView.vue';
 import {onBeforeMount, onMounted, ref} from 'vue'
 import { CheckRefreshToken} from './Services/UserService';
+import { IsMobile } from './Services/DeviceService';
+import MobileNavBar from './components/MobileNavBar.vue';
 
 const loading = ref(false)
+const mobileTest = ref(false)
 
 onBeforeMount(async  () => {
     await CheckRefreshToken()
@@ -24,8 +27,9 @@ onMounted(async () => {
 
 <template>    
     <div class="app" >
-            <SideBar v-if="loggedIn "/>
-        <main>
+            <SideBar v-if="loggedIn && !IsMobile() && !mobileTest"/>
+            <MobileNavBar v-if="loggedIn && (IsMobile() || mobileTest)"></MobileNavBar>
+        <div class="main">
             <RouterView class="content" v-if="loggedIn && !loading">
 
             </RouterView>
@@ -35,7 +39,7 @@ onMounted(async () => {
         <div v-else>
             LOADING
         </div>
-        </main>
+    </div>
     </div>
     
 </template>
@@ -55,24 +59,22 @@ button {
 
 .app{
     display:flex;
-    height: auto;
-    
+    flex-wrap: wrap;
+    min-height: 100%;     
+    align-items: flex-start;
+    align-content: flex-start;
 }   
 
-main {
-     flex: 1 1 0;     
+.main {
+    flex: 1;
+    min-height:100%;
+    flex-grow: 1;
  } 
-
- @media(max-width:768px)
-     {
-        main{
-        margin-left: 4rem;
-        }
-     }
-
 .content{
     flex:1;
-    height: auto;         
+    min-height: 100vh;   
+    flex-grow: 1;
+  
 }
 
 .login-view{

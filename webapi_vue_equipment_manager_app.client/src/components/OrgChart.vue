@@ -25,7 +25,7 @@ onMounted(async () => {
 
 const addUnitClicked = (unitId) => {
     let parent = store.Units.find( unit => unit.id === unitId)
-    console.log(parent)
+    
     parentUnit.value = parent
     addUnitVisible.value = true;
 }
@@ -40,7 +40,7 @@ async function unitAdded(){
 
 </script>
 <template>
-    <div class="container">
+    <div class="wrapper">
         <Dialog v-model:visible="addUnitVisible" modal>
             <AddUnit @cancelled="addUnitVisible = false" :parent=parentUnit @confirmed="unitAdded"></AddUnit>
         </Dialog>
@@ -64,8 +64,12 @@ async function unitAdded(){
     display: flex;
     flex-direction: column;
     gap: 5px;
-    align-items: center
+    align-items: center;
+    min-width: 60px;
+    width: fit-content;
+    justify-content: center;
 }
+
 .p-organizationchart-node div Button{ 
     height: 25px;
     width: 25px;
@@ -77,14 +81,13 @@ async function unitAdded(){
     gap: 5px;
     margin-top: 5px;
 }
-.p-organizationchart-node div{
-    min-width: 60px;
-    width: fit-content;
-    display: flex;
-    justify-content: center;
-}
-.container{
+
+.wrapper{
     max-width: 95vw;
+    background-color: var(--p-surface-50);
+    padding-top: 10px;
+    border-radius: 10px;
+
 }
 
 
