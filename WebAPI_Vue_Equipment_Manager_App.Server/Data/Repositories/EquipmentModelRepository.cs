@@ -42,6 +42,17 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
             return model;
         }
 
+        //used just to populate data in the database for testing purposes
+        ///makes sure not to add if already exists(determined by model number)
+        public async Task AddManyAsync(IEnumerable<EquipmentModel> models)
+        {
+            var existing = models.Where(x => _context.Models.Select(x => x.ModelNumber).Any(m => m == x.ModelNumber)).
+                Select(x => x.ModelNumber).
+                ToList();
+            _context.Models.AddRange(models.ExceptBy(existing, x => x.ModelNumber));
+            await _context.SaveChangesAsync();
+        }
+
         public override async Task<EquipmentModel> UpdateAsync(EquipmentModel toUpdate)
         {
            _context.Models.Update(toUpdate);

@@ -27,6 +27,7 @@ const newUser = (u) => users.value.push(u)
 
 const editRole = async () => {
     operationLoading.value = true
+    errorMessage.value = ""
     if(toBeEdited.value.roleId === selectedRole.value.id){
         operationLoading.value = false
         return;
@@ -105,7 +106,8 @@ const deleteRole = async () => {
                         <template #body="{data}">
                             <div class="btn role-btn">
                                 <Button v-show="toBeEdited !== data" rounded outlined icon="pi pi-pencil" @click="toggleEdit(data)" ></Button>
-                                <Button v-show="toBeEdited !== data" rounded outlined icon="pi pi-trash" @click="showDelete = true; toBeDeleted = data" :loading="operationLoading"></Button>
+                                <Button v-show="toBeEdited !== data" rounded outlined icon="pi pi-trash" @click="{showDelete = true; toBeDeleted = data;errorOccured=false}" 
+                                :loading="operationLoading"></Button>
                                 <Button v-show="toBeEdited == data" rounded outlined icon="pi pi-times" @click="toggleEdit(null)"></Button>
                                 <Button v-show="toBeEdited == data" rounded outlined icon="pi pi-check" @click="editRole(data)" :loading="operationLoading"></Button>
 
@@ -113,9 +115,8 @@ const deleteRole = async () => {
                         </template>
                     </Column>
                 </DataTable>
-
+                <small v-show="errorOccured">{{ errorMessage }}</small>
                 <Button label="New Member" icon="pi pi-plus" @click="showAssignUser = true" v-if="!showAssignUser"></Button>
-
                 <AssignUser v-if="showAssignUser" :Users=users :UnitId="UnitId" @confirmed="newUser" @cancelled="showAssignUser = false"></AssignUser>
 
                 <Dialog v-model:visible="showDelete" modal>

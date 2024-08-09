@@ -50,7 +50,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Se
         public async Task<IEnumerable<MaintenanceDTO>> GetAllAsync(int days, int userId)
         {
             var unitIds = await _unitRepository.GetAllRelevantUnitIdsToUserAsync(userId);
-            var list = await _repository.GetAllAsync(days, unitIds);
+            var list = await _repository.GetAllInTimePeriodAsync(days, unitIds);
             return list;
         }
 

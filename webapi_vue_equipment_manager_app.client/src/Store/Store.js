@@ -89,7 +89,12 @@ const  UpdateMaintenanceCategories = async () => {
         return store.MaintenanceCategories
     }
 
-
+export const GetPublicOrganisations = async () =>{
+    if(store.PublicOrganisations.length < 1){
+        store.PublicOrganisations = await GetFromAPI('api/units?publicOnly=true&flat=false', "Could not retrieve public units")
+    }
+    return store.PublicOrganisations
+}
 
 export async function PopulateStartingData() {
     await Promise.all([UpdateUserDetails(),UpdateStructure(),GetPublicUsers(),
@@ -107,7 +112,7 @@ export async function UpdateItemData(){
 export const store = reactive({
     Units : ref([]),
     UnitsAuthorised: ref([]),
-    UserDetails : ref([]),
+    UserDetails : ref(),
     ModelCategories: ref([]),
     Statuses: ref([]),
     Models: ref([]),
@@ -116,6 +121,7 @@ export const store = reactive({
     Roles: ref([]),
     StatusQuantities: ref([]),
     MaintenanceCategories : ref([]),
+    PublicOrganisations : ref([])
 })
 
 

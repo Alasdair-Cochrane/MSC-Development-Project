@@ -31,7 +31,7 @@ imageCaptured.value = true;
 
 function initCamera(){
   navigator.mediaDevices.
-    getUserMedia({video:true, audio:false}).
+    getUserMedia({video:{facingMode: "environment"}, audio:false}).
     then((stream) => {
         window.localStream = stream
         video.value.srcObject = stream;

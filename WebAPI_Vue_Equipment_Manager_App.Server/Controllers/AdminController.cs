@@ -6,6 +6,7 @@ using WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Servic
 namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
 {
     [ApiController]
+
     [Route("api/[controller]")]
     public class AdminController : Controller
     {

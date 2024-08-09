@@ -11,7 +11,7 @@ const returnedFirstName = ref()
 const returnedLastName = ref()
 const returnedOrganisationName = ref()
 
-
+const attempted = ref(false)
 const successfull = ref(false)
 const unsuccessfull = ref(false)
 const errors = ref()
@@ -59,7 +59,12 @@ const isValid = ()=>{
 }
 
 async function register(){
+    unsuccessfull.value = false
+    attempted.value = false
     if(!isValid()){
+        unsuccessfull.value = true
+        errors.value = "Required Fields are empty"
+        attempted.value = true;
         return;
     }
     loading.value = true;
@@ -71,6 +76,7 @@ async function register(){
         lastName : lName.value,
         organisation : selectedOrganisation.value
     }
+    try{
 
     var response = await fetch('api/users/register',
         {
@@ -89,11 +95,17 @@ async function register(){
         returnedOrganisationName.value = detail.unit;
     }
     else{
-        let result = await response.json()
+        let result = await response.json().catch(e => console.warn(e))
         unsuccessfull.value = true;
-        errors.value = result.errors;
+        errors.value = result?.errors ?? response.statusText;
     }
     loading.value = false;
+}
+catch(e){
+    unsuccessfull.value = true
+    errors.value = e
+    loading.value = false
+}
 }
 </script>
 <template>
@@ -101,20 +113,22 @@ async function register(){
     <h2>Register</h2>
     <div id="login" class="inputForm" v-show="!successfull">
         <FloatLabel>
-            <InputText id="fName" v-model="fName" :invalid="!fName"/>
+            <InputText id="fName" v-model="fName" :invalid="!fName && attempted"/>
             <label for="fName">First Name</label>
         </FloatLabel>
         <FloatLabel>
-            <InputText id="lName" v-model="lName" :invalid="!lName"/>
+            <InputText id="lName" v-model="lName" :invalid="!lName && attempted"/>
             <label for="lName">Last Name</label>
         </FloatLabel>        
         
         <FloatLabel>
-            <InputText id="email-register" v-model="email" :invalid="!emailIsValid()"/>
+            <InputText id="email-register" v-model="email" :invalid="!emailIsValid() && attempted"/>
             <label for="email-register">Email</label>
+            <small style="color:red; display:block" v-show="email && !emailIsValid()">Invalid email format</small>
+
         </FloatLabel>
         <FloatLabel>
-            <Password id="password-register" v-model="password" toggleMask :invalid="!passwordIsValid()">
+            <Password id="password-register" v-model="password" toggleMask :invalid="!passwordIsValid() && attempted">
                 <template #header>
         <div class="font-semibold text-xm mb-4">Pick a password</div>
     </template>
@@ -139,7 +153,8 @@ async function register(){
             </Dialog>
         </div>
 
-        <Button label="Register" @click="register"></Button>
+        <Button label="Register" @click="register" :loading=loading></Button>
+        <small style="color:red" v-show="unsuccessfull">Failed to register: {{errors}}</small>
         
     </div>
     <div v-show="successfull" id="registration-sucess">

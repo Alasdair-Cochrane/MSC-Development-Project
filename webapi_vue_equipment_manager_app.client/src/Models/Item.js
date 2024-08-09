@@ -16,15 +16,3 @@ export class Item {
         this.unitID = unitID
     }
 }
-
-export function getSearchFields(){
-    return {"Serial Number" : "SerialNumber" , 
-         "Local Name" :"LocalName" , 
-         "Barcode" : "Barcode", 
-         "Unit Name" : "UnitName",
-         "Model Name" : "ModelName", 
-         "Model Number" : "ModelNumber",
-         "Manufacturer" : "Manufacturer",
-         "Category" : "Category" }
-}
-

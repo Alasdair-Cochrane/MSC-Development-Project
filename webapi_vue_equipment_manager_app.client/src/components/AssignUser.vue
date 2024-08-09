@@ -71,7 +71,7 @@ const confirm = async () =>{
         :options="store.Roles" optionLabel="name" placeholder="Select Role" :invalid="noRole"></Select>
         </div>
         <div id="user-selection-btns">
-            <Button label="Confirm" @click="confirm"></Button>
+            <Button label="Confirm" @click="confirm" :loading="assignmentLoading"></Button>
             <Button label="Cancel" @click="$emit('cancelled')" severity="danger"></Button>
         </div>
         <small v-show="errorOccured">Assignment Failed : {{ errorMessage }}</small>

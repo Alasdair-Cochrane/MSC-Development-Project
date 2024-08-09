@@ -125,22 +125,6 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
             }
 
         }
-        //[HttpGet]
-        //[Route("~/api/items/{id}/maintenance/documents")]
-        //public async Task<IActionResult> GetAllMaintenanceFilesForItem(int id)
-        //{
-        //    var documentRecords = await _maintenanceService.GetAllMaintenanceFilesForItemAsync(id);
-        //    var files = await _documentService.RetrieveAll(documentRecords.Select(x => x.Document.URL));
-        //    if (files.IsNullOrEmpty())
-        //    {
-        //        return NotFound();
-        //    }
-        //    else
-        //    {
-        //        File(files, "application/pdf");
-        //        return Ok(files);
-        //    }
-        //}
 
         [HttpGet("{id}/documents")]
         public async Task<IActionResult> GetDocument(int id)

@@ -4,6 +4,7 @@ import OrgTable from '@/components/OrgTable.vue'
 import AddUnit from '@/components/AddUnit.vue';
 import { onMounted, ref } from 'vue';
 import { store, UpdateStructure} from '@/Store/Store';
+import AssignmentsDisplay from '@/components/AssignmentsDisplay.vue';
 
 const showOrgChart = ref(false)
 const showAddNewUnit = ref(false)
@@ -37,11 +38,15 @@ const chartShown = (i) =>{
 <div class="wrapper" >
 
         <div class="org" id="org-table">
+            <h3>Admin</h3>
+            <span v-show="!store.OrgStructure.length">You are not an administrator of any locations. Create a new location to get started.</span>
             <div class="header-btns" v-show="!dataLoading">
                 <Button label="New" icon="pi pi-plus" @click="showAddNewUnit = true"></Button>
             </div>
-            <OrgTable v-model="orgStructure" ref="orgTable" v-if="!dataLoading" @chartButtonClicked="chartShown"></OrgTable>
-        </div>
+            <div v-show="store.OrgStructure.length">
+                <OrgTable v-model="orgStructure" ref="orgTable"  @chartButtonClicked="chartShown"></OrgTable>
+            </div>
+            </div>
 <!-- Org Chart Popup -->
         <div v-if="showOrgChart">
         <Dialog v-model:visible="showOrgChart">
@@ -54,17 +59,7 @@ const chartShown = (i) =>{
 <Dialog v-model:visible="showAddNewUnit" header="New Unit">
     <AddUnit @confirmed="newStructure()" @cancelled="showAddNewUnit= false"></AddUnit>
 </Dialog>
-<div v-if="dataLoading">
-    <Skeleton class="mb-2"></Skeleton>
-    <Skeleton class="mb-2"></Skeleton>
-    <Skeleton class="mb-2"></Skeleton>
-    <Skeleton class="mb-2"></Skeleton>
-    <Skeleton class="mb-2"></Skeleton>
-    <Skeleton class="mb-2"></Skeleton>
-    <Skeleton class="mb-2"></Skeleton>
-    <Skeleton class="mb-2"></Skeleton>
-</div>
-
+<AssignmentsDisplay></AssignmentsDisplay>
 </div>
 </template>
 <style scoped>
@@ -88,18 +83,19 @@ const chartShown = (i) =>{
 #org-table{
     min-height: 50%;
     flex: 1;
-    min-width: 600px;
     height: fit-content;
+    min-width: 100%;
     padding: 1rem;
     background-color: white;
     border-radius: 10px;
-    box-shadow:  0 2px 2px 0 rgba(28, 25, 25, 0.2);
-
-    
+    box-shadow:  0 2px 2px 0 rgba(28, 25, 25, 0.2);    
 }
 @media(max-width:768px){
     #org-table{
         max-width: none;
     }
+}
+h3{
+    font-weight: bold;
 }
 </style>

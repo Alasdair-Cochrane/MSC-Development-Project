@@ -5,7 +5,7 @@ import { onMounted, ref } from 'vue';
 const notes = defineModel('notes')
 const props = defineProps({item:{}})
 const newNote = ref({})
-const emit = defineEmits(["added"])
+const emit = defineEmits(["confirmed"])
 const loading = ref(false)
 
 onMounted(()=> newNote.value.itemId = props.item.id)
@@ -27,7 +27,7 @@ const addNote = async() =>{
     let result = await AddNote(newNote.value)
     if(result.successfull){
         notes.value.push(result.payload)
-        emit("added", newNote.value)
+        emit("confirmed", newNote.value)
     }
     loading.value = false;
 }

@@ -24,7 +24,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll([FromQuery] bool adminOnly = true, bool flat = true, bool authorised = false) {
+        public async Task<IActionResult> GetAll([FromQuery] bool adminOnly = true, bool flat = true,bool publicOnly = false, bool authorised = false) {
 
             var user = await _userService.GetCurrentUserAsync(HttpContext);
             IEnumerable<UnitDTO> units;
@@ -32,6 +32,10 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
             if (flat)
             {
                 units = await _unitService.GetAllAsync(user.Id,authorised);
+            }
+            else if (publicOnly)
+            {
+                units = await _unitService.GetUnassignedPublicUnitsAsync(user.Id);
             }
             else
             {
@@ -51,7 +55,8 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> GetPublicUnits()
         {
-            var units = await _unitService.GetPublicUnitsAsync();
+            IEnumerable<UnitDTO> units = await _unitService.GetPublicRootUnitsAsync();
+            
             if (units.IsNullOrEmpty())
             {
                 return NotFound();

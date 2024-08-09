@@ -60,7 +60,7 @@ async function saveMaintenance(){
     </div>
     </div>
     <div>
-    <Button label="Submit" icon="pi pi-save" @click="saveMaintenance"></Button>
+    <Button label="Submit" icon="pi pi-save" @click="saveMaintenance" :loading="loading"></Button>
     </div>
 </div>
 </template>

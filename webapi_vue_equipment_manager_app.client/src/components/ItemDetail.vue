@@ -133,7 +133,7 @@ async function setImage(image){
         <div class ="field-row">
             <div class="field">
             <label class="fieldName">Current Status</label>
-            <label class="fieldValue" v-show="!editMode">{{ selectedItem.currentStatus }}</label>
+            <label class="fieldValue" v-show="!editMode" id="current-status" :style="{backgroundColor : selectedItem.statusColorHex}">{{ selectedItem.currentStatus }}</label>
             <Select  v-if="editMode" id="status" size="small" v-model="changedItem.currentStatus" :placeholder="changedItem.currentStatus"
             :options="store.Statuses"/>
         </div>
@@ -265,7 +265,7 @@ async function setImage(image){
             <label class="fieldValue" v-show="!editMode">{{ FormatDate(selectedItem.date_of_commissioning) }}</label>
             <DatePicker  v-if="editMode" showIcon icon-display="input" v-model="changedItem.date_of_commissioning" date-format="dd/mm/yy" :maxDate="maxDate"/>
         </div>
-        <div class="field">
+        <div class="field" v-show="!editMode">
             <label class="fieldName">Date Added</label>
             <label class="fieldValue" v-show="!editMode">{{ FormatDate(selectedItem.dateCreated) }}</label>
         </div>
@@ -287,10 +287,20 @@ async function setImage(image){
         <div class="image-upload" v-if="!editMode">
             <Button label="image" icon="pi pi-upload" @click="showImageCapture = true"></Button>
         </div>
+        <div class="panel" v-if="!editMode">
+            <FileDisplay header="Documents" v-model="selectedItem.documents"  @upload="uploadFile" :upload-loading="uploadLoading" ></FileDisplay>
+        </div>  
+    </div>
+    <div class ="panel-3" v-show="!editMode">
         <div class="panel">
-            <FileDisplay header="Documents" v-model="selectedItem.documents"  @upload="uploadFile" :upload-loading="uploadLoading" v-if="!editMode"></FileDisplay>
+            <MaintenanceDisplay v-model="selectedItem" v-if="selectedItem"></MaintenanceDisplay>
+        </div>
+        <div class="panel">
+            <NotesDisplay v-model="selectedItem" v-if="selectedItem"></NotesDisplay>
         </div>
     </div>
+
+
     <Dialog modal v-model:visible="showImageCapture"><CaptureImage @cancelled="showImageCapture = false" @imageConfirmed="setImage"></CaptureImage></Dialog>
 </div>
 </template>
@@ -299,7 +309,9 @@ async function setImage(image){
 .container{
     display: flex;
     flex-wrap: wrap;
-    gap: 1rem;
+    justify-content: space-evenly;
+    flex: 1;
+    gap: 10px;
 }
 .p-inputtext{
     max-width: 200px;
@@ -310,19 +322,33 @@ async function setImage(image){
 .p-inputwrapper{
     max-width: 200px;
 }
+
+.p-inputgroupaddon{
+    padding: 2px;
+}
+.p-inputnumber-input{
+    padding-inline: 5px;
+}
 .fields{
     display: flex;
     flex-wrap: wrap;
-    min-width: 300px;
-    max-width: 550px;
-    flex: 1;
+    align-items: center;
+    width: fit-content;
+    flex-direction: column;
     gap: 10px;
+    min-width: 300px;
 }
+
+
 .panel{
     background-color: white;
     box-shadow: 0 2px 2px 0 rgba(28, 25, 25, 0.2);
     border: black solid 1px;
     border-radius: 10px;
+    min-width: 280px;
+    max-width: 300px;
+    flex: 1;
+    width: 100%;
 }
 
 #image{
@@ -355,15 +381,14 @@ background-color: white;
 border: solid black 1px;
 border-radius: 10px;
 width: 100%;
-max-width: 550px;
+max-width: 400px;
 padding: 10px;
 
 }
 .field-row{
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-evenly;
-    
+    justify-content: space-evenly;    
     
 }
 .field{
@@ -379,6 +404,7 @@ padding: 10px;
     display: flex;
     justify-content: space-evenly;
     flex-wrap: wrap;
+    gap: 5px;
 
 }
 .fieldName{
@@ -391,15 +417,32 @@ padding: 10px;
     flex: 1;
     min-width: 90px;
 }
+
+.extra-panels{
+    display: flex;
+    flex-wrap: wrap;
+    flex: 1;    
+    justify-content: space-evenly;
+}
 .panel-2{
     justify-content: flex-start;
     display: flex;
     flex-direction: column;
     gap: 10px;
     align-items: center;
-    padding: 5px;
-    max-width: 500px;
+    max-width: 320px;
     width: fit-content;
+    height: fit-content;
+}
+.panel-3{
+    justify-content: flex-start;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    max-width: 300px;
+    width: fit-content;
+    height: fit-content;
 }
 
 @media(max-width:760px){
@@ -408,6 +451,9 @@ padding: 10px;
     }
     .field{
         min-width: 120px;
+    }
+    .container{
+        justify-content: center;
     }
             
 }
@@ -430,4 +476,10 @@ small{
     gap: 2rem;
 }
 
+#current-status{
+    padding: 5px;
+    border-radius: 10px;
+    color: var(--p-surface-0);
+    font-weight: 500;
+}
 </style>

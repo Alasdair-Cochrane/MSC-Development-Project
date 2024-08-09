@@ -48,5 +48,20 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs.Mappings
             };
 
         }
+        public static EquipmentModel ToEntity(this EquipmentModelDTO dto)
+        {
+            return new EquipmentModel
+            {
+                Id = dto.Id ?? 0,
+                ModelNumber = dto.ModelNumber,
+                ModelName = dto.ModelName,
+                Manufacturer = dto.Manufacturer,
+                Weight = dto.Weight,
+                Height = dto.Height,
+                Length = dto.Length,
+                Width = dto.Width,
+                CategoryId = dto.CategoryId,
+            };
+        }
     }
 }

@@ -50,7 +50,7 @@ watch(maintenances, () => {item.value.maintenances = maintenances.value
 </template>
 <style scoped>
 .container{
-    min-width: 300px;
+    min-width: 280px;
     display: flex;
     flex: 1;
     height: auto;
@@ -60,6 +60,7 @@ watch(maintenances, () => {item.value.maintenances = maintenances.value
 h3{
     width: fit-content;
     font-weight: bold;
+    font-size: medium;
 }
 .header{
     display: flex;
@@ -67,35 +68,11 @@ h3{
     padding: 10px;
     align-items: center;
 }
-.placeholder{
-    width: 100%;
-    border: solid black 1px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    padding: 5px;
-    border-radius: 5px;
+*{
+    font-size: small;
 }
 .list{
     padding: 10px;
 }
-.maintenance-card{
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex: 1;
-    padding: 5px;
-    border: 1px solid black;
-    border-radius: 5px;
-}
-.maintenance-card div{
-    display: grid;
-    flex: 1;
-    grid-template-columns: 1fr 1fr;
-}
-.value{
-    max-height: 400px;
-    max-width: 250px;
-    overflow-y: auto;
-}
+
 </style>

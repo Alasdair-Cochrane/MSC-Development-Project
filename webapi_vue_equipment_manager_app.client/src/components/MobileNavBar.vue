@@ -1,4 +1,5 @@
 <script setup>
+import { UserLogout } from '@/Services/UserService';
 import { ref } from 'vue';
 
 
@@ -45,7 +46,7 @@ const expanded = ref(false)
 </div>
 <div class="end-icons">
     <div class="btn">
-    <div class="menu-button" id="sign-out" @click="logOut">
+    <div class="menu-button" id="sign-out" @click="UserLogout()">
             <i class="pi pi-sign-out menu-icon" />
             <span class="menu-text">Sign Out</span>
         </div>
@@ -56,8 +57,7 @@ const expanded = ref(false)
 <style scoped>
 .bar{
     background-color: var(--p-primary-500);
-    max-height: 5%;
-    height: 50px;
+    height: 80px;
     min-width: 100vw;    
     width: 100%;
     display: flex;
@@ -65,10 +65,10 @@ const expanded = ref(false)
     align-items: center;
     padding-inline: 2px;
     transition: 0.2s ease-out;
-    max-height: 35px;
+    max-height: 50px;
 }
 .expanded{
-    max-height: 50px;
+    max-height: 70px;
 }
 a{
     text-decoration: none;
@@ -101,13 +101,13 @@ a{
     transform: rotate(90deg);
 }
 span{
-    font-size: x-small;
+    font-size: small;
 }
  .menu-button span{
     display:none;
 }
 .menu-button i{
-    font-size: small;
+    font-size: 1rem;
 }
 .btn{
     height: 100%;

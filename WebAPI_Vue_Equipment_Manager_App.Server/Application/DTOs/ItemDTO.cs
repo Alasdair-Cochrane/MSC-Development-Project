@@ -29,6 +29,8 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs
 
         [JsonPropertyOrder(2)]
         public required string CurrentStatus { get; set; }
+        public string? StatusColorHex { get; set; }
+
         public string? UnitName { get; set; }
 
         [JsonPropertyOrder(3)]
@@ -48,6 +50,8 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs
         public required int StatusId { get; set; }
         public required string StatusName { get; set; }
         public required int ItemQuantity { get; set; }
+
+        public string? HexColor { get; set; }
         public int Order {  get; set; }
     }
 

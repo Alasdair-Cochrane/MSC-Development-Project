@@ -63,16 +63,13 @@ function itemDeleted(){
         <div v-show="searchExpanded" class="search-display">
             <ItemSearch @item-searched="itemsSearched()" @item-selected="itemSelected" v-model="searchResults" :show-barcode-scanner-first="scanBarcode" :show-scanner-first="scanImage"></ItemSearch></div>
     </div>
-    <div class="details">
+    <div class="details" >
         <div class="display">
-            <ItemDetail @editTrue="toggleExtra()" :selected-Item="item" v-if="item" @update="(i) => item=i" @deleted="itemDeleted()"></ItemDetail>
+            <ItemDetail @editTrue="toggleExtra()" :selected-Item="item" v-if="item" @update="(i) => {item=i; toggleExtra()}" @deleted="itemDeleted()"></ItemDetail>
         </div>
         
     </div>
-    <div v-if="!editMode" class="extra">
-            <div class="panel"><MaintenanceDisplay v-model="item" v-if="item"></MaintenanceDisplay></div>
-            <div class="panel"><NotesDisplay v-model="item" v-if="item"></NotesDisplay></div>
-        </div>
+    
 </div>
 </template>
 
@@ -88,8 +85,17 @@ function itemDeleted(){
     min-height: 100vh;
     height: 100%;
 }
+@media(max-width:430px){
+        .page{
+            justify-content: center;
+        }
+        .search{
+            width: 100%;
+            min-width: 350px;
+        }
+}
 .search{
-    max-width: 300px;
+    max-width: 320px;
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -117,7 +123,7 @@ function itemDeleted(){
     flex: 1;
 }
 .display{
-
+    flex: 1;
 }
 .extra{
     display: flex;

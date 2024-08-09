@@ -5,7 +5,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Repository_Interfa
 {
     public interface IMaintenanceRepository : IRepository<Maintenance>
     {
-        Task<IEnumerable<MaintenanceDTO>> GetAllAsync(int days, IEnumerable<int> unitIds);
+        Task<IEnumerable<MaintenanceDTO>> GetAllInTimePeriodAsync(int days, IEnumerable<int> unitIds);
         public Task<IEnumerable<Maintenance>> GetAllByItemIdAsync(int id);
         Task<IEnumerable<string>> GetAllCategoryNamesAsync();
     }

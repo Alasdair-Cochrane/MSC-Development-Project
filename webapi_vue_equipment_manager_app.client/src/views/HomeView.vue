@@ -10,6 +10,7 @@ import NotesActivityDisplay from '@/components/NotesActivityDisplay.vue';
 import MaintenanceActivityDisplay from '@/components/MaintenanceActivityDisplay.vue';
 import NewItemActivity from '@/components/NewItemActivity.vue';
 import ItemsTableBasic from '@/components/ItemsTableBasic.vue';
+import AssignmentsDisplay from '@/components/AssignmentsDisplay.vue';
 
 
 const dataLoading = ref(true)
@@ -61,7 +62,7 @@ const showStatusQuantityItems= async (data) => {
                 <div class="btn-container">
                     <RouterLink :to="{name: 'searchItem.scanBarcode'}">
                     <div class="btn-box">
-                        <label class="btn-label">Scan Barcode</label> 
+                        <label class="btn-label">Barcode</label> 
                         <i class="pi pi-barcode"/>            
                     </div>
                     </RouterLink>
@@ -111,7 +112,13 @@ const showStatusQuantityItems= async (data) => {
                     <div class="data-table">
                         <h3 style="font-weight: bold; font-size: 18px;">Items</h3>
                     <DataTable class="" :value="store.StatusQuantities" size="small" :loading="store.StatusQuantities.length < 1" scrollable scroll-height="300px">
-                        <Column field="statusName" header="Status" style="width: 150px;"></Column>
+                        <Column field="statusName" header="Status" style="width: 150px;">
+                            <template #body="slotProps">
+                                <span :style="{backgroundColor : slotProps.data.hexColor}" class="status-label">
+                                    {{ slotProps.data.statusName }}
+                                </span>
+                            </template>
+                        </Column>
                         <Column field="itemQuantity" header="#" style="width: 80px;"></Column>
                         <Column style="width: 50px;">
                             <template #body="{data}">
@@ -163,7 +170,16 @@ const showStatusQuantityItems= async (data) => {
             display: flex;
             justify-content: center;
         }
-    }
+}
+
+.status-label{
+    padding: 4px;
+    border-radius: 10px;
+    color: var(--p-surface-0);
+    font-weight: 500;
+
+}
+
 a{
     text-decoration: none;
     color: black;
@@ -180,19 +196,19 @@ a{
 
 .data-table{
     box-shadow:  0 2px 2px 0 rgba(28, 25, 25, 0.2);
-    width: fit-content;
-    height: fit-content;
+    height: 100%;
     border-radius: 10px;
     padding: 10px;
     min-height: 200px;
-    min-width: 350px;
+    min-width: 320px;
     max-width: 380px;
     max-height: 350px;
-
     border: black solid 1px;
-    background-color: white;
+    background-color: var(--p-surface-0);
     font-size: small;
+    flex: 1;
 }
+
 
 .btn-container{
     display: block;
@@ -213,7 +229,7 @@ a{
     align-items: center;
     border-radius: 10px;
     box-shadow:  0 2px 2px 0 rgba(28, 25, 25, 0.2);
-    background-color: white;
+    background-color: var(--p-surface-0);
 }
 
 .btn-box i{
@@ -233,6 +249,7 @@ a{
 .btn-container :hover i{
     color: white;
 }
+
 
 label{
     font-weight: bold;

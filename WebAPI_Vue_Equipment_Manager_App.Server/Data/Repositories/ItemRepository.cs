@@ -194,6 +194,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
                     ItemQuantity = y.Count(),
                     StatusId = y.Key,
                     StatusName = y.First().StatusCategory.Name,
+                    HexColor = y.First().StatusCategory.ColorHex,
                     Order = y.First().StatusCategory.Order,
                 }).
                 OrderBy(x => x.Order).
@@ -206,7 +207,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
         {
             var dateBefore = DateTime.UtcNow.AddDays(-daysBeforeNow);
             var items = await _context.Items.
-                Where(x => x.DateCreated > dateBefore).
+                Where(x => x.DateCreated.Date >= dateBefore.Date).
                 Where(x => unitIds.Contains(x.UnitId)).
                 Include(x => x.Unit).
                 Include(x => x.EquipmentModel).

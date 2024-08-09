@@ -7,5 +7,6 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Interfaces
     {
         public Task<EquipmentModel> UpsertbyModelNumberAsync(EquipmentModel model);
         Task<IEnumerable<string>> GetUserCategoriesAsync(IEnumerable<int> unitIds);
+        Task AddManyAsync(IEnumerable<EquipmentModel> models);
     }
 }

@@ -4,11 +4,11 @@ import { onMounted, ref } from 'vue';
 import { FormatDate } from '@/Services/FormatService';
 
 const notes = ref([])
-const daysBefore = ref(7)
+const daysBefore = ref(0)
 const expandedNotesRows = ref([])
-const daysOptionsLabel = (["1 day","1 week", "2 weeks", "1 month"])
-const daysOptions=([1,7,14,31])
-const selectedOption = ref("1 week")
+const daysOptionsLabel = (["Today","1 week", "2 weeks", "1 month"])
+const daysOptions=([0,7,14,31])
+const selectedOption = ref("Today")
 const loading = ref(true)
 onMounted(async () => getNotes())
 

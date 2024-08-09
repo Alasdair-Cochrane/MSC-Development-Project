@@ -1,6 +1,5 @@
 <script setup>
 import {onMounted, ref} from 'vue'
-import {  getSearchFields } from '@/Models/Item';
 import { QueryItems, searchItemsByProperties } from '@/Services/ItemService';
 import ItemCard from './ItemCard.vue';
 
@@ -25,6 +24,18 @@ onMounted(() => {
     showBarcodeScanner.value = props.showBarcodeScannerFirst
 
 })
+
+function getSearchFields(){
+    return {"Serial Number" : "SerialNumber" , 
+         "Local Name" :"LocalName" , 
+         "Barcode" : "Barcode", 
+         "Owner" : "UnitName",
+         "Model Name" : "ModelName", 
+         "Model Number" : "ModelNumber",
+         "Manufacturer" : "Manufacturer",
+         "Category" : "Category" }
+}
+
 
 async function search(){
     //if the user has not input a value to search just return
@@ -71,8 +82,6 @@ async function scanImage(item){
     searchResults.value = await searchItemsByProperties(queryProperties)    
     emit('itemSearched')
 }
-
-
 
 </script>
 <template>

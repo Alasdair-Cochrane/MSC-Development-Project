@@ -46,12 +46,18 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Se
             }
 
         }
-        public async Task<IEnumerable<UnitDTO>> GetPublicUnitsAsync()
+        public async Task<IEnumerable<UnitDTO>> GetPublicRootUnitsAsync()
         {
             var units = await _unitRepository.
-                GetAllPublicUnitsAsync();
+                GetAllPublicRootsAsync();
             var dtos = units.Select(x => x.ToDTO()).ToList();
             return dtos;
+        }
+
+        public async Task<IEnumerable<UnitDTO>> GetUnassignedPublicUnitsAsync(int userId)
+        {
+            var units = await _unitRepository.GetUserUnassignedPublicRootUnits(userId);
+            return units.Select(x => x.ToDTO()).ToList();
         }
 
         public async Task DeleteAsync(int id, int userId)
@@ -163,10 +169,11 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Se
         Task<IEnumerable<Unit>> GetChildrenById(int id);
         Task<IEnumerable<Unit>> GetParentsById(int id);
         Task<UnitDTO?> UpdateAsync(UnitDTO updatedEntry, int userId);
-        public Task<IEnumerable<UnitDTO>> GetPublicUnitsAsync();
+        public Task<IEnumerable<UnitDTO>> GetPublicRootUnitsAsync();
         Task<UnitDTO?> FindByName(string name);
         Task<IEnumerable<AssignmentDTO>> GetUserAssignments(int unitId);
         Task<IEnumerable<UnitDTO>> GetAdminRoleUnits(int userId);
+        Task<IEnumerable<UnitDTO>> GetUnassignedPublicUnitsAsync(int userId);
     }
 
 

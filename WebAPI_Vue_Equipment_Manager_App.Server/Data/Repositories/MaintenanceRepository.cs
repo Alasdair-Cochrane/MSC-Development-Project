@@ -21,13 +21,13 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
 
 
         //
-        public  async Task<IEnumerable<MaintenanceDTO>> GetAllAsync(int days, IEnumerable<int> unitIds)
+        public  async Task<IEnumerable<MaintenanceDTO>> GetAllInTimePeriodAsync(int days, IEnumerable<int> unitIds)
         {
             var dateNow = DateTime.UtcNow;
             var daysFromNow = dateNow.AddDays(-days);
             var list = await _context.Maintenances.
                 AsNoTracking().
-                Where(x => x.Date_Completed > daysFromNow).
+                Where(x => x.Date_Completed.Date >= daysFromNow.Date).
                 Join(_context.Items, n => n.ItemId, i => i.Id, (n,i) => new 
                 {
                     Category = n.Category,
@@ -52,6 +52,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
                     SerialNumber = n.SerialNumber,
                     Id = n.Id,
                 }).
+                OrderByDescending( x => x.Date_Completed).
                 ToListAsync();
             return list;
         }

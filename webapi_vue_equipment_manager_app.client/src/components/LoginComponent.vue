@@ -34,14 +34,13 @@ async function login(){
         <h2>Login</h2>
         <small v-show="unsuccessfull">Login Failed : {{ error }}</small>
         <div>
-            <FloatLabel>
-                <InputText id="email" type="email" v-model="email" :invalid="unsuccessfull"/>
+            <FloatLabel >
+                <InputText  type="email" v-model="email" :invalid="unsuccessfull" class="email"/>
                 <label for="email">Email</label>
             </FloatLabel>
         </div>
-
         <FloatLabel>
-            <Password id="password" v-model="password" toggleMask :invalid="unsuccessfull" :feedback=false />
+            <Password  v-model="password" toggleMask :invalid="unsuccessfull" :feedback=false />
             <label for="password">Password</label>
         </FloatLabel>
         <Button label="Login" @click="login" :loading="loading"></Button>
@@ -54,7 +53,9 @@ async function login(){
 </div>
 </template>
 <style scoped>
-
+.email{
+    min-width: 230px;
+}
 
 .wrapper{
     display: flex;
@@ -63,7 +64,6 @@ async function login(){
     align-items: center;
     height: 100%;
 }
-
 .inputForm{
     display: flex;
     flex-direction: column;
@@ -73,6 +73,7 @@ async function login(){
     align-items: center;
     flex: 1;
 }
+
 
 .bottom-links{
     display: flex;
@@ -86,9 +87,5 @@ async function login(){
 }
 small{
     color: red;
-}
-
-#email{
-    min-width: 234px;
 }
 </style>

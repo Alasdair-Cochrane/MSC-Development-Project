@@ -17,7 +17,8 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Error_Handling
 
         public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
         {
-            if (exception is not DataInsertionException || exception is not ImageUploadException || exception is not UnitException)
+            if (exception is not DataInsertionException || exception is not ImageUploadException || 
+                exception is not UnitException || exception is not UnauthorisedOperationException)
             {
                 _logger.LogError(exception.Message);
                 return false;

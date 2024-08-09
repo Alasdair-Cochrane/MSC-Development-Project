@@ -72,7 +72,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
                     {
                         throw new DataInsertionException("Selected Unit ID does not match any current entry");
                     }
-                    await _userService.AssignUserPublicOnCreate(user.Id, unit.Id.Value);
+                    await _userService.AssignUserPublicAsync(user.Id, unit.Id.Value);
                 }
                 //check that the unit does not already exists by Name and if not create the unit then assign new user as admin
                 else

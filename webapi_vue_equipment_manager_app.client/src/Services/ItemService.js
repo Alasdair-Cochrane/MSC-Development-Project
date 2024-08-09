@@ -131,7 +131,6 @@ export async function GetItem() {
 export async function QueryItems(key, value){
 
     let query = `?${key}=${value}`
-    console.log(query)
     const response = await fetch(route + query, 
         {
         method: "GET",

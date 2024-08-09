@@ -65,29 +65,29 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services
 
         public async Task<AssignmentDTO> AssignUserAsync(int creatorId, UserAssignment newAssignment)
         {
-            //check that the user requesting is an admin of the unit or any of the units parents
-            if (!await _unitRepository.CheckUserIsAdminInParentOfUnit(creatorId, newAssignment.UnitId))
+            AssignmentDTO assignment;
+            if(newAssignment.RoleId == 3)
             {
-                throw new UnauthorisedOperationException($"User : {newAssignment.UserId} is not authorised to assign users for unit: {newAssignment.UnitId}");
+                assignment = await AssignUserPublicAsync(newAssignment.UserId, newAssignment.UnitId);
             }
-
-            //it is unneccessary to assign a user as admin to a unit that are already an admin of or of its parent
-            if (newAssignment.RoleId == 1)
+            else
             {
-                if (await _unitRepository.CheckUserIsAdminInParentOfUnit(newAssignment.UserId, newAssignment.UnitId))
+                //check that the user requesting is an admin of the unit or any of the units parents
+                if (!await _unitRepository.CheckUserIsAdminInParentOfUnit(creatorId, newAssignment.UnitId))
                 {
-                    throw new UnauthorisedOperationException($"User : {newAssignment.UserId} is already admin for unit: {newAssignment.UnitId} or one of its units parents");
+                    throw new UnauthorisedOperationException($"User : {newAssignment.UserId} is not authorised to assign users for unit: {newAssignment.UnitId}");
                 }
-            }
 
-            var assignment = await _assignmentRepository.CreateAssignment(newAssignment);
+                assignment = await _assignmentRepository.CreateAssignment(newAssignment);
+            }
+           
 
             return assignment;
         }
 
 
 
-        public async Task<AssignmentDTO> AssignUserPublicOnCreate(int userId, int unitId)
+        public async Task<AssignmentDTO> AssignUserPublicAsync(int userId, int unitId)
         {
             return await _assignmentRepository.CreateAssignment(new UserAssignment { UnitId = unitId, RoleId = 3, UserId = userId });
         }
@@ -101,7 +101,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services
             
            if(!await _assignmentRepository.CheckUnitHasAdminAfterAssignmentUpdate(assignment))
             {
-                throw new UnauthorisedOperationException($"Unit : {assignment.UnitId} will have no admin if user : {assignment.UserId} is reassigned");
+                throw new UnauthorisedOperationException($"Unit will have no admin if user is reassigned");
 
             }
 
@@ -123,7 +123,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services
 
             if(! await _assignmentRepository.CheckUnitHasAdminAfterAdminDelete(assignment))
             {
-                throw new UnauthorisedOperationException($"Unit : {assignment.UnitId} will have no admin if user : {assignment.UserId} is deleted");
+                throw new UnauthorisedOperationException($"Unit  will have no admin if user  is deleted");
             }
             await _assignmentRepository.Delete(assignment);
         }
@@ -179,7 +179,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services
     public interface IUserService
     {
         Task<AssignmentDTO> AssignUserAsync(int creatorId, UserAssignment assignment);
-        Task<AssignmentDTO> AssignUserPublicOnCreate(int userId, int unitId);
+        Task<AssignmentDTO> AssignUserPublicAsync(int userId, int unitId);
         Task DeleteAssignmentAsync(int deletorId, UserAssignment assignment);
         Task<IEnumerable<UserDetailsDTO>> GetAllPublicUsers(int userId);
         Task<IEnumerable<AssignmentDTO>> GetAssignmentsDTObyUserIdAsync(int id);

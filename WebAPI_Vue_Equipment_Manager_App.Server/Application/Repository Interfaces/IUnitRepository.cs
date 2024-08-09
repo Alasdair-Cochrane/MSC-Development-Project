@@ -18,7 +18,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Repository_Interfa
         public Task<IEnumerable<int>> GetParentIDsofUnit(int childId);
         Task<IEnumerable<Unit>> GetParentsofUnit(int childId);
         Task<IEnumerable<int>> GetUnitIdsWithUserRole(int userId, int roleId);
-        public Task<IEnumerable<Unit>> GetAllPublicUnitsAsync();
+        public Task<IEnumerable<Unit>> GetAllPublicRootsAsync();
         Task<Unit?> GetRootUnitAsync(int unitId);
         Task<IEnumerable<User>> GetAllAssignedUsersAsync(int unitId, int userId);
         Task<IEnumerable<AssignmentDTO>> GetUserAssignmentsForUnitAsync(int unitId);
@@ -26,5 +26,6 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Repository_Interfa
         Task<IEnumerable<Unit>> GetAllAssignedRootsAsync(int userId);
         Task<UnitDTO> GetDTOWithChildrenAsync(Unit unit);
         Task<bool> CheckUserHasRoleInParentOfUnit(int userId, IEnumerable<int> roleIds, int unitId);
+        Task<IEnumerable<Unit>> GetUserUnassignedPublicRootUnits(int userId);
     }
 }

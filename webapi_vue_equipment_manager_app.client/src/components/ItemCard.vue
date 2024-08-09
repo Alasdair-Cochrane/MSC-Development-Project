@@ -38,8 +38,8 @@ const deleteItem = async () =>{
 }
 </script>
 <template>
-    <div :class="{ canClick : clickable }" @click="cardClicked" style="flex: 1;">
     <div class="container "  >
+        <div :class="{ canClick : clickable }" @click="cardClicked" style="flex: 1; display: flex;">
         <div id="thumbnail" v-if="shownItem && shownItem.imageUrl">
             <img :src=shownItem?.imageUrl height="80px" width="100%" v-if="shownItem && shownItem.imageUrl">
         </div>
@@ -61,7 +61,6 @@ const deleteItem = async () =>{
             <Button rounded severity="danger" icon="pi pi-trash" @click="deleteItem()"></Button>
             <Dialog v-model:visible="showDetails"><ItemDetail :selectedItem="shownItem"></ItemDetail></Dialog>
         </div>
-
     </div>
 
 </div>
@@ -73,12 +72,14 @@ const deleteItem = async () =>{
     height: 100%;
     min-height: 80px;
     max-width: 350px;
+    min-width: 250px;
     border-radius: 10px;
     display: flex;
     padding: 3px;
-    border: solid black 2px;
+    border: solid black 1px;
     box-shadow:  0 2px 2px 0 rgba(28, 25, 25, 0.2);
     overflow: hidden;
+    background-color: var(--p-surface-0);
 
 }
 img{
@@ -110,6 +111,7 @@ img{
     flex-direction: column;
     justify-content: space-evenly;
     justify-self: flex-end;
+    max-width: fit-content;
 }
 Button{
     max-width: 30px;
@@ -117,6 +119,10 @@ Button{
 }
 .canClick :hover{
     background-color: var(--p-surface-200);
+}
+.canClick{
+    display: flex;
+    
 }
 span{
     font-size: small;

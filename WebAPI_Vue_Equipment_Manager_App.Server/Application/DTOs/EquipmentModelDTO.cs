@@ -13,6 +13,8 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.DTOs
         public int? Length { get; set; }
         public int? Width { get; set; }
         public required string Category { get; set; }
+
+        public int CategoryId { get; set; }
     }
 
 

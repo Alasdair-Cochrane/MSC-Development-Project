@@ -4,10 +4,10 @@ import { onMounted, ref } from 'vue';
 import { FormatDate } from '@/Services/FormatService';
 
 const items = ref([])
-const daysBefore = ref(7)
-const daysOptionsLabel = (["1 day","1 week", "2 weeks", "1 month"])
-const daysOptions=([1,7,14,31])
-const selectedOption = ref("1 week")
+const daysBefore = ref(0)
+const daysOptionsLabel = (["Today","1 week", "2 weeks", "1 month"])
+const daysOptions=([0,7,14,31])
+const selectedOption = ref("Today")
 const selectedItem = ref()
 
 const loading = ref(true)

@@ -102,13 +102,23 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
 
 
 
-        public async Task<IEnumerable<Unit>> GetAllPublicUnitsAsync()
+        public async Task<IEnumerable<Unit>> GetAllPublicRootsAsync()
         {
             var units = await _context.Units.
-                Where(x=> x.IsPublic).
+                Where(x=> x.IsPublic && x.ParentId == null).
                 ToListAsync();
             return units;
         }
+        public async Task<IEnumerable<Unit>> GetUserUnassignedPublicRootUnits(int userId)
+        {
+            var units = await _context.Units.Where(x => x.IsPublic).Where(x => x.ParentId == null).
+                ToListAsync();
+
+            var usersUnits = await GetAllRelevantUnitIdsToUserAsync(userId);
+            units = units.Where(x => !usersUnits.Contains(x.Id)).ToList();
+            return units;
+        }
+
 
 
         //checks whether a user is an admin of the unit or of any of the unit's parents
@@ -208,12 +218,17 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
         public async Task<UnitDTO> GetDTOWithChildrenAsync(Unit unit)
         {            
             var dto = unit.ToDTO();
+            
             dto.AssigedUsers = await GetUserAssignmentsForUnitAsync(unit.Id);
+            
 
-           //if the Children property has not been assigned - check that the unit actually does not have children
+            //if the Children property has not been assigned - check that the unit actually does not have children
 
             if (unit.Children == null)
-            {   var u = _context.Units.Include(x => x.Children).Where(x => x.Id == unit.Id).FirstOrDefault();
+            {
+                var u = _context.Units.Include(x => x.Children).Where(x => x.Id == unit.Id).
+                    Where(x => x.IsPublic == true).
+                    FirstOrDefault();
                 if (u == null || u.Children.IsNullOrEmpty())
                 {
                     return dto;

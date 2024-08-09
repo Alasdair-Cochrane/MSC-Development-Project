@@ -2,7 +2,7 @@
 
 import { ref } from 'vue'
 import { RouterLink} from 'vue-router'
-import { userLogout } from '@/Services/UserService';
+import { UserLogout as UserLogout } from '@/Services/UserService';
 
 const expanded = ref(localStorage.getItem("expanded") === "true")
 
@@ -11,7 +11,7 @@ const ToggleMenu = () => {
     localStorage.setItem("expanded", expanded.value)
 }
 
-const logOut = () => userLogout()
+const logOut = () => UserLogout()
 
 
 

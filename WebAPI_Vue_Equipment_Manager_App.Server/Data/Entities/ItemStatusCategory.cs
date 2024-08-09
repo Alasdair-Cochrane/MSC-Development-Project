@@ -7,5 +7,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities
         public ICollection<Item> Members { get; set; } = null!;
 
         public int Order {  get; set; }
+
+        public string? ColorHex { get; set; }
     }
 }

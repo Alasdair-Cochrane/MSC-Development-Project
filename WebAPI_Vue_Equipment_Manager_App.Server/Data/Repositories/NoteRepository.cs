@@ -71,7 +71,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
         public async Task<IEnumerable<ItemNoteDTO>> GetNotesInTimePeriodAsync(int daysBefore, IEnumerable<int> unitIds)
         {
             var earliestDate = DateTime.UtcNow.AddDays(-daysBefore);
-            var notes = await _context.ItemNotes.Where(x => x.Created > earliestDate).
+            var notes = await _context.ItemNotes.Where(x => x.Created.Date >= earliestDate.Date).
                 Join(_context.Items, n => n.ItemId, i => i.Id, (n, i) => new 
                 {
                     Id = n.Id,
@@ -98,7 +98,8 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
                     Text = n.Text,
                     Title = n.Title
 
-                }).ToListAsync();
+                }).OrderByDescending(x => x.DatePosted).
+                ToListAsync();
             return notes;     
         }
 

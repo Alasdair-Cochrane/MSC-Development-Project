@@ -11,12 +11,13 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Startup
     {
         public static void RegisterRepositories(this IServiceCollection services)
         {
-            services.AddScoped<IEquipmentModelRepository, EquipmentModelRepository>();
-            services.AddScoped<IItemRepository, ItemRepository>();
+
             services.AddScoped(typeof(ICategoryRepository<>), typeof(GenericCategoryRepository<>));
 
-            services.AddScoped<DocumentRepository>();    
+            services.AddScoped<DocumentRepository>();
 
+            services.AddScoped<IEquipmentModelRepository, EquipmentModelRepository>();
+            services.AddScoped<IItemRepository, ItemRepository>();
             services.AddScoped<IUnitRepository, UnitRepository>();
             services.AddScoped<IMaintenanceRepository, MaintenanceRepository>();
             services.AddScoped<IItemQueryBuilder, ItemQueryBuilder>();
@@ -27,24 +28,26 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Startup
         }
         public static void RegisterServices(this IServiceCollection services)
         {
+            //entity services
             services.AddScoped<IEquipmentModelService, EquipmentModelsService>();
             services.AddScoped<IItemService, ItemService>();
             services.AddScoped<IUnitService, UnitService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IMaintenanceService, MaintenanceService>();
-            services.AddScoped<IImageService, ServerImageService>();
             services.AddScoped<INotesService, NotesService>();
 
+            //Storage services
             services.AddSingleton<StorageClientProvider>();
             services.AddScoped<IDocumentService, FirebaseDocumentService>();
-            
-
+            services.AddScoped<IImageService, FirebaseImageService>();
+                        
+            //caches for database tables with small number of rows
             services.AddSingleton<IEntityCache<EquipmentModelCategory>, InMemoryEntityCache<EquipmentModelCategory>>();
             services.AddSingleton<IEntityCache<MaintenanceCategory>, InMemoryEntityCache<MaintenanceCategory>>();
             services.AddSingleton<IEntityCache<ItemStatusCategory>, InMemoryEntityCache<ItemStatusCategory>>();
 
+            //Ai service
             services.AddScoped<ILabelInterpretationService, GoogleLabelInterpretationService>();
-            services.AddScoped<IVirusScanService, VirusScanService>();
 
         }
     }

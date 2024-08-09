@@ -4,7 +4,6 @@
 
 import { store, UpdateStructure } from '@/Store/Store';
 import {onMounted, ref} from 'vue'
-import AssignUser from './AssignUser.vue';
 import AssignedUsersDisplay from '@/components/AssignedUsersDisplay.vue'
 import { DeleteUnit, EditUnit } from '@/Services/UnitService';
 
@@ -12,16 +11,19 @@ const unitTree = ref([])
 const selectedUnit = ref()
 const showUsersDialog= ref(false)
 const expandedKey= ref({})
-const editErrorOccurred = ref(false)
-const errorMessage = ref()
 const operationLoading = ref(false)
 
 const toBeEdited = ref(null)
 const toBeDeleted = ref()
 const showDelete = ref()
+
 const deletionSuccesfull = ref(false)
 const deleteErrorMessage = ref()
 const deleteErrorOccured = ref(false)
+
+const editErrorOccurred = ref(false)
+const editErrorMessage = ref()
+
 
 const openOptions = [{label: "Private", value: false}, {label: "Public", value: true}]
 const openOptionSelected = ref()
@@ -62,6 +64,7 @@ const deleteUnit = async () =>{
     operationLoading.value = false;
 }
 
+//exposes the method to the parent to allow the table to update on modification
 defineExpose({NewStructure})
 
 async function NewStructure(){
@@ -86,7 +89,7 @@ const confirmEdit = async (unit) =>{
     }
     else{
         editErrorOccurred.value = true
-        errorMessage.value = result.errors
+        editErrorMessage.value = result.errors
     }
 
 }
@@ -185,7 +188,7 @@ const showChart = (node) =>{
                              <Button label="Confirm" @click="deleteUnit" :loading="operationLoading"></Button>
                             <Button label="Cancel" @click="toBeDeleted=null; showDelete = false" severity="danger" v-show="!operationLoading"></Button>
                         </div>
-                        <span v-show="deleteErrorOccured"> Failed to Delete : {{ errorMessage }}</span>
+                        <span v-show="deleteErrorOccured"> Failed to Delete : {{ editErrorMessage }}</span>
                     </div>
                     <div v-show="deletionSuccesfull" class="deletion">
                         <label>Deletetion Successfull</label>

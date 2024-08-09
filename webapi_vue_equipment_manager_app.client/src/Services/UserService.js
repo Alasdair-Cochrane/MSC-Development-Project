@@ -54,7 +54,7 @@ export async function getAccessToken(){
     }
     else{
         console.warn("Refresh Error : " + response.statusText)
-        userLogout();
+        UserLogout();
     }
 }
 
@@ -76,15 +76,15 @@ export async function CheckRefreshToken(){
     }
     else{
         console.warn("Refresh Error : " + response.statusText)
-        userLogout();
+        UserLogout();
     }
 }catch(e){
     console.warn("Could not refresh : ")
-    userLogout()
+    UserLogout()
 }
 }
 
-export async function userLogout(){
+export async function UserLogout(){
     localStorage.removeItem("accessToken")
     localStorage.clear()
     sessionStorage.clear()

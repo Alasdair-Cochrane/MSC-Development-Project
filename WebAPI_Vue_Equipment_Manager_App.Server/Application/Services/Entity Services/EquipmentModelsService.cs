@@ -34,23 +34,12 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services
             return added.ToDTO();
         }
 
-        public async Task DeleteAsync(int id)
-        {
-            await _repository.DeleteAsync(id);
-        }
-
         public async Task<IEnumerable<EquipmentModelDTO>> GetAllAsync()
         {
             IEnumerable<EquipmentModel> models = await _repository.GetAllAsync();
             return models.Select(x => x.ToDTO());
         }
 
-        public async Task<EquipmentModelDTO?> GetByiDAsync(int id)
-        {
-            var element = await _repository.GetAsync(id);
-            if (element == null) return null;
-            return element.ToDTO();
-        }
 
         public async Task<EquipmentModelDTO?> UpdateAsync(EquipmentModelDTO model)
         {
@@ -70,6 +59,17 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services
             categories.UnionWith(SeedData.EquipmentModelCategories);
             return categories.ToArray();
         }
+
+        public async Task AddMany(IEnumerable<EquipmentModelDTO> models)
+        {
+            List<EquipmentModel> entities = new List<EquipmentModel>();
+           foreach (var model in models)
+            {
+                model.CategoryId = _typeRepository.FindOrCreateByName(model.Category).Id;
+                entities.Add(model.ToEntity());
+            }
+           await _repository.AddManyAsync(entities);
+        }
     }
 
 
@@ -77,12 +77,11 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services
     public interface IEquipmentModelService
     {
 
-        public Task<EquipmentModelDTO?> GetByiDAsync(int id);
         public Task<IEnumerable<EquipmentModelDTO>> GetAllAsync();
         public Task<EquipmentModelDTO?> AddAsync(EquipmentModelDTO entity);
         public Task<EquipmentModelDTO?> UpdateAsync(EquipmentModelDTO entity);
-        public Task DeleteAsync(int id);
     Task<IEnumerable<string>> GetCategoriesAsync(int userId);
-}
+        Task AddMany(IEnumerable<EquipmentModelDTO> models);
+    }
 
 }
