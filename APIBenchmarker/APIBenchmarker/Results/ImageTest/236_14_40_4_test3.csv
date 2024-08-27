@@ -1,0 +1,51 @@
+Attempt,StringFieldsMatch,StringFieldsTotal,NumberFieldsMatch,NumberFieldsTotal,SerialNumber,ModelName,ModelNumber,Manufacturer,Category,Width,Height,Length,SerialNoValue,ModelNoValue,ModelNameValue,ManufacturerValue,CategoryValue,WidthValue,HeightValue,LengthValue,TimeTaken
+0,2,4,0,0,Success,Failure,Success,Failure,Unassigned,Unassigned,Unassigned,Unassigned,502BS4789,248009,BACT/ALERT® 3D60,"bioMérieux, Inc.",LAB EQUIPMENT,0,0,0,756
+1,2,4,0,0,Success,Failure,Success,Failure,Unassigned,Unassigned,Unassigned,Unassigned,502BS4789,248009,BACT/ALERT® 3D60,"bioMérieux, Inc.",LAB EQUIPMENT,0,0,0,646
+2,2,4,0,0,Success,Failure,Success,Failure,Unassigned,Unassigned,Unassigned,Unassigned,502BS4789,248009,BACT/ALERT® 3D60,"bioMérieux, Inc.",LAB EQUIPMENT,0,0,0,551
+3,2,4,0,0,Success,Failure,Success,Failure,Unassigned,Unassigned,Unassigned,Unassigned,502BS4789,248009,BACT/ALERT® 3D60,"bioMérieux, Inc.",,0,0,0,175
+4,2,4,0,0,Success,Failure,Success,Failure,Unassigned,Unassigned,Unassigned,Unassigned,502BS4789,248009,BACT/ALERT® 3D60,"bioMérieux, Inc.",LAB EQUIPMENT,0,0,0,479
+5,2,4,0,0,Success,Failure,Success,Failure,Unassigned,Unassigned,Unassigned,Unassigned,502BS4789,248009,BACT/ALERT® 3D60,"bioMérieux, Inc.",LAB EQUIPMENT,0,0,0,213
+6,2,4,0,0,Success,Failure,Success,Failure,Unassigned,Unassigned,Unassigned,Unassigned,502BS4789,248009,BACT/ALERT® 3D60,"bioMérieux, Inc.",LAB EQUIPMENT,0,0,0,387
+7,2,4,0,0,Success,Failure,Success,Failure,Unassigned,Unassigned,Unassigned,Unassigned,502BS4789,248009,BACT/ALERT® 3D60,"bioMérieux, Inc.",,0,0,0,364
+8,2,4,0,0,Success,Failure,Success,Failure,Unassigned,Unassigned,Unassigned,Unassigned,502BS4789,248009,BACT/ALERT® 3D60,"bioMérieux, Inc.",LAB EQUIPMENT,0,0,0,326
+9,2,4,0,0,Success,Failure,Success,Failure,Unassigned,Unassigned,Unassigned,Unassigned,502BS4789,248009,BACT/ALERT® 3D60,"bioMérieux, Inc.",LAB EQUIPMENT,0,0,0,342
+10,2,4,0,0,Success,Failure,Success,Failure,Unassigned,Unassigned,Unassigned,Unassigned,502BS4789,248009,BACT/ALERT® 3D60,"bioMérieux, Inc.",,0,0,0,221
+11,2,4,0,0,Success,Failure,Success,Failure,Unassigned,Unassigned,Unassigned,Unassigned,502BS4789,248009,BACT/ALERT® 3D60,"bioMérieux, Inc.",,0,0,0,209
+12,2,4,0,0,Success,Failure,Success,Failure,Unassigned,Unassigned,Unassigned,Unassigned,502BS4789,248009,BACT/ALERT® 3D60,"bioMérieux, Inc.",LAB EQUIPMENT,0,0,0,404
+13,2,4,0,0,Success,Failure,Success,Failure,Unassigned,Unassigned,Unassigned,Unassigned,502BS4789,248009,BACT/ALERT® 3D60,"bioMérieux, Inc.",LAB EQUIPMENT,0,0,0,134
+14,2,4,0,0,Success,Failure,Success,Failure,Unassigned,Unassigned,Unassigned,Unassigned,502BS4789,248009,BACT/ALERT® 3D60,"bioMérieux, Inc.",LAB EQUIPMENT,0,0,0,520
+15,2,4,0,0,Success,Failure,Success,Failure,Unassigned,Unassigned,Unassigned,Unassigned,502BS4789,248009,BACT/ALERT® 3D60,"bioMérieux, Inc.",LAB EQUIPMENT,0,0,0,263
+16,2,4,0,0,Success,Failure,Success,Failure,Unassigned,Unassigned,Unassigned,Unassigned,502BS4789,248009,BACT/ALERT® 3D60,"bioMérieux, Inc.",LAB EQUIPMENT,0,0,0,150
+17,2,4,0,0,Success,Failure,Success,Failure,Unassigned,Unassigned,Unassigned,Unassigned,502BS4789,248009,BACT/ALERT® 3D60,"bioMérieux, Inc.",LAB EQUIPMENT,0,0,0,339
+18,2,4,0,0,Success,Failure,Success,Failure,Unassigned,Unassigned,Unassigned,Unassigned,502BS4789,248009,BACT/ALERT® 3D60,"bioMérieux, Inc.",LAB EQUIPMENT,0,0,0,459
+19,2,4,0,0,Success,Failure,Success,Failure,Unassigned,Unassigned,Unassigned,Unassigned,502BS4789,248009,BACT/ALERT® 3D60,"bioMérieux, Inc.",,0,0,0,368
+20,2,4,0,0,Success,Failure,Success,Failure,Unassigned,Unassigned,Unassigned,Unassigned,502BS4789,248009,BACT/ALERT® 3D60,"bioMérieux, Inc.",,0,0,0,193
+21,2,4,0,0,Success,Failure,Success,Failure,Unassigned,Unassigned,Unassigned,Unassigned,502BS4789,248009,BACT/ALERT® 3D60,"bioMérieux, Inc.",LAB EQUIPMENT,0,0,0,136
+22,2,4,0,0,Success,Failure,Success,Failure,Unassigned,Unassigned,Unassigned,Unassigned,502BS4789,248009,BACT/ALERT® 3D60,"bioMérieux, Inc.",LAB EQUIPMENT,0,0,0,197
+23,2,4,0,0,Success,Failure,Success,Failure,Unassigned,Unassigned,Unassigned,Unassigned,502BS4789,248009,BACT/ALERT® 3D60,"bioMérieux, Inc.",LAB EQUIPMENT,0,0,0,462
+24,2,4,0,0,Success,Failure,Success,Failure,Unassigned,Unassigned,Unassigned,Unassigned,502BS4789,248009,BACT/ALERT® 3D60,"bioMérieux, Inc.",,0,0,0,242
+25,2,4,0,0,Success,Failure,Success,Failure,Unassigned,Unassigned,Unassigned,Unassigned,502BS4789,248009,BACT/ALERT® 3D60,"bioMérieux, Inc.",LAB EQUIPMENT,0,0,0,970
+26,2,4,0,0,Success,Failure,Success,Failure,Unassigned,Unassigned,Unassigned,Unassigned,502BS4789,248009,BACT/ALERT® 3D60,"bioMérieux, Inc.",,0,0,0,660
+27,2,4,0,0,Success,Failure,Success,Failure,Unassigned,Unassigned,Unassigned,Unassigned,502BS4789,248009,BACT/ALERT® 3D60,"bioMérieux, Inc.",LAB EQUIPMENT,0,0,0,529
+28,2,4,0,0,Success,Failure,Success,Failure,Unassigned,Unassigned,Unassigned,Unassigned,502BS4789,248009,BACT/ALERT® 3D60,"bioMérieux, Inc.",LAB EQUIPMENT,0,0,0,151
+29,2,4,0,0,Success,Failure,Success,Failure,Unassigned,Unassigned,Unassigned,Unassigned,502BS4789,248009,BACT/ALERT® 3D60,"bioMérieux, Inc.",LAB EQUIPMENT,0,0,0,496
+30,2,4,0,0,Success,Failure,Success,Failure,Unassigned,Unassigned,Unassigned,Unassigned,502BS4789,248009,BACT/ALERT® 3D60,"bioMérieux, Inc.",LAB EQUIPMENT,0,0,0,198
+31,2,4,0,0,Success,Failure,Success,Failure,Unassigned,Unassigned,Unassigned,Unassigned,502BS4789,248009,BACT/ALERT® 3D60,"bioMérieux, Inc.",LAB EQUIPMENT,0,0,0,214
+32,2,4,0,0,Success,Failure,Success,Failure,Unassigned,Unassigned,Unassigned,Unassigned,502BS4789,248009,BACT/ALERT® 3D60,"bioMérieux, Inc.",LAB EQUIPMENT,0,0,0,684
+33,2,4,0,0,Success,Failure,Success,Failure,Unassigned,Unassigned,Unassigned,Unassigned,502BS4789,248009,BACT/ALERT® 3D60,"bioMérieux, Inc.",,0,0,0,484
+34,2,4,0,0,Success,Failure,Success,Failure,Unassigned,Unassigned,Unassigned,Unassigned,502BS4789,248009,BACT/ALERT® 3D60,"bioMérieux, Inc.",LAB EQUIPMENT,0,0,0,506
+35,2,4,0,0,Success,Failure,Success,Failure,Unassigned,Unassigned,Unassigned,Unassigned,502BS4789,248009,BACT/ALERT® 3D60,"bioMérieux, Inc.",,0,0,0,161
+36,2,4,0,0,Success,Failure,Success,Failure,Unassigned,Unassigned,Unassigned,Unassigned,502BS4789,248009,BACT/ALERT® 3D60,"bioMérieux, Inc.",,0,0,0,983
+37,2,4,0,0,Success,Failure,Success,Failure,Unassigned,Unassigned,Unassigned,Unassigned,502BS4789,248009,BACT/ALERT® 3D60,"bioMérieux, Inc.",,0,0,0,988
+38,2,4,0,0,Success,Failure,Success,Failure,Unassigned,Unassigned,Unassigned,Unassigned,502BS4789,248009,BACT/ALERT® 3D60,"bioMérieux, Inc.",,0,0,0,196
+39,2,4,0,0,Success,Failure,Success,Failure,Unassigned,Unassigned,Unassigned,Unassigned,502BS4789,248009,BACT/ALERT® 3D60,"bioMérieux, Inc.",LAB EQUIPMENT,0,0,0,164
+40,2,4,0,0,Success,Failure,Success,Failure,Unassigned,Unassigned,Unassigned,Unassigned,502BS4789,248009,BACT/ALERT® 3D60,"bioMérieux, Inc.",LAB EQUIPMENT,0,0,0,204
+41,2,4,0,0,Success,Failure,Success,Failure,Unassigned,Unassigned,Unassigned,Unassigned,502BS4789,248009,BACT/ALERT® 3D60,"bioMérieux, Inc.",LAB EQUIPMENT,0,0,0,872
+42,2,4,0,0,Success,Failure,Success,Failure,Unassigned,Unassigned,Unassigned,Unassigned,502BS4789,248009,BACT/ALERT® 3D60,"bioMérieux, Inc.",,0,0,0,317
+43,2,4,0,0,Success,Failure,Success,Failure,Unassigned,Unassigned,Unassigned,Unassigned,502BS4789,248009,BACT/ALERT® 3D60,"bioMérieux, Inc.",LAB EQUIPMENT,0,0,0,174
+44,2,4,0,0,Success,Failure,Success,Failure,Unassigned,Unassigned,Unassigned,Unassigned,502BS4789,248009,BACT/ALERT® 3D60,"bioMérieux, Inc.",LAB EQUIPMENT,0,0,0,441
+45,2,4,0,0,Success,Failure,Success,Failure,Unassigned,Unassigned,Unassigned,Unassigned,502BS4789,248009,BACT/ALERT® 3D60,"bioMérieux, Inc.",LAB EQUIPMENT,0,0,0,448
+46,2,4,0,0,Success,Failure,Success,Failure,Unassigned,Unassigned,Unassigned,Unassigned,502BS4789,248009,BACT/ALERT® 3D60,"bioMérieux, Inc.",,0,0,0,851
+47,2,4,0,0,Success,Failure,Success,Failure,Unassigned,Unassigned,Unassigned,Unassigned,502BS4789,248009,BACT/ALERT® 3D60,"bioMérieux, Inc.",LAB EQUIPMENT,0,0,0,600
+48,2,4,0,0,Success,Failure,Success,Failure,Unassigned,Unassigned,Unassigned,Unassigned,502BS4789,248009,BACT/ALERT® 3D60,"bioMérieux, Inc.",,0,0,0,298
+49,2,4,0,0,Success,Failure,Success,Failure,Unassigned,Unassigned,Unassigned,Unassigned,502BS4789,248009,BACT/ALERT® 3D60,"bioMérieux, Inc.",LAB EQUIPMENT,0,0,0,63

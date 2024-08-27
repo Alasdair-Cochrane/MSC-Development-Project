@@ -1,0 +1,10 @@
+Attempt,StringFieldsMatch,StringFieldsTotal,NumberFieldsMatch,NumberFieldsTotal,SerialNumber,ModelName,ModelNumber,Manufacturer,Category,Width,Height,Length,SerialNoValue,ModelNoValue,ModelNameValue,ManufacturerValue,CategoryValue,WidthValue,HeightValue,LengthValue,TimeTaken
+0,4,4,2,3,Success,Unassigned,Success,Success,Success,Success,Failure,Success,905TRVM18271,LBNC15231V/00,,LG,Refrigerator,701,1723,701,85
+1,4,4,1,3,Success,Unassigned,Success,Success,Success,Failure,Success,Failure,905TRVM18271,LBNC15231V/00,,LG,REFRIGERATOR,699,1720,699,434
+2,4,4,1,3,Success,Unassigned,Success,Success,Success,Failure,Success,Failure,905TRVM18271,LBNC15231V/00,,LG,Refrigerator,699,1720,699,507
+3,4,4,0,3,Success,Unassigned,Success,Success,Success,Failure,Failure,Failure,905TRVM18271,LBNC15231V/00,,LG,Refrigerator,699,1722,699,648
+4,4,4,1,3,Success,Unassigned,Success,Success,Success,Failure,Success,Failure,905TRVM18271,LBNC15231V/00,,LG,REFRIGERATOR,699,1720,699,498
+5,3,4,1,3,Success,Unassigned,Success,Success,Failure,Failure,Success,Failure,905TRVM18271,LBNC15231V/00,,LG,Household Refrigerator,698.5,1720.5,698.5,402
+6,4,4,3,3,Success,Unassigned,Success,Success,Success,Success,Success,Success,905TRVM18271,LBNC15231V/00,,LG,Refrigerator,701,1721,701,444
+7,4,4,1,3,Success,Unassigned,Success,Success,Success,Failure,Success,Failure,905TRVM18271,LBNC15231V/00,,LG,Refrigerator,699,1720,699,362
+8,4,4,1,3,Success,Unassigned,Success,Success,Success,Failure,Success,Failure,905TRVM18271,LBNC15231V/00,,LG,Refrigerator,698,1720,698,478

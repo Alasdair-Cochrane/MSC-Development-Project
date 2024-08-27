@@ -1,0 +1,54 @@
+Attempt,StringFieldsMatch,StringFieldsTotal,NumberFieldsMatch,NumberFieldsTotal,SerialNumber,ModelName,ModelNumber,Manufacturer,Category,Width,Height,Length,SerialNoValue,ModelNoValue,ModelNameValue,ManufacturerValue,CategoryValue,WidthValue,HeightValue,LengthValue,TimeTaken
+0,4,4,1,3,Success,Unassigned,Success,Success,Success,Success,Success,Success,905TRVM18271,LBNC15231V/00,,LG,Refrigerator,699,1720,699,746
+1,4,4,1,3,Success,Unassigned,Success,Success,Success,Success,Success,Success,905TRVM18271,LBNC15231V/00,,LG,Refrigerator,699,1721,699,87
+2,3,4,1,3,Success,Unassigned,Failure,Success,Success,Success,Success,Success,905TRVM18271,LBNC15231V,,LG,Refrigerator,698.5,1721.4,698.5,103
+3,4,4,2,3,Success,Unassigned,Success,Success,Success,Success,Failure,Success,905TRVM18271,LBNC15231V/00,,LG,Refrigerator,701,1724,701,549
+4,3,4,0,3,Success,Unassigned,Failure,Success,Success,Success,Failure,Success,905TRVM18271,LBNC15231V,,LG,Refrigerator,699,1722,699,475
+5,3,4,1,3,Success,Unassigned,Failure,Success,Success,Success,Success,Success,905TRVM18271,LBNC15231V,,LG,Refrigerator,699,1720,699,293
+6,3,4,1,3,Success,Unassigned,Failure,Success,Success,Success,Success,Success,905TRVM18271,LBNC15231V,,LG,Refrigerator,698,1720,698,403
+7,2,4,1,3,Success,Unassigned,Failure,Success,Failure,Success,Success,Success,905TRVM18271,LBNC15231V,,LG,Household Refrigerator,700,1720,700,165
+8,3,4,1,3,Success,Unassigned,Failure,Success,Success,Success,Success,Success,905TRVM18271,LBNC15231V,,LG,Refrigerator,698,1720,698,348
+9,4,4,0,3,Success,Unassigned,Success,Success,Success,Success,Failure,Success,905TRVM18271,LBNC15231V/00,,LG,Refrigerator,698,1714,698,394
+10,3,4,1,3,Success,Unassigned,Failure,Success,Success,Success,Success,Success,905TRVM18271,LBNC15231V,,LG,Refrigerator,699,1720,699,998
+11,4,4,0,3,Success,Unassigned,Success,Success,Success,Success,Success,Success,905TRVM18271,LBNC15231V/00,,LG,Refrigerator,699,1722,699,306
+12,4,4,0,3,Success,Unassigned,Success,Success,Success,Success,Success,Success,905TRVM18271,LBNC15231V/00,,LG,Refrigerator,699,1722,699,317
+13,4,4,1,3,Success,Unassigned,Success,Success,Success,Success,Success,Success,905TRVM18271,LBNC15231V/00,,LG,REFRIGERATOR,699,1720,699,106
+14,4,4,1,3,Success,Unassigned,Success,Success,Success,Success,Success,Success,905TRVM18271,LBNC15231V/00,,LG,Refrigerator,698.5,1721.8,698.5,138
+15,4,4,0,3,Success,Unassigned,Success,Success,Success,Success,Failure,Failure,905TRVM18271,LBNC15231V/00,,LG,Refrigerator,698,1714,698,571
+16,4,4,2,3,Success,Unassigned,Success,Success,Success,Success,Success,Success,905TRVM18271,LBNC15231V/00,,LG,REFRIGERATOR,702,1722,702,991
+17,3,4,0,3,Success,Unassigned,Failure,Success,Success,Failure,Success,Success,905TRVM18271,LBNC15231V,,LG,Refrigerator,704,1722,704,284
+18,4,4,1,3,Success,Unassigned,Success,Success,Success,Success,Success,Success,905TRVM18271,LBNC15231V/00,,LG,Refrigerator,699,1720,699,366
+19,3,4,1,3,Success,Unassigned,Success,Success,Failure,Success,Success,Success,905TRVM18271,LBNC15231V/00,,LG,Household Refrigerator,699,1720,699,319
+20,3,4,2,3,Success,Unassigned,Failure,Success,Success,Success,Success,Success,905TRVM18271,LBNC15231V,,LG,Refrigerator,701,1722,701,151
+21,3,4,0,3,Success,Unassigned,Failure,Success,Success,Success,Success,Success,905TRVM18271,LBNC15231V,,LG,Refrigerator,699,1722,699,412
+22,3,4,1,3,Success,Unassigned,Failure,Success,Success,Success,Success,Success,905TRVM18271,LBNC15231V,,LG,Refrigerator,698.5,1721,698.5,979
+23,3,4,1,3,Success,Unassigned,Success,Success,Failure,Success,Success,Success,905TRVM18271,LBNC15231V/00,,LG,Household Refrigerator,698.5,1721.4,698.5,752
+24,4,4,0,3,Success,Unassigned,Success,Success,Success,Success,Success,Success,905TRVM18271,LBNC15231V/00,,LG,Refrigerator,699,1722,699,259
+25,3,4,0,3,Success,Unassigned,Failure,Success,Success,Success,Success,Success,905TRVM18271,LBNC15231V,HOUSEHOLD REFRIGERATOR,LG,REFRIGERATOR,699,1722,699,893
+26,4,4,0,3,Success,Unassigned,Success,Success,Success,Success,Failure,Success,905TRVM18271,LBNC15231V/00,,LG,Refrigerator,698.5,1714.5,698.5,320
+27,4,4,0,3,Success,Unassigned,Success,Success,Success,Success,Success,Success,905TRVM18271,LBNC15231V/00,,LG,Refrigerator,699,1722,699,321
+28,4,4,0,3,Success,Unassigned,Success,Success,Success,Success,Failure,Success,905TRVM18271,LBNC15231V/00,,LG,Refrigerator,698.5,1714.5,698.5,472
+29,4,4,0,3,Success,Unassigned,Success,Success,Success,Success,Success,Success,905TRVM18271,LBNC15231V/00,,LG,REFRIGERATOR,699,1722,699,74
+30,4,4,0,3,Success,Unassigned,Success,Success,Success,Success,Failure,Success,905TRVM18271,LBNC15231V/00,,LG,Refrigerator,698.5,1714.5,698.5,230
+31,4,4,0,3,Success,Unassigned,Success,Success,Success,Success,Success,Success,905TRVM18271,LBNC15231V/00,,LG,Refrigerator,699,1722,699,780
+32,4,4,1,3,Success,Unassigned,Success,Success,Success,Success,Success,Success,905TRVM18271,LBNC15231V/00,,LG,Refrigerator,698.5,1720.6,698.5,391
+33,3,4,1,3,Success,Unassigned,Failure,Success,Success,Success,Success,Success,905TRVM18271,LBNC15231V,,LG,REFRIGERATOR,698,1720,698,451
+34,2,4,1,3,Success,Unassigned,Failure,Success,Failure,Success,Success,Success,905TRVM18271,LBNC15231V,,LG,Household Refrigerator,700,1720,700,978
+35,4,4,0,3,Success,Unassigned,Success,Success,Success,Success,Success,Success,905TRVM18271,LBNC15231V/00,,LG,Refrigerator,699,1722,699,226
+36,4,4,1,3,Success,Unassigned,Success,Success,Success,Success,Success,Success,905TRVM18271,LBNC15231V/00,,LG,Refrigerator,698,1720,698,120
+37,4,4,2,3,Success,Unassigned,Success,Success,Success,Success,Success,Success,905TRVM18271,LBNC15231V/00,,LG,REFRIGERATOR,701,1722,701,255
+38,3,4,0,3,Success,Unassigned,Failure,Success,Success,Success,Success,Success,905TRVM18271,LBNC15231V,,LG,Refrigerator,699,1722,699,219
+39,3,4,0,3,Success,Unassigned,Success,Success,Failure,Failure,Success,Failure,905TRVM18271,LBNC15231V/00,,LG,Household Refrigerator,703,1722,703,371
+40,3,4,1,3,Success,Unassigned,Success,Success,Failure,Success,Success,Success,905TRVM18271,LBNC15231V/00,,LG,Household Refrigerator,698.5,1721.8,698.5,768
+41,4,4,1,3,Success,Unassigned,Success,Success,Success,Success,Success,Success,905TRVM18271,LBNC15231V/00,,LG,Refrigerator,699,1720,699,194
+42,3,4,0,3,Success,Unassigned,Success,Success,Failure,Success,Success,Success,905TRVM18271,LBNC15231V/00,,LG,Household Refrigerator,699,1722,699,306
+43,3,4,1,3,Success,Unassigned,Failure,Success,Success,Success,Success,Success,905TRVM18271,LBNC15231V,,LG,Refrigerator,700,1720,700,60
+44,3,4,2,3,Success,Unassigned,Failure,Success,Success,Success,Success,Success,905TRVM18271,LBNC15231V,,LG,REFRIGERATOR,701,1722,701,99
+45,4,4,1,3,Success,Unassigned,Success,Success,Success,Success,Success,Success,905TRVM18271,LBNC15231V/00,,LG,Refrigerator,698,1720,698,336
+46,4,4,0,3,Success,Unassigned,Success,Success,Success,Success,Success,Success,905TRVM18271,LBNC15231V/00,,LG,Refrigerator,699,1722,699,198
+47,3,4,0,3,Success,Unassigned,Failure,Success,Success,Success,Success,Success,905TRVM18271,LBNC15231V,,LG,Refrigerator,699,1722,699,85
+48,4,4,0,3,Success,Unassigned,Success,Success,Success,Success,Success,Success,905TRVM18271,LBNC15231V/00,,LG,Refrigerator,699,1724,699,433
+49,4,4,0,3,Success,Unassigned,Success,Success,Success,Success,Success,Success,905TRVM18271,LBNC15231V/00,,LG,Refrigerator,699,1722,699,127
+,,,,,0,0,18,0,7,2,7,2,,,,,,,,,
+,,,,,50,0,32,50,43,48,43,48,,,,,,,,,
+,,,,,100,0,64,100,86,96,86,96,,,,,,,,,
