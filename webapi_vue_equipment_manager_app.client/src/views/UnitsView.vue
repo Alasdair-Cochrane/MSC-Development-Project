@@ -18,8 +18,7 @@ onMounted(async () => {
     if(store.OrgStructure.length === 0){
         await UpdateStructure()
     }
-    let structure = store.OrgStructure.length
-    orgStructure.value.push(structure)
+    orgStructure.value.push(store.OrgStructure)
     dataLoading.value = false;
 }
 )
@@ -39,12 +38,18 @@ const chartShown = (i) =>{
 
         <div class="org" id="org-table">
             <h3>Admin</h3>
-            <span v-show="!store.OrgStructure.length">You are not an administrator of any locations. Create a new location to get started.</span>
-            <div class="header-btns" v-show="!dataLoading">
+            <span v-show="!store.OrgStructure.length && store.StructureLoaded">You are not an administrator of any locations. Create a new location to get started.</span>
+            <div class="header-btns">
                 <Button label="New" icon="pi pi-plus" @click="showAddNewUnit = true"></Button>
             </div>
-            <div v-show="store.OrgStructure.length">
+            <div v-show="store.OrgStructure.length && store.StructureLoaded">
                 <OrgTable v-model="orgStructure" ref="orgTable"  @chartButtonClicked="chartShown"></OrgTable>
+            </div>
+            <div class="loading">
+            <Skeleton v-show="!store.StructureLoaded" width="100%" height="1rem"></Skeleton>
+            <Skeleton v-show="!store.StructureLoaded" width="100%" height="1rem"></Skeleton>
+            <Skeleton v-show="!store.StructureLoaded" width="100%" height="1rem"></Skeleton>
+            <Skeleton v-show="!store.StructureLoaded" width="100%" height="1rem"></Skeleton>
             </div>
             </div>
 <!-- Org Chart Popup -->
@@ -73,6 +78,11 @@ const chartShown = (i) =>{
     gap: 2rem;
     justify-content: center;
     background-color: var(--p-surface-50);
+}
+.loading{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
 }
 .header-btns{
     display: flex;

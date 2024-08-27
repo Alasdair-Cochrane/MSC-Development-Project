@@ -44,6 +44,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
         }
 
         [HttpGet]
+        //Gets list of all notes for items in users assigned units based on requested timespan
         public async Task<IActionResult> GetNotesBeforeNow([FromQuery] int daysBeforeNow)
         {
             var user = await _userService.GetCurrentUserAsync(HttpContext);

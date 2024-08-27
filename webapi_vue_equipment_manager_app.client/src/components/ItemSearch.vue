@@ -73,6 +73,8 @@ async function SearchBarcode(code){
 }
 
 async function scanImage(item){
+    searchLoading.value = true;
+    searched.value = false
     showScanner.value = false;
     let queryProperties = {
         SerialNumber : item.serialNumber,
@@ -81,6 +83,8 @@ async function scanImage(item){
     }
     searchResults.value = await searchItemsByProperties(queryProperties)    
     emit('itemSearched')
+    searchLoading.value = false;
+    searched.value = true;
 }
 
 </script>

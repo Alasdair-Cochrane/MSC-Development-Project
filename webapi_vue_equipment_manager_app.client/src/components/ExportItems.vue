@@ -3,6 +3,7 @@ import { getAccessToken } from '@/Services/UserService';
 import { store } from '@/Store/Store';
 import { ref } from 'vue';
 const selectedUnits = ref()
+const loading = ref(false)
 
 const getUrl= () =>{
 
@@ -19,6 +20,7 @@ const getUrl= () =>{
 
 //https://dev.to/fercarballo/descargar-archivo-pdf-en-una-aplicacion-web-con-vuejs-y-javascript-2glh
 const getExport = async ()=> {
+    loading.value = true;
     let url = getUrl()
     let response = await fetch(url,{
         method: "GET",
@@ -32,6 +34,7 @@ const getExport = async ()=> {
     }
    let file = await response.blob()
    let fileUrl = URL.createObjectURL(file)
+   loading.value = false
 
     const a = document.createElement('a');
     a.href = fileUrl
@@ -40,6 +43,7 @@ const getExport = async ()=> {
     document.body.appendChild(a)
     a.click()
     document.body.removeChild(a)
+
 }
 
 
@@ -49,7 +53,7 @@ const getExport = async ()=> {
 <template>
 
 <div class="container">
-    <Button label="Export All" icon="pi pi-download" @click="getExport" v-show="!selectedUnits || !selectedUnits.length > 0"></Button>
+    <Button label="Export All" icon="pi pi-download" @click="getExport" v-show="!selectedUnits || !selectedUnits.length > 0" :loading="loading"></Button>
 
     <FloatLabel style="max-width: 250px;">    
         <MultiSelect v-model="selectedUnits" 
@@ -70,7 +74,7 @@ const getExport = async ()=> {
     style="min-width: 200px;">
         <Column field="name"></Column>
     </DataTable>
-    <Button label="Export" icon="pi pi-download" @click="getExport" v-show="selectedUnits && selectedUnits.length > 0"></Button>
+    <Button label="Export" icon="pi pi-download" @click="getExport" v-show="selectedUnits && selectedUnits.length > 0" :loading="loading"></Button>
 
 </div>
 </template>

@@ -82,8 +82,8 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
             return NoContent();
         }
 
-        [HttpGet("names")]
-        public async Task<IActionResult> GetNames()
+        [HttpGet("categories/names")]
+        public async Task<IActionResult> GetCategoryNames()
         {
             var names = await _maintenanceService.GetCategoryNamesAsync();
             if (names.IsNullOrEmpty())
@@ -93,16 +93,20 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
             return Ok(names);
         }
         [HttpPost("{id}/documents")]
-        public async Task<IActionResult> AddFiles(IFormFile file, int id)
+        public async Task<IActionResult> AddFile(IFormFile file, int id)
         {
             string ext = Path.GetExtension(file.FileName).ToLower();
             if (ext != ".pdf")
             {
                 return BadRequest();
             }
+            //create uri
             string uri = $"M-{id}-" + Guid.NewGuid().ToString() + ext;
 
+            //create document metadata for database
             var document = new Document { FileName = file.FileName, URL = uri };
+
+            //file validation not implemented - returns true - for virus scanning etc.
             if (await _documentService.ValidateAsync(file))
             {
                 await _documentService.UploadAsync(file, uri);
@@ -112,6 +116,9 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
                 return BadRequest("Document Invalid");
 
             }
+
+            //will upload document and insert record into database
+            //if upload fails it will remove database record
             try
             {
                 var itemDoc = await _maintenanceService.CreateDocumentAsync(document, id);

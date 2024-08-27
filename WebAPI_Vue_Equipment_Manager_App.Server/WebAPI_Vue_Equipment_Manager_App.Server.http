@@ -1,4 +1,4 @@
-@WebAPI_Vue_Equipment_Manager_App.Server_HostAddress = http://localhost:5272
+@WebAPI_Vue_Equipment_Manager_App.Server_HostAddress = http://localhost:32768
 
 GET {{WebAPI_Vue_Equipment_Manager_App.Server_HostAddress}}/weatherforecast/
 Accept: application/json

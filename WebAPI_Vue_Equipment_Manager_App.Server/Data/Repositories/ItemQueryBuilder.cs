@@ -31,6 +31,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
             //apply the filter on only those items belonging to the assigned units
             query = query.Where(x => unitIds.Any(y => y == x.UnitId));
 
+            //if the serial number is queried - no other query properties are relevant
             if (!String.IsNullOrEmpty(queryObject.SerialNumber))
             {
                 query = query.Where(x => EF.Functions.ILike(x.SerialNumber, $"%{queryObject.SerialNumber}%"));
@@ -46,7 +47,6 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
                 ThenInclude(x => x.Documents).
                 Include(x => x.Maintenances).
                 ThenInclude(x => x.Category).
-                Include(x => x.Notes).
                 AsSplitQuery().
                 AsNoTracking().
                 ToListAsync();
@@ -59,6 +59,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
                     Where(x => EF.Functions.ILike(x.LocalName!, $"%{queryObject.LocalName}%"));
             }
 
+            //if the barcode is queried- no other query properties are relevant
             if (!String.IsNullOrEmpty(queryObject.Barcode))
             {
                 query = query.Where(x => EF.Functions.ILike(x.Barcode, $"%{queryObject.Barcode}%"));
@@ -74,12 +75,12 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
                ThenInclude(x => x.Documents).
                Include(x => x.Maintenances).
                ThenInclude(x => x.Category).
-               Include(x => x.Notes).
                AsSplitQuery().
                AsNoTracking().
                ToListAsync();
                 return r;
             }
+
             if(queryObject.StatusCategoryId != null)
             {
                 query = query.Where(x => x.ItemStatusCategoryId == queryObject.StatusCategoryId);
@@ -103,6 +104,8 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
             {
                 query = query.Where(x => x.UnitId == queryObject.UnitId);
             }
+           
+            //When querying model properties - first the list of relevant model id's have to be obtained before the query can be applied to the items table
 
             if (!String.IsNullOrEmpty(queryObject.ModelName) ||
                     !String.IsNullOrEmpty(queryObject.Manufacturer) ||
@@ -165,7 +168,6 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
                 ThenInclude(x => x.Documents).
                 Include(x => x.Maintenances).
                 ThenInclude(x => x.Category). 
-                Include(x => x.Notes).
                 AsSplitQuery().
                 AsNoTracking().
                 ToListAsync();

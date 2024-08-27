@@ -45,22 +45,26 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Se
 
         public async Task<ItemDTO?> AddAsync(ItemDTO item, int userId)
         {
-            await CheckIsAuthorised(item.UnitId.Value, userId);
+            //will return an HttpResponse if user is not authorised to view the unit's items
+            await CheckIsAuthorisedAsync(item.UnitId.Value, userId);
 
+            //Get the Foriegn Key Ids for the related status and model category entities
             int statusCategoryID = _statusRepository.FindOrCreateByName(item.CurrentStatus).Id;
             int modelCategoryID = _modelCategories.FindOrCreateByName(item.Model.Category).Id;
 
+            //Either create or update the model associated with the posted item
             EquipmentModel? model = await _modelRepository.UpsertbyModelNumberAsync(item.Model.ToEntity(modelCategoryID));
+
             if (model == null)
             {
                 string entity = JsonSerializer.Serialize(item);
-                //throw an exception
                 throw new DataInsertionException("failed to find or create model entry when adding item", entity);
             }
 
             Item newItem = item.ToEntity(statusCategoryID);
             newItem.ModelId = model.Id;
             var added = await _ItemRepository.AddAsync(newItem);
+
             if (added == null)
             {
                 string entity = JsonSerializer.Serialize(item);
@@ -70,21 +74,6 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Se
             return added.ToDTO();
         }
 
-        public async Task<IEnumerable<Item>> AddManyAsync(IEnumerable<ItemDTO> items)
-        {
-            var itemEntities = new List<Item>();
-            foreach(var item in items)
-            {
-                var statusId =  _statusRepository.FindOrCreateByName(item.CurrentStatus).Id;
-                var modelCategory = _modelCategories.FindOrCreateByName(item.Model.Category).Id;
-                var model = await _modelRepository.UpsertbyModelNumberAsync(item.Model.ToEntity(modelCategory));
-                var newItem = item.ToEntity(statusId);
-                newItem.ModelId = model.Id;
-                itemEntities.Add(newItem);
-            }
-            var result = await _ItemRepository.AddManyAsync(itemEntities);
-            return result;
-        }
 
         public async Task DeleteAsync(int itemId, int userId)
         {
@@ -93,7 +82,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Se
             {
                 return;
             }
-            await CheckIsAuthorised(item.UnitId, userId);
+            await CheckIsAuthorisedAsync(item.UnitId, userId);
 
             await _ItemRepository.DeleteAsync(item.Id);
         }
@@ -119,13 +108,15 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Se
         {
             if(item.UnitId == null)
             {
-                throw new UnauthorisedOperationException($"Cannot find unitID for item {item.Id}");
+                throw new UnauthorisedOperationException($"No unitID specified for item {item.Id}");
             }
-            await CheckIsAuthorised(item.UnitId.Value, userId);
+
+            await CheckIsAuthorisedAsync(item.UnitId.Value, userId);
 
             int statusId = _statusRepository.FindOrCreateByName(item.CurrentStatus).Id;
             int modelCategoryID = _modelCategories.FindOrCreateByName(item.Model.Category).Id;
-            //make sure any changes to the model are tracked
+
+            //make sure any changes to the model are also tracked
             var model = await _modelRepository.UpsertbyModelNumberAsync(item.Model.ToEntity(modelCategoryID));
             item.ModelId = model.Id;
 
@@ -136,7 +127,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Se
             }
             return updated.ToDTO();
         }
-        public async Task<IEnumerable<ItemDTO>> GetAllByUnitAsync(int UnitID)
+        public async Task<IEnumerable<ItemDTO>> GetAllByUnitIdAsync(int UnitID)
         {
             var list = await _ItemRepository.GetAllByUnitIdAsync(UnitID);
             return list.Select(x => x.ToDTO());
@@ -155,7 +146,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Se
             return url;
         }
 
-        public async Task<IEnumerable<ItemDTO>?> Search(ItemQuery query, int userId)
+        public async Task<IEnumerable<ItemDTO>?> SearchAsync(ItemQuery query, int userId)
         {
             var items = await _itemQueryBuilder.QueryItems(query, userId);
             List<ItemDTO>? result = new List<ItemDTO>();
@@ -176,11 +167,11 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Se
         //https://stackoverflow.com/questions/52741533/how-to-export-csv-file-from-asp-net-core
         public async Task<MemoryStream> GetExport(int userId, IEnumerable<int>? unitIds = null)
         {
+        //make sure that the user is authorised to view items belonging to the requested units
             var relevantUnits = await _unitRepository.GetAllRelevantUnitsToUserAsync(userId, true);
 
             IEnumerable<int> relevantUnitIds = relevantUnits.Select(x => x.Id);
 
-            //check that the user is authorised to view the provided units
             if (!unitIds.IsNullOrEmpty())
             {
                 foreach (int id in unitIds!)
@@ -193,6 +184,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Se
                 relevantUnitIds = unitIds;
             }
 
+            //Gets all items for those units as ExportData objects
             var exportData = await _ItemRepository.GetExportData(relevantUnitIds);
 
             var stream = new MemoryStream();
@@ -205,7 +197,8 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Se
             return stream;
         }
 
-        private async Task CheckIsAuthorised(int unitId, int userId)
+        //will throw an exception if user is unauthorised to view unit - otherwise operation will proceed
+        private async Task CheckIsAuthorisedAsync(int unitId, int userId)
         {
             if(unitId == 0)
             {
@@ -215,7 +208,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Se
             if (!await _userService.CheckUserIsPrivateOrAdminIncParent(userId, unitId))
             {
 
-                throw new UnauthorisedOperationException($"UserID [{userId}] is notunauthorised for this operation for Unit {unitId} ");
+                throw new UnauthorisedOperationException($"UserID {userId} is notunauthorised for this operation for Unit {unitId} ");
             }
         }
 
@@ -265,16 +258,15 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Se
         public Task<ItemDTO?> UpdateAsync(ItemDTO item, int userId );
         public Task DeleteAsync(int itemId, int userId);
         public Task<ItemDTO?> AddAsync(ItemDTO item, int userId);
-        public Task<IEnumerable<ItemDTO>> GetAllByUnitAsync(int UnitID);
+        public Task<IEnumerable<ItemDTO>> GetAllByUnitIdAsync(int UnitID);
         public Task SetImageUrl(int itemId, string url);
         public Task<string?> GetImageUrl(int id);
-        public Task<IEnumerable<ItemDTO>?> Search(ItemQuery query, int userId);
+        public Task<IEnumerable<ItemDTO>?> SearchAsync(ItemQuery query, int userId);
         public Task<MemoryStream> GetExport(int userId, IEnumerable<int>? unitIds = null);
         public  Task<ItemDocument> CreateItemDocumentAsync(Document document, int itemId);
         public Task UpdateImageUrl(int id, string url);
         Task<IEnumerable<string>> GetStatusCategoryNames();
         Task<IEnumerable<StatusQuantity>> GetQuantityByStatusAsync(int userId);
-        Task<IEnumerable<Item>> AddManyAsync(IEnumerable<ItemDTO> items);
         Task<IEnumerable<ItemDTO>> GetLatestCreatedItems(int daysBefore, int userId);
     }
 }

@@ -110,8 +110,11 @@ const showStatusQuantityItems= async (data) => {
     <!-- Right Column -->
             <div class="data "> 
                     <div class="data-table">
+
                         <h3 style="font-weight: bold; font-size: 18px;">Items</h3>
-                    <DataTable class="" :value="store.StatusQuantities" size="small" :loading="store.StatusQuantities.length < 1" scrollable scroll-height="300px">
+
+                    <DataTable class="" :value="store.StatusQuantities" size="small" 
+                     scrollable scroll-height="300px">
                         <Column field="statusName" header="Status" style="width: 150px;">
                             <template #body="slotProps">
                                 <span :style="{backgroundColor : slotProps.data.hexColor}" class="status-label">
@@ -136,10 +139,8 @@ const showStatusQuantityItems= async (data) => {
                 <div class="data-table">
                     <MaintenanceActivityDisplay></MaintenanceActivityDisplay>
                 </div>
-                <div class="data-table">
-                    <NewItemActivity></NewItemActivity>
-                </div>
-            </div>
+                
+            </div> 
    
    <div>
     <Dialog v-model:visible="showExport">

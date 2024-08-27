@@ -26,6 +26,7 @@ builder.Services.AddEndpointsApiExplorer();
 
 //https://www.infoworld.com/article/2334527/implement-authorization-for-swagger-in-aspnet-core.html
 //To allow authorisation access when debuggin in the Swagger UI
+//used only for testing the endpoints during the development
 builder.Services.AddSwaggerGen(options =>
     {
         options.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
@@ -71,7 +72,7 @@ builder.Services.AddIdentityApiEndpoints<User>().
 
 builder.Services.AddDbContext<MainDbContext>(
     options => {
-        options.UseNpgsql(builder.Configuration.GetConnectionString("Remote"));
+        options.UseNpgsql(builder.Configuration.GetConnectionString("Remote_External"));
        
         });
 

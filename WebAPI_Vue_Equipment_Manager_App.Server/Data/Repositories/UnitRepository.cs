@@ -214,20 +214,20 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
             return roots;
         }
 
-        //https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.task.whenall?view=net-8.0
         public async Task<UnitDTO> GetDTOWithChildrenAsync(Unit unit)
         {            
             var dto = unit.ToDTO();
             
-            dto.AssigedUsers = await GetUserAssignmentsForUnitAsync(unit.Id);
-            
+            dto.AssigedUsers = await GetUserAssignmentsForUnitAsync(unit.Id);            
 
             //if the Children property has not been assigned - check that the unit actually does not have children
 
             if (unit.Children == null)
             {
-                var u = _context.Units.Include(x => x.Children).Where(x => x.Id == unit.Id).
-                    Where(x => x.IsPublic == true).
+                var u = _context.Units.
+                    Where(x => x.Id == unit.Id).
+                    Include(x => x.Children).
+                    ThenInclude(x => x.Children).
                     FirstOrDefault();
                 if (u == null || u.Children.IsNullOrEmpty())
                 {
@@ -244,7 +244,6 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
             }
             dto.Children = children;
             return dto;
-
         }
 
         //Gets all units where the user has admin priviledges
@@ -333,9 +332,6 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
                 Where(x => x.UnitId == unitId).
                 TagWith("GET USERS ASSIGNMENTS FOR UNIT USER REPO 253").
                 AsNoTracking().
-                Include(x => x.User).
-                Include(x => x.Unit).
-                Include(x => x.Role).
                 Select(x => new AssignmentDTO
                 {
                     RoleId = x.RoleId,

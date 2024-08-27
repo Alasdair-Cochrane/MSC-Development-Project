@@ -13,7 +13,8 @@ export async function userLogin(login){
     if(response.ok){
         let t = await response.json()
         localStorage.setItem("accessToken", JSON.stringify({ token : t, timestamp : Date.now() }))
-        await PopulateStartingData()
+        console.log(t)
+        PopulateStartingData()
         toggleLogIn()
         return {successfull : true}
     }

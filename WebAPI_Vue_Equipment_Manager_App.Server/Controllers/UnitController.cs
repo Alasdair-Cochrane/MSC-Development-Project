@@ -29,28 +29,34 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
             var user = await _userService.GetCurrentUserAsync(HttpContext);
             IEnumerable<UnitDTO> units;
 
+           //Get list of all units that user has been assigned to and their sub-units (as an IEnumerable)
             if (flat)
             {
                 units = await _unitService.GetAllAsync(user.Id,authorised);
             }
+            //Gets public units that the user has not already been assigned to
             else if (publicOnly)
             {
                 units = await _unitService.GetUnassignedPublicUnitsAsync(user.Id);
             }
             else
             {
+                //Gets units as a collection of Units each composed as a hierarchy reflecting org structure
+                //parents contain children which contain children etc.
                 if (adminOnly)
                 {
+
                     units = await _unitService.GetAdminRoleUnits(user.Id);
                 }
                 else
                 {
-                    units = await _userService.GetRelevantUnits(user.Id);
+                    units = await _userService.GetRelevantRootUnits(user.Id);
                 }
             }
             return Ok(units);
         }
 
+        //Gets public Units that represent the overall organisation - i.e. root unit in tree
         [HttpGet ("public")]
         [AllowAnonymous]
         public async Task<IActionResult> GetPublicUnits()

@@ -3,6 +3,8 @@ using System.Drawing;
 
 namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services
 {
+    //for adding/Retrieving/Deleting files from host server 
+
     public class ServerImageService : IImageService
     {
         private readonly string _baseDirectory;

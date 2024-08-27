@@ -12,8 +12,8 @@ using WebAPI_Vue_Equipment_Manager_App.Server.Data;
 namespace WebAPI_Vue_Equipment_Manager_App.Server.Migrations
 {
     [DbContext(typeof(MainDbContext))]
-    [Migration("20240809123004_Status_Hex")]
-    partial class Status_Hex
+    [Migration("20240827123705_HEX_NEW_3")]
+    partial class HEX_NEW_3
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -388,54 +388,63 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Migrations
                         new
                         {
                             Id = 1,
+                            ColorHex = "#66BB6A",
                             Name = "Active",
                             Order = 1
                         },
                         new
                         {
                             Id = 2,
+                            ColorHex = "#4FC3F7",
                             Name = "In Storage",
                             Order = 2
                         },
                         new
                         {
                             Id = 3,
+                            ColorHex = "#EF5350",
                             Name = "Broken",
                             Order = 3
                         },
                         new
                         {
                             Id = 4,
+                            ColorHex = "#BDBDBD",
                             Name = "Decommissioned",
                             Order = 4
                         },
                         new
                         {
                             Id = 5,
+                            ColorHex = "#BA68C8",
                             Name = "On Loan",
                             Order = 5
                         },
                         new
                         {
                             Id = 6,
+                            ColorHex = "#FFD54F",
                             Name = "Requires Installation",
                             Order = 6
                         },
                         new
                         {
                             Id = 7,
+                            ColorHex = "#FFB300",
                             Name = "Requires Service",
                             Order = 7
                         },
                         new
                         {
                             Id = 8,
+                            ColorHex = "#FF8F00",
                             Name = "Requires Calibration",
                             Order = 8
                         },
                         new
                         {
                             Id = 9,
+                            ColorHex = "#FFCA28",
                             Name = "Requires Validation",
                             Order = 9
                         });

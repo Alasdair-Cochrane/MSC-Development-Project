@@ -51,7 +51,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
         {
             var user = await _userService.GetCurrentUserAsync(HttpContext);
 
-            var results =  await _itemSerivce.Search(query, user.Id);
+            var results =  await _itemSerivce.SearchAsync(query, user.Id);
             if(results != null)
             {
                 return Ok(results);
@@ -122,7 +122,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
         }
 
         [HttpGet("{id}/image")]
-        public async Task<IActionResult> GetImageById(int id)
+        public async Task<IActionResult> GetImageByItemId(int id)
         {
             string? url = await _itemSerivce.GetImageUrl(id);
             if(url == null) return NotFound();
@@ -145,7 +145,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        [Route("api/image/{url}", Name="GetImage")]
+        [Route("~/api/items/image/{url}", Name="GetImage")]
         public async Task<IActionResult> GetImageByUrl(string url)
         {
             var image = await _imageService.Retrieve(url);

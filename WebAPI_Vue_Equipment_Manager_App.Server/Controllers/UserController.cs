@@ -31,6 +31,9 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
             _unitService = unitService;
         }
 
+        //Uses dotnet Identity to register
+        //but has additional step of possibly creating new organisation for user upon registration
+
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] UserRegisterDTO newUser)
         {
@@ -98,6 +101,8 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
 
 
         [HttpGet("user")]
+        //Gets details and information speciic to the user as a UserDetailsDTO object
+        //e.g their assignments, their assigned units etc. 
         [Authorize]
         public async Task<IActionResult> OnLogIn()
         {
@@ -122,9 +127,9 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
 
         }
 
-        [HttpGet("roles")]
+        [HttpGet("roles/names")]
         [Authorize]
-        public async Task<IActionResult> GetAllRoles()
+        public async Task<IActionResult> GetAllRoleNames()
         {
             var roles = await _userService.GetAllRoles();
             if (roles.IsNullOrEmpty())

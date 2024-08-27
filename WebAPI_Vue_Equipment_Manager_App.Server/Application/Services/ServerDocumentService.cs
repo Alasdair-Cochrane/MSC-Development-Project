@@ -6,6 +6,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services
 {
     public class ServerDocumentService : IDocumentService
     {
+        //for adding/Retrieving/Deleting files from host server  : currently replaced by Firebase
         private readonly string _baseDirectory;
         private readonly IItemRepository _itemRepository;
 
@@ -62,7 +63,6 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services
         public Task UploadAsync(IFormFile file, string uri);
         public Task<byte[]?> RetrieveAsync(string filename);
         public Task RemoveAsync(string uri, bool andRecord);
-        Task<Dictionary<string,byte[]>> RetrieveAll(IEnumerable<string> uris);
     }
 
 }

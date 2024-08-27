@@ -5,6 +5,7 @@ using WebAPI_Vue_Equipment_Manager_App.Server.Data.Entities;
 
 namespace WebAPI_Vue_Equipment_Manager_App.Server.Data
 {
+    //Used by EF Core to construct required table sin the database
     public class MainDbContext : IdentityDbContext<User,UserRole,int>
     {
         public DbSet<Item> Items { get; set; }
@@ -35,7 +36,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data
             builder.Entity<EquipmentModelCategory>().HasIndex(e => e.Name).IsUnique();
             builder.Entity<ItemStatusCategory>().HasIndex(e => e.Name).IsUnique();
 
-            //setting up one-to-many foreign keys to avoid navigation properties in child entity
+            //setting up one-to-many foreign keys to avoid having navigation properties in child entity
             builder.Entity<Item>().
                  HasMany(x => x.Maintenances).
                  WithOne().
@@ -46,11 +47,6 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data
                 HasMany(i => i.Documents).
                 WithOne().
                 HasForeignKey(d => d.ItemId);
-
-            //builder.Entity<EquipmentModel>().
-            //    HasMany(m => m.Documents).
-            //    WithOne().
-            //    HasForeignKey(d => d.ModelId);
 
             builder.Entity<Maintenance>().
                 HasMany(m => m.Documents).
@@ -84,15 +80,15 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data
                 new UserRole { Id = 3, Name = "Public User", NormalizedName = "PUBLIC" }
                 );
             builder.Entity<ItemStatusCategory>().HasData(
-               new ItemStatusCategory { Id = 1, Name = "Active", Order = 1 },
-               new ItemStatusCategory { Id = 2, Name = "In Storage", Order = 2 },
-               new ItemStatusCategory { Id = 3, Name = "Broken", Order = 3 },
-               new ItemStatusCategory { Id = 4, Name = "Decommissioned", Order = 4 },
-               new ItemStatusCategory { Id = 5, Name = "On Loan", Order = 5 },
-               new ItemStatusCategory { Id = 6, Name = "Requires Installation", Order = 6 },
-               new ItemStatusCategory { Id = 7, Name = "Requires Service", Order = 7 },
-               new ItemStatusCategory { Id = 8, Name = "Requires Calibration", Order = 8 },
-               new ItemStatusCategory { Id = 9, Name = "Requires Validation", Order = 9 }
+               new ItemStatusCategory { Id = 1, Name = "Active", Order = 1 , ColorHex = "#66BB6A" },
+               new ItemStatusCategory { Id = 2, Name = "In Storage", Order = 2 , ColorHex = "#4FC3F7" },
+               new ItemStatusCategory { Id = 3, Name = "Broken", Order = 3 , ColorHex = "#EF5350" },
+               new ItemStatusCategory { Id = 4, Name = "Decommissioned", Order = 4 , ColorHex = "#BDBDBD" },
+               new ItemStatusCategory { Id = 5, Name = "On Loan", Order = 5 , ColorHex = "#BA68C8" },
+               new ItemStatusCategory { Id = 6, Name = "Requires Installation", Order = 6 , ColorHex = "#FFD54F" },
+               new ItemStatusCategory { Id = 7, Name = "Requires Service", Order = 7 , ColorHex = "#FFB300" },
+               new ItemStatusCategory { Id = 8, Name = "Requires Calibration", Order = 8 , ColorHex = "#FF8F00" },
+               new ItemStatusCategory { Id = 9, Name = "Requires Validation", Order = 9 , ColorHex = "#FFCA28" }
                );
 
             builder.Entity<MaintenanceCategory>().HasData(

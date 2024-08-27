@@ -11,6 +11,8 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
     [Route("api/[controller]")]
     [Authorize]
 
+    //Used only for autocomplete data when filling in forms
+
     public class ModelsController : ControllerBase
     {
         private readonly IEquipmentModelService _modelService;
@@ -22,14 +24,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Controllers
             _userService = userService;
         }
 
-        //just used for adding a lot of entities to the db for testing purposes
-        [HttpPost]
-        [AllowAnonymous]
-        public async Task<IActionResult> AddMany(IEnumerable<EquipmentModelDTO> models)
-        {
-            await _modelService.AddMany(models);
-            return NoContent();
-        }
+
 
         [HttpGet]
         public async Task<IActionResult> GetAll()

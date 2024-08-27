@@ -84,7 +84,6 @@ async function unitAdded(){
 
 .wrapper{
     max-width: 95vw;
-    background-color: var(--p-surface-50);
     padding-top: 10px;
     border-radius: 10px;
 

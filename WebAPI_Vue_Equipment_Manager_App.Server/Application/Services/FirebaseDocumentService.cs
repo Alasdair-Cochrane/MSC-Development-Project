@@ -11,6 +11,7 @@ using WebAPI_Vue_Equipment_Manager_App.Server.Startup;
 
 namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services
 {
+    //File service for retrieving adding/retrieving/deleting files to Firebase cloud
     public class FirebaseDocumentService : IDocumentService
     {
         private readonly string _bucketName;
@@ -31,33 +32,13 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services
                 return stream.ToArray();
             }
         }
-        public async Task<Dictionary<string,byte[]>> RetrieveAll(IEnumerable<string> uris)
-        {
-            Dictionary<string, byte[]> files = new Dictionary<string, byte[]>();
-            Dictionary<string, MemoryStream> streams = new Dictionary<string, MemoryStream>();
-            List<Task<Google.Apis.Storage.v1.Data.Object>> tasks = new List<Task<Google.Apis.Storage.v1.Data.Object>>();
-
-            foreach(var file in uris)
-            {
-                var stream = new MemoryStream();                
-                tasks.Add(_storageClient.DownloadObjectAsync(_bucketName, file, stream));   
-                streams.Add(file,stream);
-            }
-             await Task.WhenAll(tasks);
-
-            foreach(var  result in streams)
-            {
-                files.Add(result.Key, result.Value.ToArray());
-                result.Value.Close();
-            }
-            return files;
-        }
 
         public async Task UploadAsync( IFormFile file, string uri)
         {           
            await _storageClient.UploadObjectAsync(_bucketName, uri, null, file.OpenReadStream());
         }
 
+        //Not Implemented - intended for file size validation/ virus scanning
         public async Task<bool> ValidateAsync(IFormFile file)
         {
             var result = true;

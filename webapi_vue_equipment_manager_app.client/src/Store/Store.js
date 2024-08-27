@@ -27,10 +27,10 @@ export const GetFromAPI = async (route, errorMessage) => {
             console.warn(errorMessage + " : " + ex.message)
         }    
 }
-
 export const UpdateStructure = async () =>{   
         UpdateUnits()
         store.OrgStructure = await GetOrgStructure();
+        store.StructureLoaded = true
         return store.OrgStructure
     }
 
@@ -74,7 +74,7 @@ export async function UpdateModels(){
 }
 
 const UpdateRoles = async () =>{
-       store.Roles = await GetFromAPI('api/users/roles', "Could not retrieve user roles")
+       store.Roles = await GetFromAPI('api/users/roles/names', "Could not retrieve user roles")
         return store.Roles
     }
 
@@ -85,7 +85,7 @@ const UpdateUserDetails = async () => {
 
 
 const  UpdateMaintenanceCategories = async () => {
-        store.MaintenanceCategories = await GetFromAPI('api/items/maintenance/names', "Could not retrieve maintenance categories")
+        store.MaintenanceCategories = await GetFromAPI('api/items/maintenance/categories/names', "Could not retrieve maintenance categories")
         return store.MaintenanceCategories
     }
 
@@ -121,7 +121,8 @@ export const store = reactive({
     Roles: ref([]),
     StatusQuantities: ref([]),
     MaintenanceCategories : ref([]),
-    PublicOrganisations : ref([])
+    PublicOrganisations : ref([]),
+    StructureLoaded : ref(false)
 })
 
 

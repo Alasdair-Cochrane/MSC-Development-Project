@@ -35,12 +35,16 @@ const emit = defineEmits(['confirmed', 'cancelled'])
 
 
 const close = () =>{
-  scanner.value.stop().catch((err) => console.warn(err.message)) 
+  if(scanner.value){
+    scanner.value.stop().catch((err) => console.warn(err.message)) 
+  }
   emit('cancelled')
 }
 
 const confirm = () => {
-  scanner.value.stop().catch((err) => console.warn(err.message)) 
+  if(scanner.value){
+    scanner.value.stop().catch((err) => console.warn(err.message)) 
+  }
   emit('confirmed', scanValue.value)
 
 }

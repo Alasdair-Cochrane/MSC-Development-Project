@@ -75,6 +75,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services.Entity_Se
             int categoryId = _categoryRepository.FindOrCreateByName(updatedEntry.CategoryName).Id;
             var toUpdate = updatedEntry.ToEntity(categoryId);
             var updated = await _repository.UpdateAsync(toUpdate);
+
             if (updated == null)
             {
                 return null;

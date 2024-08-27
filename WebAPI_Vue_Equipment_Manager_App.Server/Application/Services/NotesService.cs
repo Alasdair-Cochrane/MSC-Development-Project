@@ -32,7 +32,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services
             {
                 return list;
             }
-            
+            //checks and assigns whether the user is also able to delete the notes in the provided list
             list = await _noteRepository.AssignUserCanDeleteAsync(list, userId);
             return list;
         }
@@ -48,6 +48,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services
             }
         }
 
+        //For returning all notes created in specified timespan
         public async Task<IEnumerable<ItemNoteDTO>> GetNotesBeforeNowAsync(int days, int userId)
         {
             var units = await _unitRepository.GetAllRelevantUnitIdsToUserAsync(userId);

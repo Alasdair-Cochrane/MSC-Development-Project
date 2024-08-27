@@ -19,6 +19,7 @@ const weight = ref(null)
 const height = ref(null)
 const length = ref(null)
 const width = ref(null)
+const invalid = ref(false)
 
 const errors = ref([])
 
@@ -47,6 +48,7 @@ async function imageSubmitted(image){
         var response = await queryLabelImage(image)
 
         awaitingResponse.value = false;
+        invalid.value= !response.isValidLabel
         if(response.isValidLabel){
             serial.value = response.item.serialNumber
             modelNumber.value = response.item.modelNumber,
@@ -58,6 +60,7 @@ async function imageSubmitted(image){
             width.value = response.item.width,
             category.value = response.item.category
             errors.value = response.errors
+        
         }
         else{
             errors.value = response.errors
@@ -136,15 +139,15 @@ async function imageSubmitted(image){
             </InputGroup>
         </div>
         <div v-if="errors.length > 0">
-            <h3>Errors</h3>
+            <h3>Issues</h3>
             <ul id="errorList" >
                 <li v-for="x in errors">{{ x }}</li>
             </ul>
         </div>
 
         <div class="bttns">
-            <Button label="Confirm" @click="confirm"></Button>
-            <Button label="Cancel" @click="cancel"></Button>
+            <Button label="Confirm" @click="confirm" v-show="!invalid"></Button>
+            <Button label="Cancel" @click="cancel" severity="danger"></Button>
 
         </div>
     </div>
@@ -158,4 +161,9 @@ async function imageSubmitted(image){
 </template>
 
 <style>
+.bttns{
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
 </style>

@@ -23,6 +23,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services
 
         public async Task<EquipmentModelDTO?> AddAsync(EquipmentModelDTO model)
         {
+            //Gets the model category if it already exists or creates it if not
             EquipmentModelCategory category = _typeRepository.FindOrCreateByName(model.Category);
 
             EquipmentModel newModel = model.ToEntity(category.Id);
@@ -49,17 +50,23 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services
             return newModel.ToDTO();
         }
 
+        //Returns the names of the categories of the models of items
+        //belogning to units the user is assigned to
         public async Task<IEnumerable<string>> GetCategoriesAsync(int userId)
         {
             var units = await _unitRepository.GetAllRelevantUnitsToUserAsync(userId, false);
             var uIds = units.Select(u => u.Id);
 
             var userCategories = await _repository.GetUserCategoriesAsync(uIds);
+
+            //Union of the user created categories with the pre defined static list of model categories 
+
             HashSet<string> categories = new HashSet<string>(userCategories);
             categories.UnionWith(SeedData.EquipmentModelCategories);
             return categories.ToArray();
         }
 
+        //Currently used only for populating test data
         public async Task AddMany(IEnumerable<EquipmentModelDTO> models)
         {
             List<EquipmentModel> entities = new List<EquipmentModel>();

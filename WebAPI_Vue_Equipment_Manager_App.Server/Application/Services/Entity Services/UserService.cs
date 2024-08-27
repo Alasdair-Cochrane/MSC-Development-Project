@@ -46,7 +46,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services
             return dtos;
         }
 
-        public async Task<IEnumerable<UnitDTO>> GetRelevantUnits(int userId)
+        public async Task<IEnumerable<UnitDTO>> GetRelevantRootUnits(int userId)
         {
             var roots = await _unitRepository.GetAllAssignedRootsAsync(userId);
             List<UnitDTO> unitDTOs = new List<UnitDTO>();
@@ -184,7 +184,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services
         Task<IEnumerable<UserDetailsDTO>> GetAllPublicUsers(int userId);
         Task<IEnumerable<AssignmentDTO>> GetAssignmentsDTObyUserIdAsync(int id);
         Task<User> GetCurrentUserAsync(HttpContext context);
-        Task<IEnumerable<UnitDTO>> GetRelevantUnits(int userId);
+        Task<IEnumerable<UnitDTO>> GetRelevantRootUnits(int userId);
         Task<UserDetailsDTO> GetUserDetailsAsync(User user);
         Task<AssignmentDTO> UpdateAssignment(int updatorId, UserAssignment assignment);
         public Task<IEnumerable<RoleDTO>> GetAllRoles();

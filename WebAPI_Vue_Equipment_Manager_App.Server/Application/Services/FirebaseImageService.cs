@@ -5,6 +5,7 @@ using WebAPI_Vue_Equipment_Manager_App.Server.Startup;
 
 namespace WebAPI_Vue_Equipment_Manager_App.Server.Application.Services
 {
+    //For adding/retrieving images from FireBase Cloud
     public class FirebaseImageService : IImageService
     {
         private readonly string _bucketName;

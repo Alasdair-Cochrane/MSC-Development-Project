@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System.Linq;
 using WebAPI_Vue_Equipment_Manager_App.Server.Application.Interfaces;
 using WebAPI_Vue_Equipment_Manager_App.Server.Application.Services;
@@ -19,7 +20,7 @@ namespace WebAPI_Vue_Equipment_Manager_App.Server.Data.Repositories
             _categoriesCache = cache;
             _dbContext = context;
 
-            if (_categoriesCache.CachedItems == null)
+            if (_categoriesCache.CachedItems.IsNullOrEmpty())
             {
                 _categoriesCache.CachedItems = _contextSet.ToList();
             }

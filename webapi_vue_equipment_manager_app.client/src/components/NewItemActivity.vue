@@ -18,15 +18,23 @@ const displayItem = (data) =>{
     showItem.value = true
 }
 
-onMounted(async () => getNotes())
+onMounted(async () => await getNotes())
 
 const getNotes = async () => {
     if(selectedOption.value){
         let i =  daysOptionsLabel.indexOf(selectedOption.value)
         daysBefore.value = daysOptions[i]
     }
-    items.value = await GetFromAPI(`api/items/latest?daysBefore=${daysBefore.value}`,"Could not retrieve recent notes")
+    const duration = 5000
+    const timeout = new Promise((resolve,reject)=> {
+        setTimeout(()=>{
+            resolve([]);
+        }, duration)
+    })
+    let result = await Promise.race([GetFromAPI(`api/items/latest?daysBefore=${daysBefore.value}`,"Could not retrieve recent notes"),
+    timeout])
     loading.value= false
+    items.value = result;
 }
 
 
@@ -35,8 +43,8 @@ const getNotes = async () => {
 <template>
 <div class="wrapper">
     <div class="header">
-        <h3>New Items</h3>
-        <Select v-model="selectedOption" :options="daysOptionsLabel" @change="getNotes()"></Select>
+        <h3>New Items {{ items.length ?? "" }}</h3>
+        <Select v-model="selectedOption" :options="daysOptionsLabel" @change="getNotes()" :virtualScrollerOptions="{ itemSize: 50 }"></Select>
     </div>
                     <DataTable class="" :value="items" size="small" scrollable scroll-height="300px" :loading="loading">
                         <Column field="serialNumber" header="s/n" style="width: 80px;"></Column>
